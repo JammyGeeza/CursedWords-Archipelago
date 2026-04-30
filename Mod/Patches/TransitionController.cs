@@ -1,0 +1,33 @@
+﻿using BepInEx.Logging;
+using FullSerializer;
+using HarmonyLib;
+using Mod.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Reflection;
+using UnityEngine;
+
+namespace Mod.Patches
+{
+    [HarmonyPatch(typeof(TransitionController))]
+    internal class TransitionController_Patches
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        [HarmonyPatch(nameof(TransitionController.TransitionToNewScene))]
+        [HarmonyPostfix]
+        private static void TransitionToNewScene_Postfix(string sceneString)
+        {
+            Debug.Log($"TransitionController.TransitionToNewScene Postfix!");
+
+            if (sceneString.Equals(SceneNames.SaveSlotsScene))
+            {
+                // Disconnect when transitioning to save slots scene
+                ArchipelagoHelper.DisconnectAsync();
+            }
+        }
+    }
+}
