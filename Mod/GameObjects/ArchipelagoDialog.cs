@@ -10,10 +10,10 @@ namespace Mod.GameObjects
     {
         public class DialogResult
         {
-            public bool Cancelled;
-            public string Host;
-            public string Slot;
-            public string Password;
+            public bool Cancelled { get; set; }
+            public string Host { get; set; }
+            public string Slot { get; set; }
+            public string Password { get; set; }
         }
 
         public DialogResult Result { get; private set; } = new DialogResult();

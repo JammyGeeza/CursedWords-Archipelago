@@ -16,11 +16,11 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(SaveSlotController))]
     internal class SaveSlotController_Patches
     {
-        ///// <summary>
-        ///// Produce dialog to enter/adjust archipelago credentials before loading save.
-        ///// </summary>
-        ///// <param name="__result"></param>
-        ///// <param name="slotIndex"></param>
+        /// <summary>
+        /// Produce dialog to enter/adjust archipelago credentials before loading save.
+        /// </summary>
+        /// <param name="__result"></param>
+        /// <param name="slotIndex"></param>
         [HarmonyPatch("SelectSaveFile")]
         [HarmonyPostfix]
         public static void SelectSaveFile_Postfix(ref IEnumerator __result, int slotIndex)
@@ -30,6 +30,12 @@ namespace Mod.Patches
             __result = Wrapped(__result, slotIndex);
         }
 
+        /// <summary>
+        /// Wrap IEnumerator to perform tasks before enumerating.
+        /// </summary>
+        /// <param name="original">Original <see cref="IEnumerator"/> to wrap.</param>
+        /// <param name="slotIndex">The save slot index.</param>
+        /// <returns></returns>
         private static IEnumerator Wrapped(IEnumerator original, int slotIndex)
         {
             Debug.Log("Wrapped() started");

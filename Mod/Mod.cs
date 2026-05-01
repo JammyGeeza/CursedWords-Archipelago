@@ -19,9 +19,6 @@ namespace Modd
         {
             Logger.LogInfo("Success, the mod has loaded!");
 
-            // Initialize config
-            ConfigHelper.Initialize(Config, Logger);
-
             // Initialize Harmony
             Logger.LogInfo("Applying patches...");
 
@@ -33,15 +30,6 @@ namespace Modd
 
             // Set instance
             Instance = this;
-        }
-
-        public async Task<bool> TryLoginAsync()
-        {
-            // Attempt to create archipelago session
-            return await ArchipelagoHelper.ConnectAsync(
-                ConfigHelper.Host.Value,
-                ConfigHelper.SlotName.Value,
-                ConfigHelper.Password.Value);
         }
     }
 }

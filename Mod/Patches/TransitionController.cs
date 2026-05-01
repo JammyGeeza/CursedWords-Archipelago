@@ -14,7 +14,7 @@ namespace Mod.Patches
     internal class TransitionController_Patches
     {
         /// <summary>
-        /// 
+        /// When navigating to save selection, disconnect from archipelago.
         /// </summary>
         /// <param name="value"></param>
         [HarmonyPatch(nameof(TransitionController.TransitionToNewScene))]
@@ -25,7 +25,6 @@ namespace Mod.Patches
 
             if (sceneString.Equals(SceneNames.SaveSlotsScene))
             {
-                // Disconnect when transitioning to save slots scene
                 ArchipelagoHelper.DisconnectAsync();
             }
         }

@@ -1,6 +1,9 @@
 ﻿using BepInEx.Logging;
 using HarmonyLib;
 using Mod.Helpers;
+using Mod.Mappings;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Mod.Patches
