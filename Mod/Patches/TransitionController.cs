@@ -2,6 +2,7 @@
 using FullSerializer;
 using HarmonyLib;
 using Mod.Helpers;
+using Modd;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -26,6 +27,12 @@ namespace Mod.Patches
             if (sceneString.Equals(SceneNames.SaveSlotsScene))
             {
                 ArchipelagoHelper.DisconnectAsync();
+
+                CursedWordsArchipelago.Instance.IsInGame = false;
+            }
+            else
+            {
+                CursedWordsArchipelago.Instance.IsInGame = true;
             }
         }
     }

@@ -1,9 +1,4 @@
-﻿using BepInEx.Logging;
-using FullSerializer;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using HarmonyLib;
 using UnityEngine;
 
 namespace Mod.Patches

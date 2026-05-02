@@ -88,8 +88,10 @@
     <Compile Include="Helpers\ArchipelagoHelper.cs" />
     <Compile Include="Classes\ArchipelagoData.cs" />
     <Compile Include="Lookups\Lookups.cs" />
+    <Compile Include="Mappings\ItemMappings.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Patches\Character.cs" />
+    <Compile Include="Patches\EncounterController.cs" />
     <Compile Include="Patches\SaveFile.cs" />
     <Compile Include="Patches\TransitionController.cs" />
     <Compile Include="Patches\SaveFileUtility.cs" />
