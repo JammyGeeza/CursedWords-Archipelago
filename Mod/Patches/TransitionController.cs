@@ -17,7 +17,6 @@ namespace Mod.Patches
         /// <summary>
         /// When navigating to save selection, disconnect from archipelago.
         /// </summary>
-        /// <param name="value"></param>
         [HarmonyPatch(nameof(TransitionController.TransitionToNewScene))]
         [HarmonyPostfix]
         private static void TransitionToNewScene_Postfix(string sceneString)
@@ -34,6 +33,8 @@ namespace Mod.Patches
             {
                 CursedWordsArchipelago.Instance.IsInGame = true;
             }
+
+            Debug.Log($"Is in game: {CursedWordsArchipelago.Instance.IsInGame}");
         }
     }
 }

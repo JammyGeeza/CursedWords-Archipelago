@@ -159,6 +159,7 @@ namespace Mod.Helpers
             long locationId = Session.Locations.GetLocationIdFromName(gameName, locationName);
             if (locationId > -1 && !Session.Locations.AllLocationsChecked.Contains(locationId))
             {
+                Debug.Log($"Checking location: {locationName}");
                 Session.Locations.CompleteLocationChecks(new long[] { locationId });
             }
         }

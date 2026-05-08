@@ -12,26 +12,46 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(EncounterController))]
     internal class EncounterController_Patches
     {
-        [HarmonyPatch(nameof(EncounterController.SubmitWord))]
+        /// <summary>
+        /// Check location when a stamp or sticker is sold.
+        /// </summary>
+        [HarmonyPatch("SellItem")]
         [HarmonyPostfix]
-        private static void SubmitWord_Postfix(List<TileSelection> tiles, List<string> words)
+        private static void SellItem_Postfix(Item item)
         {
-            Debug.Log($"{nameof(EncounterController)}.{nameof(EncounterController.SubmitWord)} Postfix!");
-            Debug.Log($"Word submitted with length: {tiles.Count}");
+            Debug.Log("EncounterController.SellItem Postfix!");
+            Debug.Log($"Sold item: {item.Name}");
 
-            // Attempt to check word length locations
-            CursedWordsArchipelago.Instance.TryCheckLocations("word_length", tiles.Count);
+            // Attempt to check shop locations
+            CursedWordsArchipelago.Instance.TryCheckGenericLocations($"sell_{(item.IsStamp() ? "stamp" : "sticker")}");
         }
 
+        /// <summary>
+        /// Check location(s) when a word is scored.
+        /// </summary>
         [HarmonyPatch("ShowScoreCalculation")]
-        [HarmonyPostfix]
-        private static void ShowScoreCalculation_Postfix(ScorePacket finalScore)
+        [HarmonyPrefix]
+        private static void ShowScoreCalculation_Prefix(ScorePacket finalScore)
         {
-            Debug.Log($"{nameof(EncounterController)}.ShowScoreCalculation Postfix!");
-            Debug.Log($"Word submitted with final score: {finalScore.Score}");
+            Debug.Log($"{nameof(EncounterController)}.ShowScoreCalculation Prefix!");
+            Debug.Log($"Word score: {finalScore.Score}");
 
             // Attempt to check word length locations
-            CursedWordsArchipelago.Instance.TryCheckLocations("word_score", finalScore.Score);
+            CursedWordsArchipelago.Instance.TryCheckWordLocations("word_score", finalScore.Score);
+        }
+
+        /// <summary>
+        /// Check location when a word length is submitted.
+        /// </summary>
+        [HarmonyPatch(nameof(EncounterController.SubmitWord))]
+        [HarmonyPostfix]
+        private static void SubmitWord_Postfix(EncounterController __instance, List<TileSelection> tiles)
+        {
+            Debug.Log($"{nameof(EncounterController)}.{nameof(EncounterController.SubmitWord)} Postfix!");
+            Debug.Log($"Word length: {tiles.Count}");
+
+            // Attempt to check word length locations
+            CursedWordsArchipelago.Instance.TryCheckWordLocations("word_length", tiles.Count);
         }
     }
 }

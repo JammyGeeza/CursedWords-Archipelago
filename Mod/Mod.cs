@@ -43,7 +43,15 @@ namespace Modd
             Logger.LogInfo("Patches applied");
 
             // Set instance
+            if (Instance != null && Instance != this)
+            {
+                Debug.LogWarning("Duplicate mod instance detected. Destroying...");
+                Destroy(gameObject);
+                return;
+            }
+
             Instance = this;
+            DontDestroyOnLoad(gameObject);
 
             // Register event handlers
             ArchipelagoHelper.OnConnected += ArchipelagoHelper_OnConnected;
@@ -56,7 +64,7 @@ namespace Modd
         /// </summary>
         private void Update()
         {
-            if (!IsInGame)
+            if (!Instance.IsInGame)
             {
                 return;
             }
@@ -64,6 +72,7 @@ namespace Modd
             // De-queue action and perform it
             if (actionQueue.TryDequeue(out IEnumerator action))
             {
+                Debug.Log("Dequeuing action...");
                 StartCoroutine(action);
             }
         }
@@ -118,17 +127,45 @@ namespace Modd
         }
 
         /// <summary>
-        /// Attempt to check a location by its action and amount.
+        /// Attempt to check an encounter location.
         /// </summary>
-        /// <param name="action">The ID of the action to check.</param>
-        /// <param name="amount">The amount to check against.</param>
-        public void TryCheckLocations(string action, long amount)
+        /// <param name="character">The character to check against.</param>
+        /// <param name="stage">The stage to check against.</param>
+        /// <param name="nodeType">The encounter node type to check against.</param>
+        public void TryCheckEncounterLocations(Character character, int stage, NodeType nodeType)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.Check(action, amount)))
+            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(character, stage, nodeType) == true))
             {
                 QueueAction(CheckLocation(criteria.LocationName));
             }
         }
+
+        /// <summary>
+        /// Attempt to check a generic location.
+        /// </summary>
+        /// <param name="action">The action to check against.</param>
+        public void TryCheckGenericLocations(string action)
+        {
+            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnGenericAction?.Invoke(action) == true))
+            {
+                QueueAction(CheckLocation(criteria.LocationName));
+            }
+        }
+
+        /// <summary>
+        /// Attempt to check a location by its action and amount.
+        /// </summary>
+        /// <param name="action">The action to check against.</param>
+        /// <param name="amount">The amount to check against.</param>
+        public void TryCheckWordLocations(string action, long amount)
+        {
+            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnWordAction?.Invoke(action, amount) == true))
+            {
+                QueueAction(CheckLocation(criteria.LocationName));
+            }
+        }
+
+        
 
         static IEnumerator CheckLocation(string locationName)
         {

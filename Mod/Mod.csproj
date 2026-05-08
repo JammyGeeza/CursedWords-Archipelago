@@ -91,6 +91,11 @@
     <Compile Include="Mappings\ItemMappings.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Patches\Character.cs" />
+    <Compile Include="Patches\ShopController.cs" />
+    <Compile Include="Patches\ShopTile.cs" />
+    <Compile Include="Patches\ShopItemSlot.cs" />
+    <Compile Include="Patches\MusicController.cs" />
+    <Compile Include="Patches\ScoreCalculation.cs" />
     <Compile Include="Patches\EncounterController.cs" />
     <Compile Include="Patches\SaveFile.cs" />
     <Compile Include="Patches\TransitionController.cs" />
