@@ -23,6 +23,7 @@ namespace Mod.Patches
             {
                 __result.IsTutorialComplete = true;
                 __result.CharacterHighestCompletedAscensions = new Dictionary<Type, int>();
+                __result.BulkUnlocksUnlocked = new List<Type>();
             };
         }
     }

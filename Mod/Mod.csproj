@@ -53,6 +53,10 @@
       <HintPath>$(BepInExPath)\core\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="TMPro">
+      <HintPath>$(GamePath)\Cursed Words_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -83,6 +87,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\APStampPadlock.cs" />
+    <Compile Include="Classes\APStickerPadlock.cs" />
     <Compile Include="GameObjects\ArchipelagoDialog.cs" />
     <Compile Include="GameObjects\ArchipelagoLoginController.cs" />
     <Compile Include="Helpers\ArchipelagoHelper.cs" />
@@ -90,6 +96,10 @@
     <Compile Include="Lookups\Lookups.cs" />
     <Compile Include="Mappings\ItemMappings.cs" />
     <Compile Include="Mod.cs" />
+    <Compile Include="Patches\Player.cs" />
+    <Compile Include="Patches\ShopVisualController.cs" />
+    <Compile Include="Patches\Tile.cs" />
+    <Compile Include="Patches\ItemPools.cs" />
     <Compile Include="Patches\Character.cs" />
     <Compile Include="Patches\ShopController.cs" />
     <Compile Include="Patches\ShopTile.cs" />

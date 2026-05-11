@@ -1,24 +1,30 @@
-﻿using Mod.Helpers;
+﻿using Mod.Classes;
+using Mod.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Mod.Mappings
 {
     public static class ItemMappings
     {
-        public static Dictionary<string, IEnumerator> Map = new Dictionary<string, IEnumerator>()
+        public static Dictionary<string, Func<IEnumerator>> Map = new Dictionary<string, Func<IEnumerator>>()
         {
             // Characters
-            { "Rodman", UnlockRodman() },
-            { "Nina Nix", UnlockNinaNix() },
-            { "Hayley Bayles", UnlockHayleyBayles() },
+            { "Rodman", () => UnlockRodman() },
+            { "Nina Nix", () => UnlockNinaNix() },
+            { "Hayley Bayles", () => UnlockHayleyBayles() },
+
+            // Slots
+            { "Progressive Stamp Slot", () => FreeStampSlot() },
+            { "Progressive Sticker Slot", () => FreeStickerSlot() },
 
             // Filler
-            { "$1", AddToPiggyBank(1)  },
-            { "$2", AddToPiggyBank(2) },
-            { "$3", AddToPiggyBank(3) },
+            { "$1", () => AddToPiggyBank(1) },
+            { "$2", () => AddToPiggyBank(2) },
+            { "$3", () => AddToPiggyBank(3) },
         };
 
         public static List<LocationCriteria> Locations = new List<LocationCriteria>()
@@ -75,6 +81,8 @@ namespace Mod.Mappings
             new LocationCriteria("Buy a Sticker") { OnGenericAction = (action) => action == "buy_sticker" },
             new LocationCriteria("Buy a Tile") { OnGenericAction = (action) => action == "buy_tile" },
 
+            new LocationCriteria("Sell a Tile") { OnGenericAction = (action) => action == "destroy_tile" },
+
             new LocationCriteria("Freeze a Stamp") { OnGenericAction = (action) => action == "freeze_stamp" },
             new LocationCriteria("Freeze a Sticker") { OnGenericAction = (action) => action == "freeze_sticker" },
 
@@ -82,7 +90,6 @@ namespace Mod.Mappings
 
             new LocationCriteria("Sell a Stamp") { OnGenericAction = (action) => action == "sell_stamp" },
             new LocationCriteria("Sell a Sticker") { OnGenericAction = (action) => action == "sell_sticker" },
-            new LocationCriteria("Sell a Tile") { OnGenericAction = (action) => action == "sell_tile" },
 
             #endregion
 
@@ -122,6 +129,7 @@ namespace Mod.Mappings
 
         static IEnumerator UnlockNinaNix()
         {
+            Debug.Log("Unlocking Nina Nix...");
             SaveManager.AddCharacterToUnlockedCharacters(typeof(NinaNix));
             SaveManager.SetSeenNinaIntroDialogue();
             yield break;
@@ -129,13 +137,59 @@ namespace Mod.Mappings
 
         static IEnumerator UnlockHayleyBayles()
         {
+            Debug.Log("Unlocking Hayley Bayles...");
             SaveManager.AddCharacterToUnlockedCharacters(typeof(HayleyBayles));
             yield break;
         }
 
         static IEnumerator AddToPiggyBank(int amount)
         {
-            SaveManager.SaveMoneyInPiggyBank(amount);
+            if (CharacterInfoPanel.SingletonInventoryVisualController != null)
+            {
+                Player player = GameStatics.GetPlayer();
+                player.ChangeMoney(amount);
+
+                CharacterInfoPanel.SingletonInventoryVisualController.PopulateCash();
+            }
+
+            yield break;
+        }
+
+        static IEnumerator FreeStampSlot()
+        {
+            if (CharacterInfoPanel.SingletonInventoryVisualController != null)
+            {
+                Debug.Log("Attempting to free a stamp slot...");
+
+                Player player = GameStatics.GetPlayer();
+                if (player.GetStamps().FirstOrDefault(itm => itm is APStampPadlock) is APStampPadlock stampPadlock && stampPadlock != null)
+                {
+                    Debug.Log("Removing stamp padlock...");
+                    player.RemoveItemFromInventory(stampPadlock);
+                }
+
+                CharacterInfoPanel.SingletonInventoryVisualController.PopulateStamps();
+            }
+
+            yield break;
+        }
+
+        static IEnumerator FreeStickerSlot()
+        {
+            if (CharacterInfoPanel.SingletonInventoryVisualController != null)
+            {
+                Debug.Log("Attempting to free a sticker slot...");
+
+                Player player = GameStatics.GetPlayer();
+                if (player.GetStickers().FirstOrDefault(itm => itm is APStickerPadlock) is APStickerPadlock stickerPadlock && stickerPadlock != null)
+                {
+                    Debug.Log("Removing sticker padlock...");
+                    player.RemoveItemFromInventory(stickerPadlock);
+                }
+
+                CharacterInfoPanel.SingletonInventoryVisualController.PopulateStickers();
+            }
+
             yield break;
         }
     }

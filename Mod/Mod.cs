@@ -22,7 +22,7 @@ namespace Modd
         private static Harmony Harmony = null;
 
         // Private fields
-        private ConcurrentQueue<IEnumerator> actionQueue = new ConcurrentQueue<IEnumerator>();
+        private ConcurrentQueue<Func<IEnumerator>> actionQueue = new ConcurrentQueue<Func<IEnumerator>>();
 
         /// <summary>
         /// Is the player currently in game? (Not in the save selection screen)
@@ -57,6 +57,18 @@ namespace Modd
             ArchipelagoHelper.OnConnected += ArchipelagoHelper_OnConnected;
             ArchipelagoHelper.OnCheckedLocationsUpdated += ArchipelagoHelper_OnCheckedLocationsUpdated;
             ArchipelagoHelper.OnItemsReceived += ArchipelagoHelper_OnItemsReceived;
+
+            Debug.Log("Printing blue stamps...");
+            foreach (Type type in Lookups.BlueStamps)
+            {
+                Debug.Log($"\t{type.Name}");
+            }
+
+            Debug.Log("Printing blue stickers...");
+            foreach (Type type in Lookups.BlueStickers)
+            {
+                Debug.Log($"\t{type.Name}");
+            }
         }
 
         /// <summary>
@@ -70,10 +82,10 @@ namespace Modd
             }
 
             // De-queue action and perform it
-            if (actionQueue.TryDequeue(out IEnumerator action))
+            if (Instance.actionQueue.TryDequeue(out Func<IEnumerator> action))
             {
                 Debug.Log("Dequeuing action...");
-                StartCoroutine(action);
+                StartCoroutine(action());
             }
         }
 
@@ -108,7 +120,7 @@ namespace Modd
                 Logger.LogInfo($"Item received: {itemInfo.ItemName}");
 
                 // Add item action to queue, if exists
-                if (ItemMappings.Map.TryGetValue(itemInfo.ItemName, out IEnumerator action))
+                if (ItemMappings.Map.TryGetValue(itemInfo.ItemName, out Func<IEnumerator> action))
                 {
                     Logger.LogInfo($"Queuing item action for {itemInfo.ItemName}...");
 
@@ -121,9 +133,9 @@ namespace Modd
         /// Add an action to the action queue.
         /// </summary>
         /// <param name="action">The action to queue.</param>
-        public void QueueAction(IEnumerator action)
+        public void QueueAction(Func<IEnumerator> action)
         {
-            actionQueue.Enqueue(action);
+            Instance.actionQueue.Enqueue(action);
         }
 
         /// <summary>
@@ -136,7 +148,7 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(character, stage, nodeType) == true))
             {
-                QueueAction(CheckLocation(criteria.LocationName));
+                QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
 
@@ -148,7 +160,7 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnGenericAction?.Invoke(action) == true))
             {
-                QueueAction(CheckLocation(criteria.LocationName));
+                QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
 
@@ -161,11 +173,9 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnWordAction?.Invoke(action, amount) == true))
             {
-                QueueAction(CheckLocation(criteria.LocationName));
+                QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
-
-        
 
         static IEnumerator CheckLocation(string locationName)
         {

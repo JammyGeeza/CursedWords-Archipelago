@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -162,6 +163,16 @@ namespace Mod.Helpers
                 Debug.Log($"Checking location: {locationName}");
                 Session.Locations.CompleteLocationChecks(new long[] { locationId });
             }
+        }
+
+        public static int AmountOfItemReceived(string itemName)
+        {
+            return Session.Items.AllItemsReceived.Count(item => item.ItemName.Equals(itemName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static bool HasReceivedItem(string itemName, int amount = 1)
+        {
+            return Session.Items.AllItemsReceived.Count(item => item.ItemName.Equals(itemName, StringComparison.OrdinalIgnoreCase)) == amount;
         }
 
         #region Event Handlers

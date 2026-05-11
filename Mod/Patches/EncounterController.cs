@@ -12,6 +12,22 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(EncounterController))]
     internal class EncounterController_Patches
     {
+        [HarmonyPatch("GameSetup")]
+        [HarmonyPostfix]
+        private static void OnGameSetup_Postfix(EncounterController __instance)
+        {
+            Debug.Log("EncounterController.GameSetup postfix!");
+
+            int rerollsReceived = ArchipelagoHelper.AmountOfItemReceived("Progressive Re-roll");
+
+            Debug.Log($"Setting encounter re-rolls to: {rerollsReceived}");
+
+            // Set re-roll count based on received items
+            Traverse.Create(__instance)
+                .Field("_rerollsForEncounter")
+                .SetValue(rerollsReceived);
+        }
+
         /// <summary>
         /// Check location when a stamp or sticker is sold.
         /// </summary>
