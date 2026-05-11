@@ -6,6 +6,7 @@ using Mod.Mappings;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace Mod.Patches
@@ -46,6 +47,15 @@ namespace Mod.Patches
             {
                 blacklist.AddRange(Lookups.VoidStamps);
             }
+
+            // Remove all duplicate entries
+            blacklist = blacklist.Distinct().ToList();
+
+            Debug.Log($"Blacklist:");
+            foreach (Type type in blacklist.OrderBy(t => t.Name))
+            {
+                Debug.Log($"\t{type.Name}");
+            }
         }
 
         /// <summary>
@@ -64,6 +74,16 @@ namespace Mod.Patches
         [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedStamp), typeof(List<Type>))]
         [HarmonyPrefix]
         private static void GetRandomBuildBiasedStamp_Prefix(ref List<Type> unavailableItemTypes)
+        {
+            GetRandomStamp_Prefix(ref unavailableItemTypes);
+        }
+
+        /// <summary>
+        /// Prevent Stamps from appearing in the item pool if not yet received
+        /// </summary>
+        [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedStamp), typeof(List<Type>), typeof(ItemRarity))]
+        [HarmonyPrefix]
+        private static void GetRandomBuildBiasedStamp_Overload_Prefix(ref List<Type> unavailableItemTypes)
         {
             GetRandomStamp_Prefix(ref unavailableItemTypes);
         }
@@ -119,6 +139,16 @@ namespace Mod.Patches
         [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedSticker), typeof(List<Type>))]
         [HarmonyPrefix]
         private static void GetRandomBuildBiasedSticker_Prefix(ref List<Type> unavailableItemTypes)
+        {
+            GetRandomSticker_Prefix(ref unavailableItemTypes);
+        }
+
+        /// <summary>
+        /// Prevent Stickers from appearing in the item pool if not yet received
+        /// </summary>
+        [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedSticker), typeof(ItemRarity), typeof(List<Type>))]
+        [HarmonyPrefix]
+        private static void GetRandomBuildBiasedSticker_Overload_Prefix(ref List<Type> unavailableItemTypes)
         {
             GetRandomSticker_Prefix(ref unavailableItemTypes);
         }

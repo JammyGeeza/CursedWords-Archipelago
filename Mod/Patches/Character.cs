@@ -2,6 +2,7 @@
 using FullSerializer;
 using HarmonyLib;
 using Mod.Helpers;
+using Mod.Mappings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,23 +13,43 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(Character))]
     internal class Character_Patches
     {
+        /// <summary>
+        /// Prevent character default build items if not yet unlocked
+        /// </summary>
         [HarmonyPatch(nameof(Character.GetCharacterItemTypes))]
         [HarmonyPostfix]
         private static void GetCharacterItemTypes_Postfix(Character __instance, ref List<Type> __result)
         {
             Debug.Log($"{nameof(Character)}.{nameof(Character.GetCharacterItemTypes)} postfix!");
 
-            switch (__instance)
+            for (int i = __result.Count - 1; i >= 0; i--)
             {
-                case WetDennis wetDennis:
-                    if (!ArchipelagoHelper.HasReceivedItem("Rodman Sticker Bundle"))
-                    {
-                        __result.Clear();
-                    }
-                    return;
+                Type type = __result[i];
 
-                case NinaNix ninaNix:
-                    return;
+                if (!ArchipelagoHelper.HasReceivedItem("Sticker Bundle - Blue Tiles") && Lookups.BlueStickers.Contains(type))
+                {
+                    __result.Remove(type);
+                }
+
+                if (!ArchipelagoHelper.HasReceivedItem("Sticker Bundle - Number Tiles") && Lookups.NumberStickers.Contains(type))
+                {
+                    __result.Remove(type);
+                }
+
+                if (!ArchipelagoHelper.HasReceivedItem("Sticker Bundle - Red Tiles") && Lookups.RedStickers.Contains(type))
+                {
+                    __result.Remove(type);
+                }
+
+                if (!ArchipelagoHelper.HasReceivedItem("Sticker Bundle - Shiny Tiles") && Lookups.ShinyStickers.Contains(type))
+                {
+                    __result.Remove(type);
+                }
+
+                if (!ArchipelagoHelper.HasReceivedItem("Sticker Bundle - Void Tiles") && Lookups.VoidStickers.Contains(type))
+                {
+                    __result.Remove(type);
+                }
             }
         }
 

@@ -6,11 +6,22 @@ using System.Threading.Tasks;
 
 namespace Mod.Classes
 {
-    public class APStickerPadlock : StickerPadlock
+    public class APStickerPadlock : Item
     {
-        public APStickerPadlock() : base()
+        public APStickerPadlock()
         {
+            Name = "Slot Locked";
+            SpriteData.Add(new ItemSpriteData(ItemSpriteUsage.Default, "Padlock"));
+            UpgradeableComponents = new List<UpgradeableComponent>
+            {
+                new UpgradeableComponent(1, 8, 8)
+            };
+            Rarity = ItemRarity.Unique;
+            Cost = 0;
+            SellCost = 0;
             IsSellingPrevented = true;
+            CostsMoneyToSell = false;
+            ItemFunctionTags = new List<ItemFunctionTag> { ItemFunctionTag.Tech };
         }
 
         public override void Upgrade(int componentIndex, bool upgradingBoth = false)

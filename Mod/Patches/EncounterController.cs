@@ -1,11 +1,15 @@
 ﻿using HarmonyLib;
+using Mod.Extensions;
 using Mod.Helpers;
 using Mod.Mappings;
 using Modd;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Mod.Patches
 {
@@ -14,18 +18,19 @@ namespace Mod.Patches
     {
         [HarmonyPatch("GameSetup")]
         [HarmonyPostfix]
-        private static void OnGameSetup_Postfix(EncounterController __instance)
+        private static IEnumerator OnGameSetup_Postfix(IEnumerator __result, EncounterController __instance)
         {
             Debug.Log("EncounterController.GameSetup postfix!");
 
+            // Perform existing actions in coroutine
+            while (__result.MoveNext())
+            {
+                yield return __result.Current;
+            }
+
+            // Set re-roll amount per encounter
             int rerollsReceived = ArchipelagoHelper.AmountOfItemReceived("Progressive Re-roll");
-
-            Debug.Log($"Setting encounter re-rolls to: {rerollsReceived}");
-
-            // Set re-roll count based on received items
-            Traverse.Create(__instance)
-                .Field("_rerollsForEncounter")
-                .SetValue(rerollsReceived);
+            __instance.SetEncounterRerollAmount(rerollsReceived);
         }
 
         /// <summary>

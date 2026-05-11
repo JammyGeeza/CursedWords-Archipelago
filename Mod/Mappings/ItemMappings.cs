@@ -1,9 +1,12 @@
 ﻿using Mod.Classes;
+using Mod.Extensions;
 using Mod.Helpers;
+using Modd;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Mod.Mappings
@@ -17,14 +20,17 @@ namespace Mod.Mappings
             { "Nina Nix", () => UnlockNinaNix() },
             { "Hayley Bayles", () => UnlockHayleyBayles() },
 
+            // Re-rolls
+            { "Progressive Re-roll", () => IncrementReroll() },
+
             // Slots
             { "Progressive Stamp Slot", () => FreeStampSlot() },
             { "Progressive Sticker Slot", () => FreeStickerSlot() },
 
             // Filler
-            { "$1", () => AddToPiggyBank(1) },
-            { "$2", () => AddToPiggyBank(2) },
-            { "$3", () => AddToPiggyBank(3) },
+            { "$1", () => IncrementMoney(1) },
+            { "$2", () => IncrementMoney(2) },
+            { "$3", () => IncrementMoney(3) },
         };
 
         public static List<LocationCriteria> Locations = new List<LocationCriteria>()
@@ -120,41 +126,6 @@ namespace Mod.Mappings
             #endregion
         };
 
-        static IEnumerator UnlockRodman()
-        {
-            Debug.Log("Unlocking Rodman...");
-            SaveManager.AddCharacterToUnlockedCharacters(typeof(WetDennis));
-            yield break;
-        }
-
-        static IEnumerator UnlockNinaNix()
-        {
-            Debug.Log("Unlocking Nina Nix...");
-            SaveManager.AddCharacterToUnlockedCharacters(typeof(NinaNix));
-            SaveManager.SetSeenNinaIntroDialogue();
-            yield break;
-        }
-
-        static IEnumerator UnlockHayleyBayles()
-        {
-            Debug.Log("Unlocking Hayley Bayles...");
-            SaveManager.AddCharacterToUnlockedCharacters(typeof(HayleyBayles));
-            yield break;
-        }
-
-        static IEnumerator AddToPiggyBank(int amount)
-        {
-            if (CharacterInfoPanel.SingletonInventoryVisualController != null)
-            {
-                Player player = GameStatics.GetPlayer();
-                player.ChangeMoney(amount);
-
-                CharacterInfoPanel.SingletonInventoryVisualController.PopulateCash();
-            }
-
-            yield break;
-        }
-
         static IEnumerator FreeStampSlot()
         {
             if (CharacterInfoPanel.SingletonInventoryVisualController != null)
@@ -190,6 +161,58 @@ namespace Mod.Mappings
                 CharacterInfoPanel.SingletonInventoryVisualController.PopulateStickers();
             }
 
+            yield break;
+        }
+
+        static IEnumerator IncrementMoney(int amount)
+        {
+            Debug.Log("Attempting to increment money...");
+
+            if (CharacterInfoPanel.SingletonInventoryVisualController != null)
+            {
+                Debug.Log($"Incrementing money by {amount}...");
+
+                Player player = GameStatics.GetPlayer();
+                player.ChangeMoney(amount);
+
+                CharacterInfoPanel.SingletonInventoryVisualController.PopulateCash();
+            }
+
+            yield break;
+        }
+
+        static IEnumerator IncrementReroll()
+        {
+            Debug.Log("Attempting to increment re-roll count...");
+            
+            if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController encounterController && encounterController != null)
+            {
+                Debug.Log("Attempting to increment re-roll count...");
+                encounterController.IncrementEncounterRerollAmount(1);
+            }
+
+            yield break;
+        }
+
+        static IEnumerator UnlockRodman()
+        {
+            Debug.Log("Unlocking Rodman...");
+            SaveManager.AddCharacterToUnlockedCharacters(typeof(WetDennis));
+            yield break;
+        }
+
+        static IEnumerator UnlockNinaNix()
+        {
+            Debug.Log("Unlocking Nina Nix...");
+            SaveManager.AddCharacterToUnlockedCharacters(typeof(NinaNix));
+            SaveManager.SetSeenNinaIntroDialogue();
+            yield break;
+        }
+
+        static IEnumerator UnlockHayleyBayles()
+        {
+            Debug.Log("Unlocking Hayley Bayles...");
+            SaveManager.AddCharacterToUnlockedCharacters(typeof(HayleyBayles));
             yield break;
         }
     }

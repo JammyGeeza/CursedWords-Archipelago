@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 
 namespace Mod.Classes
 {
-    public class APStampPadlock : StampPadlock
+    public class APStampPadlock : Item
     {
-        public APStampPadlock() : base()
+        public APStampPadlock()
         {
+            Name = "Slot Locked";
+            SpriteData.Add(new ItemSpriteData(ItemSpriteUsage.Default, "Padlock"));
+            Rarity = ItemRarity.Unique;
+            Cost = 0;
+            SellCost = 0;
             IsSellingPrevented = true;
+            CostsMoneyToSell = false;
+            ItemFunctionTags = new List<ItemFunctionTag> { ItemFunctionTag.Tech };
         }
 
         public override void Upgrade(int componentIndex, bool upgradingBoth = false)

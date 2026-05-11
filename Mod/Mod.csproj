@@ -89,6 +89,7 @@
   <ItemGroup>
     <Compile Include="Classes\APStampPadlock.cs" />
     <Compile Include="Classes\APStickerPadlock.cs" />
+    <Compile Include="Extensions\EncounterControllerExtensions.cs" />
     <Compile Include="GameObjects\ArchipelagoDialog.cs" />
     <Compile Include="GameObjects\ArchipelagoLoginController.cs" />
     <Compile Include="Helpers\ArchipelagoHelper.cs" />
@@ -97,7 +98,6 @@
     <Compile Include="Mappings\ItemMappings.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Patches\Player.cs" />
-    <Compile Include="Patches\ShopVisualController.cs" />
     <Compile Include="Patches\Tile.cs" />
     <Compile Include="Patches\ItemPools.cs" />
     <Compile Include="Patches\Character.cs" />
@@ -105,7 +105,6 @@
     <Compile Include="Patches\ShopTile.cs" />
     <Compile Include="Patches\ShopItemSlot.cs" />
     <Compile Include="Patches\MusicController.cs" />
-    <Compile Include="Patches\ScoreCalculation.cs" />
     <Compile Include="Patches\EncounterController.cs" />
     <Compile Include="Patches\SaveFile.cs" />
     <Compile Include="Patches\TransitionController.cs" />
