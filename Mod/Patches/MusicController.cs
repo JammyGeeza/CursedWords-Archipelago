@@ -1,17 +1,18 @@
 ﻿using HarmonyLib;
+using Mod.Extensions;
 using Mod.Helpers;
-using Mod.Mappings;
 using Modd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Mod.Patches
 {
     [HarmonyPatch(typeof(MusicController))]
-    internal class MusicController_Patches
+    internal class MusicController_Patches : PatchBase
     {
+        public static bool IgnoreDeath { get; set; } = false;
+
         /// <summary>
         /// Check location when an encounter is won.
         /// </summary>
@@ -19,20 +20,68 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void OnWinOrLoseEncounter_Postfix(bool isWin)
         {
-            Debug.Log($"{nameof(MusicController)}.{nameof(MusicController.OnWinOrLoseEncounter)} Postfix!");
-            Debug.Log($"Encounter win: {isWin}");
-
-            // Ignore if not win
-            if (!isWin)
-            {
-                return;
-            }
+            Logger.LogInfo($"{nameof(MusicController)}.{nameof(MusicController.OnWinOrLoseEncounter)} Postfix!");
+            Logger.LogInfo($"Encounter win: {isWin}");
 
             Player player = GameStatics.GetPlayer();
-            Debug.Log($"Encounter won: {player.CurrentRunProgress.CurrentStage}/{player.CurrentRunProgress.CurrentNodeType}");
 
-            // Try and check encounter location
-            CursedWordsArchipelago.Instance.TryCheckEncounterLocations(player.MyCharacter, player.CurrentRunProgress.CurrentStage, player.CurrentRunProgress.CurrentNodeType);
+            if (isWin)
+            {
+                // Try and check encounter location
+                CursedWordsArchipelago.Instance.TryCheckEncounterLocations(player.MyCharacter, player.CurrentRunProgress.CurrentStage, player.CurrentRunProgress.CurrentNodeType);
+            }
+            else if (!isWin && ArchipelagoHelper.SlotData.Deathlink)
+            {
+                // Ignore means it was likely caused by receiving a deathlink
+                if (!IgnoreDeath)
+                {
+                    Logger.LogInfo("Attempting to send deathlink...");
+                    ArchipelagoHelper.TrySendDeathlink($"Failed to beat Stage {player.CurrentRunProgress.CurrentStage}");
+                }
+
+                IgnoreDeath = false;
+            }
+        }
+
+        /// <summary>
+        /// Check location when an encounter is won.
+        /// </summary>
+        [HarmonyPatch(nameof(MusicController.OnWinRun))]
+        [HarmonyPostfix]
+        private static void OnWinRun_Postfix()
+        {
+            Logger.LogInfo($"{nameof(MusicController)}.{nameof(MusicController.OnWinRun)} postfix!");
+
+            if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
+            {
+                Player player = GameStatics.GetPlayer();
+                List<string> runsCompleted = SaveManager.GetCharactersWithAscensionsUnlocked()
+                    .Select(c => (Activator.CreateInstance(c) as Character).GetName())
+                    .ToList();
+
+                // If current win isn't there, add it to the list
+                if (!runsCompleted.Contains(player.GetCharacter().GetName()))
+                {
+                    runsCompleted.Add(player.GetCharacter().GetName());
+                }
+
+                Logger.LogInfo("Characters currently won with:");
+                foreach (string characterRunCompleted in runsCompleted)
+                {
+                    Logger.LogInfo($"\t{characterRunCompleted}");
+                }
+
+                // Check goal condition
+                if (ArchipelagoHelper.SlotData.GoalRequirements.All(runsCompleted.Contains))
+                {
+                    Logger.LogInfo("Goal condition has been reached!");
+                    ArchipelagoHelper.TryGoal();
+                }
+            }
+            else
+            {
+                Logger.LogWarning("Run has been won, but no encounter controller was found.");
+            }
         }
     }
 }

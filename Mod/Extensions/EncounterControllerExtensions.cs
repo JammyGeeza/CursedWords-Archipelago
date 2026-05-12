@@ -13,6 +13,18 @@ namespace Mod.Extensions
 {
     public static class EncounterControllerExtensions
     {
+        public static List<string> GetAscensions(this EncounterController controller)
+        {
+            SaveFile saveFile = Traverse.Create(controller)
+                .Field("_saveFile")
+                .GetValue<SaveFile>();
+
+            return saveFile.CharacterHighestCompletedAscensions
+                .Where(kv => kv.Value > -1)
+                .Select((kv) => (Activator.CreateInstance(kv.Key) as Character).GetName())
+                .ToList();
+        }
+
         /// <summary>
         /// Get the current encounter re-roll amount.
         /// </summary>

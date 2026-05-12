@@ -1,8 +1,13 @@
 ﻿using Archipelago.MultiClient.Net;
+using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
+using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Packets;
+using BepInEx.Logging;
+using Modd;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
@@ -13,12 +18,60 @@ namespace Mod.Helpers
 {
     internal static class ArchipelagoHelper
     {
-        private static ArchipelagoSession Session = null;
-        public static RoomInfoPacket RoomInfo = null;
+        #region Private Properties
 
-        // Forwardevents for connection established
+        /// <summary>
+        /// Gets or sets the current deathlink service.
+        /// </summary>
+        private static DeathLinkService DeathlinkService { get; set; }
+
+        private static ManualLogSource Logger
+        {
+            get => CursedWordsArchipelago.Instance.LogSource;
+        }
+
+        /// <summary>
+        /// Gets or sets the current session object.
+        /// </summary>
+        private static ArchipelagoSession Session { get; set; }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// Gets a value indicating whether the session is currently connected.
+        /// </summary>
+        public static bool IsConnected
+        {
+            get => Session != null && Session.Socket.Connected;
+        }
+
+        /// <summary>
+        /// Gets the room info for the currently connected slot.
+        /// </summary>
+        public static RoomInfoPacket RoomInfo { get; private set; }
+
+        /// <summary>
+        /// Gets the slot data for the currently connected slot.
+        /// </summary>
+        public static ArchipelagoSlotData SlotData { get; private set; }
+
+        #endregion
+
+        #region Events
+
+        // Forward events for connection established
         public delegate void ConnectedEvent();
         public static event ConnectedEvent OnConnected;
+
+        // Forward events for deathlinks
+        public delegate void DeathlinkEvent(DeathLink deathLink);
+        public static event DeathlinkEvent OnDeathlink;
+
+        // Forward events for disconnect
+        public delegate void DisconnectedEvent(string reason);
+        public static event DisconnectedEvent OnDisconnected;
 
         // Forward events for items received
         public delegate void ItemsReceivedEvent(ReceivedItemsHelper helper);
@@ -28,9 +81,11 @@ namespace Mod.Helpers
         public delegate void CheckedLocationsUpdatedEvent(ReadOnlyCollection<long> newCheckedLocations);
         public static event CheckedLocationsUpdatedEvent OnCheckedLocationsUpdated;
 
+        #endregion
+
         static ArchipelagoHelper()
         {
-            
+
         }
 
         /// <summary>
@@ -52,7 +107,7 @@ namespace Mod.Helpers
                 controller.SetState(DialogState.Error, "An unexpected error occurred");
             }
             else if (connectTask.Result)
-            {   
+            {
                 // If task succeeded, close
                 controller.Close();
             }
@@ -74,7 +129,7 @@ namespace Mod.Helpers
         {
             try
             {
-                Debug.Log($"Creating archipelago session...");
+                Logger.LogInfo($"Creating archipelago session...");
 
                 // Create session
                 Session = ArchipelagoSessionFactory.CreateSession(host);
@@ -82,12 +137,13 @@ namespace Mod.Helpers
                 {
                     throw new Exception("Archipelago session unexpectedly returned null.");
                 }
-                
+
                 // Register event handlers
                 Session.Locations.CheckedLocationsUpdated += Locations_CheckedLocationsUpdated;
                 Session.Items.ItemReceived += Items_ItemReceived;
+                Session.Socket.SocketClosed += Socket_SocketClosed;
 
-                Debug.Log($"Attempting to connect to archipelago session...");
+                Logger.LogInfo($"Attempting to connect to archipelago session...");
 
                 // Get room info
                 RoomInfo = await Session.ConnectAsync();
@@ -96,13 +152,13 @@ namespace Mod.Helpers
                     throw new Exception("RoomInfo packet unexpectedly returned null.");
                 }
 
-                Debug.Log($"Attempting to log in to archipelago session...");
+                Logger.LogInfo($"Attempting to log in to archipelago session...");
 
                 // Attempt to log in
                 LoginResult result = await Session.LoginAsync(
                     "Cursed Words",
                     slotName,
-                    Archipelago.MultiClient.Net.Enums.ItemsHandlingFlags.AllItems,
+                    ItemsHandlingFlags.AllItems,
                     password: pwd,
                     requestSlotData: true);
 
@@ -115,14 +171,45 @@ namespace Mod.Helpers
                     throw new Exception(string.Join(", ", failure.Errors));
                 }
 
-                Debug.Log($"Successfully connected to archipelago session!");
+                // Get slot data
+                SlotData = ArchipelagoSlotData.Parse(Session.DataStorage.GetSlotData());
+                if (SlotData is null)
+                {
+                    throw new Exception("SlotData was unexpectedly null.");
+                }
+
+                // Create deathlink service
+                DeathlinkService = Session.CreateDeathLinkService();
+                if (DeathlinkService is null)
+                {
+                    Logger.LogError("Failed to create deathlinks service - skipping...");
+                }
+                else
+                {
+                    DeathlinkService.OnDeathLinkReceived += DeathlinkService_OnDeathLinkReceived;
+
+                    // Enable or disable depending on slot data
+                    if (SlotData.Deathlink)
+                    {
+                        DeathlinkService.EnableDeathLink();
+                    }
+                    else
+                    {
+                        DeathlinkService.DisableDeathLink();
+                    }
+                }
+
+                Logger.LogInfo($"Successfully connected to archipelago session!");
 
                 // Trigger connected event
                 OnConnected?.Invoke();
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Failed to connect to archipelago session. Reason: {ex.Message}");
+                Logger.LogError($"Failed to connect to archipelago session. Reason: {ex.Message}");
+
+                await DisconnectAsync();
+
                 return false;
             }
 
@@ -132,17 +219,41 @@ namespace Mod.Helpers
         /// <summary>
         /// Disconnect from the archipelago host.
         /// </summary>
-        public static async void DisconnectAsync()
+        public static async Task DisconnectAsync()
         {
-            // Ignore if not already connected
-            if (Session is null || !Session.Socket.Connected)
-                return;
+            if (Session != null)
+            {
+                await Session.Socket.DisconnectAsync();
+            }
+            else
+            {
+                Cleanup();
+            }
+        }
 
-            await Session.Socket.DisconnectAsync();
+        /// <summary>
+        /// Get the amount of times a specific item has been received.
+        /// </summary>
+        /// <param name="itemName">The item name to check.</param>
+        /// <returns>The amount of times the item name has been received or -1 if not connected.</returns>
+        public static int AmountOfItemReceived(string itemName)
+        {
+            if (!IsConnected)
+                return -1;
 
-            // Cleanup
-            Session = null;
-            RoomInfo = null;
+            return Session.Items.AllItemsReceived.Count(item => item.ItemName.Equals(itemName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// Get the slot data for the session.
+        /// </summary>
+        /// <returns>A populated slot data dictionary or empty if not connected.</returns>
+        public static Dictionary<string, object> GetSlotData()
+        {
+            if (!IsConnected)
+                return new Dictionary<string, object>();
+
+            return Session.DataStorage.GetSlotData();
         }
 
         /// <summary>
@@ -152,33 +263,108 @@ namespace Mod.Helpers
         /// <param name="gameName">The name of the game the location belongs to.</param>
         public static string GetLocationName(long locationId, string gameName = "Cursed Words")
         {
+            if (!IsConnected)
+                return string.Empty;
+
             return Session.Locations.GetLocationNameFromId(locationId, gameName);
         }
 
-        public static void CheckLocation(string locationName, string gameName = "Cursed Words")
+        /// <summary>
+        /// Check if an item has been received X amount of times by its name.
+        /// </summary>
+        /// <param name="itemName">The name of the item to check.</param>
+        /// <param name="amount">The amount of times received to check.</param>
+        /// <returns>True if received greater than or equal to the amount, otherwise False.</returns>
+        public static bool HasReceivedItem(string itemName, int amount = 1)
         {
+            if (!IsConnected)
+                return false;
+
+            return Session.Items.AllItemsReceived.Count(item => item.ItemName.Equals(itemName, StringComparison.OrdinalIgnoreCase)) >= amount;
+        }
+
+        /// <summary>
+        /// Attempt to set the player as goal achieved.
+        /// </summary>
+        public static void TryGoal()
+        {
+            if (!IsConnected)
+                return;
+
+            Session.SetGoalAchieved();
+        }
+
+        /// <summary>
+        /// Attempt to set the player state.
+        /// </summary>
+        /// <param name="state">The state to attempt to set.</param>
+        public static void TrySetPlayerStatus(ArchipelagoClientState state)
+        {
+            if (!IsConnected)
+                return;
+
+            Session.SetClientState(state);
+        }
+
+        /// <summary>
+        /// Attempt to send a deathlink
+        /// </summary>
+        /// <param name="cause">The cause of the death.</param>
+        public static void TrySendDeathlink(string cause)
+        {
+            if (!IsConnected || DeathlinkService is null || !SlotData.Deathlink)
+                return;
+
+            DeathlinkService.SendDeathLink(new DeathLink(Session.Players.ActivePlayer.Name, cause));
+        }
+
+        /// <summary>
+        /// Attempt to mark a location as checked..
+        /// </summary>
+        /// <param name="locationName">The name of the location.</param>
+        /// <param name="gameName">The game that the check belongs to.</param>
+        public static void TryCheckLocation(string locationName, string gameName = "Cursed Words")
+        {
+            if (!IsConnected)
+                return;
+
             long locationId = Session.Locations.GetLocationIdFromName(gameName, locationName);
             if (locationId > -1 && !Session.Locations.AllLocationsChecked.Contains(locationId))
             {
-                Debug.Log($"Checking location: {locationName}");
+                Logger.LogInfo($"Checking location: {locationName}");
                 Session.Locations.CompleteLocationChecks(new long[] { locationId });
             }
         }
 
-        public static int AmountOfItemReceived(string itemName)
+        private static void Cleanup()
         {
-            return Session.Items.AllItemsReceived.Count(item => item.ItemName.Equals(itemName, StringComparison.OrdinalIgnoreCase));
-        }
+            if (Session != null)
+            {
+                // Un-register event handlers
+                Session.Locations.CheckedLocationsUpdated -= Locations_CheckedLocationsUpdated;
+                Session.Items.ItemReceived -= Items_ItemReceived;
+                Session.Socket.SocketClosed -= Socket_SocketClosed;
+            }
 
-        public static bool HasReceivedItem(string itemName, int amount = 1)
-        {
-            return Session.Items.AllItemsReceived.Count(item => item.ItemName.Equals(itemName, StringComparison.OrdinalIgnoreCase)) == amount;
+            DeathlinkService = null;
+            RoomInfo = null;
+            Session = null;
+            SlotData = null;
         }
 
         #region Event Handlers
 
+        private static void DeathlinkService_OnDeathLinkReceived(DeathLink deathLink) => OnDeathlink?.Invoke(deathLink);
+
         private static void Items_ItemReceived(ReceivedItemsHelper helper) => OnItemsReceived?.Invoke(helper);
+        
         private static void Locations_CheckedLocationsUpdated(ReadOnlyCollection<long> newCheckedLocations) => OnCheckedLocationsUpdated?.Invoke(newCheckedLocations);
+
+        private static void Socket_SocketClosed(string reason)
+        {
+            Cleanup();
+            OnDisconnected?.Invoke(reason);
+        }
 
         #endregion
     }

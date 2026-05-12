@@ -1,10 +1,9 @@
 ﻿using HarmonyLib;
-using UnityEngine;
 
 namespace Mod.Patches
 {
     [HarmonyPatch(typeof(SaveFile))]
-    internal class SaveFile_Patches
+    internal class SaveFile_Patches : PatchBase
     {
         /// <summary>
         /// Prevent new save file data automatically including Rodman.
@@ -14,7 +13,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         public static bool SetNewSaveFileData_Prefix()
         {
-            Debug.Log("SaveFile.SetNewSaveFileData Prefix!");
+            Logger.LogInfo("SaveFile.SetNewSaveFileData Prefix!");
             return false;
         }
     }

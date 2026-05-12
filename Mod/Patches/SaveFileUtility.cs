@@ -1,15 +1,12 @@
-﻿using BepInEx.Logging;
-using FullSerializer;
+﻿using FullSerializer;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
 
 namespace Mod.Patches
 {
     [HarmonyPatch(typeof(SaveFileUtility))]
-    internal class SaveFileUtility_Patches
+    internal class SaveFileUtility_Patches : PatchBase
     {
         /// <summary>
         /// Override default save data from newly created saves.
@@ -21,9 +18,14 @@ namespace Mod.Patches
             // If save has not been entered before, set save data to a 'blank' state
             if (!__result.HasEnteredSaveFile)
             {
+                Logger.LogInfo("Adjusting new save file");
+
                 __result.IsTutorialComplete = true;
                 __result.CharacterHighestCompletedAscensions = new Dictionary<Type, int>();
                 __result.BulkUnlocksUnlocked = new List<Type>();
+                __result.HasSeenFirstBossDraftDialogue = true;
+                __result.HasSeenFloorFourUnlockDialogue = true;
+                __result.HasSeenUpgradeFirstTimeDialogue = true;
             };
         }
     }

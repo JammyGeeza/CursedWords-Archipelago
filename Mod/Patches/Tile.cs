@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Mod.Patches
 {
     [HarmonyPatch(typeof(Tile))]
-    internal class Tile_Patches
+    internal class Tile_Patches : PatchBase
     {
         /// <summary>
         /// Prevent tiles with specific glyph types appearing if not yet received.
@@ -19,7 +19,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         public static void SetGlyphType_Prefix(ref GlyphType glyphType)
         {
-            Debug.Log($"{nameof(Tile)}.{nameof(Tile.SetGlyphType)} prefix!");
+            Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetGlyphType)} prefix!");
 
             switch (glyphType)
             {
@@ -54,7 +54,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         public static void SetTileType_Prefix(ref TileType tileType)
         {
-            Debug.Log($"{nameof(Tile)}.{nameof(Tile.SetTileType)} prefix!");
+            Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetTileType)} prefix!");
 
             switch (tileType)
             {

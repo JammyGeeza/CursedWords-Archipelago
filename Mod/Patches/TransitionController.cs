@@ -1,4 +1,5 @@
-﻿using BepInEx.Logging;
+﻿using Archipelago.MultiClient.Net.Enums;
+using BepInEx.Logging;
 using FullSerializer;
 using HarmonyLib;
 using Mod.Helpers;
@@ -12,29 +13,42 @@ using UnityEngine;
 namespace Mod.Patches
 {
     [HarmonyPatch(typeof(TransitionController))]
-    internal class TransitionController_Patches
+    internal class TransitionController_Patches : PatchBase
     {
         /// <summary>
         /// When navigating to save selection, disconnect from archipelago.
         /// </summary>
         [HarmonyPatch(nameof(TransitionController.TransitionToNewScene))]
         [HarmonyPostfix]
-        private static void TransitionToNewScene_Postfix(string sceneString)
+        private static async void TransitionToNewScene_Postfix(string sceneString)
         {
-            Debug.Log($"TransitionController.TransitionToNewScene Postfix!");
+            Logger.LogInfo($"{nameof(TransitionController)}.{nameof(TransitionController.TransitionToNewScene)} postfix!");
 
             if (sceneString.Equals(SceneNames.SaveSlotsScene))
             {
-                ArchipelagoHelper.DisconnectAsync();
+                // Disconnect
+                await ArchipelagoHelper.DisconnectAsync();
 
                 CursedWordsArchipelago.Instance.IsInGame = false;
             }
             else
             {
                 CursedWordsArchipelago.Instance.IsInGame = true;
+
+                // Set player status
+                if (sceneString.Equals(SceneNames.EncounterSceneName))
+                {
+                    Logger.LogInfo("Setting player status to playing");
+                    ArchipelagoHelper.TrySetPlayerStatus(ArchipelagoClientState.ClientPlaying);
+                }
+                else if (sceneString.Equals(SceneNames.MainMenuSceneName))
+                {
+                    Logger.LogInfo("Setting player status to connected");
+                    ArchipelagoHelper.TrySetPlayerStatus(ArchipelagoClientState.ClientConnected);
+                }
             }
 
-            Debug.Log($"Is in game: {CursedWordsArchipelago.Instance.IsInGame}");
+            Logger.LogInfo($"Is in game: {CursedWordsArchipelago.Instance.IsInGame}");
         }
     }
 }

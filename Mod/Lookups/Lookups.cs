@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mod.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +10,33 @@ namespace Mod.Mappings
 {
     public static class Lookups
     {
+        public static readonly Type[] ValidBulkUnlockTypes =
+        {
+            typeof(BlueBuildStampsUnlock),
+            typeof(BlueBuildStickersUnlock),
+            typeof(CardsBuildStampsUnlock),
+            typeof(CardsBuildStickersUnlock),
+            typeof(ChessBuildStampsUnlock),
+            typeof(ChessBuildStickersUnlock),
+            typeof(CurrencyBuildStampsUnlock),
+            typeof(CurrencyBuildStickersUnlock),
+            typeof(CurseBuildStampsUnlock),
+            typeof(CurseBuildStickersUnlock),
+            typeof(NumberBuildStampsUnlock),
+            typeof(NumberBuildStickersUnlock),
+            typeof(RainbowBuildStampsUnlock),
+            typeof(RainbowBuildStickersUnlock),
+            typeof(RedBuildStampsUnlock),
+            typeof(RedBuildStickersUnlock),
+            typeof(ScatteredBuildStickersUnlock),
+            typeof(ScatteredBuildStampsUnlock),
+            typeof(ShinyBuildStickersUnlock),
+            typeof(ShinyBuildStampsUnlock),
+            typeof(VoidBuildStampsUnlock),
+            typeof(VoidBuildStickersUnlock),
+        };
+
+
         /// <summary>
         /// Lookup character types by character name.
         /// </summary>
@@ -21,76 +49,114 @@ namespace Mod.Mappings
             // TODO: Add the rest here
         };
 
-        //public static readonly List<Type> BlankStamps = Assembly.GetAssembly(typeof(Item)).GetTypes()
-        //    .Where(t => IsStampWithAnyTags(t, ItemTag.BlankBuild, ItemTag.BlankGenerator))
-        //    .ToList();
-
-        //public static readonly List<Type> BlankStickers = Assembly.GetAssembly(typeof(Item)).GetTypes()
-        //    .Where(t => IsStickerWithAnyTags(t, ItemTag.BlankBuild, ItemTag.BlankGenerator))
-        //    .ToList();
-
-        public static readonly List<Type> BlueStamps = Assembly.GetAssembly(typeof(Item)).GetTypes()
-            .Where(t => IsStampWithRelevantColour(t, TileType.Blue))
+        public static readonly List<Type> BlueBuildStamps = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStampWithTag(t, ItemTag.BlueBuild))
             .ToList();
 
-        public static readonly List<Type> BlueStickers = Assembly.GetAssembly(typeof(Item)).GetTypes()
-            .Where(t => IsStickerWithRelevantColour(t, TileType.Blue))
+        public static readonly List<Type> BlueBuildStickers = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStickerWithTag(t, ItemTag.BlueBuild))
             .ToList();
 
-        //public static readonly List<Type> ChessStamps = Assembly.GetAssembly(typeof(Item)).GetTypes()
-        //    .Where(t => IsStampWithAnyTags(t, ItemTag.ChessBuild, ItemTag.ChessGenerator))
-        //    .ToList();
-
-        //public static readonly List<Type> ChessStickers = Assembly.GetAssembly(typeof(Item)).GetTypes()
-        //    .Where(t => IsStickerWithAnyTags(t, ItemTag.ChessBuild, ItemTag.ChessGenerator))
-        //    .ToList();
-
-        //public static readonly List<Type> CurrencyStamps = Assembly.GetAssembly(typeof(Item)).GetTypes()
-        //    .Where(t => IsStampWithAnyTags(t, ItemTag.CurrencyGenerator))
-        //    .ToList();
-
-        //public static readonly List<Type> CurrencyStickers = Assembly.GetAssembly(typeof(Item)).GetTypes()
-        //    .Where(t => IsStickerWithAnyTags(t, ItemTag.CurrencyGenerator))
-        //    .ToList();
-
-        //public static readonly List<Type> CursedStamps = Assembly.GetAssembly(typeof(Item)).GetTypes()
-        //    .Where(t => IsStampWithAnyTags(t, ItemTag.CurseBuild, ItemTag.CurseGenerator))
-        //    .ToList();
-
-        //public static readonly List<Type> CursedStickers = Assembly.GetAssembly(typeof(Item)).GetTypes()
-        //    .Where(t => IsStickerWithAnyTags(t, ItemTag.CurseBuild, ItemTag.CurseGenerator))
-        //    .ToList();
-
-        public static readonly List<Type> NumberStamps = Assembly.GetAssembly(typeof(Item)).GetTypes()
-            .Where(t => IsStampWithAnyTags(t, ItemTag.NumbersBuild, ItemTag.NumbersGenerator))
+        public static readonly List<Type> CardsBuildStamps = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStampWithTag(t, ItemTag.CardsBuild))
             .ToList();
 
-        public static readonly List<Type> NumberStickers = Assembly.GetAssembly(typeof(Item)).GetTypes()
-            .Where(t => IsStickerWithAnyTags(t, ItemTag.NumbersBuild, ItemTag.NumbersGenerator))
+        public static readonly List<Type> CardsBuildStickers = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStickerWithTag(t, ItemTag.CardsBuild))
             .ToList();
 
-        public static readonly List<Type> RedStamps = Assembly.GetAssembly(typeof(Item)).GetTypes()
-            .Where(t => IsStampWithRelevantColour(t, TileType.Red))
+        public static readonly List<Type> ChessBuildStamps = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStampWithTag(t, ItemTag.ChessBuild))
             .ToList();
 
-        public static readonly List<Type> RedStickers = Assembly.GetAssembly(typeof(Item)).GetTypes()
-            .Where(t => IsStickerWithRelevantColour(t, TileType.Red))
+        public static readonly List<Type> ChessBuildStickers = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStickerWithTag(t, ItemTag.ChessBuild))
             .ToList();
 
-        public static readonly List<Type> ShinyStamps = Assembly.GetAssembly(typeof(Item)).GetTypes()
-            .Where(t => IsStampWithRelevantColour(t, TileType.Shiny))
+        public static readonly List<Type> CurrencyBuildStamps = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStampWithTag(t, ItemTag.CashBuild))
             .ToList();
 
-        public static readonly List<Type> ShinyStickers = Assembly.GetAssembly(typeof(Item)).GetTypes()
-            .Where(t => IsStickerWithRelevantColour(t, TileType.Red))
+        public static readonly List<Type> CurrencyBuildStickers = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStickerWithTag(t, ItemTag.CashBuild))
             .ToList();
 
-        public static readonly List<Type> VoidStamps = Assembly.GetAssembly(typeof(Item)).GetTypes()
-            .Where(t => IsStampWithRelevantColour(t, TileType.Void))
+        public static readonly List<Type> CurseBuildStamps = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStampWithTag(t, ItemTag.CurseBuild))
             .ToList();
 
-        public static readonly List<Type> VoidStickers = Assembly.GetAssembly(typeof(Item)).GetTypes()
-            .Where(t => IsStickerWithRelevantColour(t, TileType.Void))
+        public static readonly List<Type> CurseBuildStickers = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStickerWithTag(t, ItemTag.CurseBuild))
+            .ToList();
+
+        public static readonly List<Type> NumberBuildStamps = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStampWithTag(t, ItemTag.NumbersBuild))
+            .ToList();
+
+        public static readonly List<Type> NumberBuildStickers = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStickerWithTag(t, ItemTag.NumbersBuild))
+            .ToList();
+
+        public static readonly List<Type> RainbowBuildStamps = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStampWithTag(t, ItemTag.RainbowBuild))
+            .ToList();
+
+        public static readonly List<Type> RainbowBuildStickers = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStickerWithTag(t, ItemTag.RainbowBuild))
+            .ToList();
+
+        public static readonly List<Type> RedBuildStamps = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStampWithTag(t, ItemTag.RedBuild))
+            .ToList();
+
+        public static readonly List<Type> RedBuildStickers = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStickerWithTag(t, ItemTag.RedBuild))
+            .ToList();
+
+        public static readonly List<Type> ScatteredBuildStamps = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStampWithTag(t, ItemTag.ScatteredItemsBuild))
+            .ToList();
+
+        public static readonly List<Type> ScatteredBuildStickers = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStickerWithTag(t, ItemTag.ScatteredItemsBuild))
+            .ToList();
+
+        public static readonly List<Type> ShinyBuildStamps = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStampWithTag(t, ItemTag.ShinyBuild))
+            .ToList();
+
+        public static readonly List<Type> ShinyBuildStickers = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStickerWithTag(t, ItemTag.ShinyBuild))
+            .ToList();
+
+        public static readonly List<Type> VoidBuildStamps = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStampWithTag(t, ItemTag.VoidBuild))
+            .ToList();
+
+        public static readonly List<Type> VoidBuildStickers = Assembly.GetAssembly(typeof(Item))
+            .GetTypes()
+            .Where(t => IsStickerWithTag(t, ItemTag.VoidBuild))
             .ToList();
 
         private static bool IsItemClass(Type t)
@@ -98,36 +164,20 @@ namespace Mod.Mappings
             return t.IsClass && t.IsSubclassOf(typeof(Item));
         }
 
-        private static bool IsStampWithRelevantColour(Type type, params TileType[] tileTypes)
+        private static bool IsStampWithTag(Type type, ItemTag itemTag)
         {
             if (!IsItemClass(type)) return false;
 
             Item item = Activator.CreateInstance(type) as Item;
-            return item.IsStamp() && tileTypes.Any(item.RelevantColours.Contains);
+            return item.IsStamp() && item.Tags.Contains(itemTag);
         }
 
-        private static bool IsStickerWithRelevantColour(Type type, params TileType[] tileTypes)
+        private static bool IsStickerWithTag(Type type, ItemTag itemTag)
         {
             if (!IsItemClass(type)) return false;
 
             Item item = Activator.CreateInstance(type) as Item;
-            return item.IsSticker() && tileTypes.Any(item.RelevantColours.Contains);
-        }
-
-        private static bool IsStampWithAnyTags(Type type, params ItemTag[] itemTags)
-        {
-            if (!IsItemClass(type)) return false;
-
-            Item item = Activator.CreateInstance(type) as Item;
-            return item.IsStamp() && itemTags.Intersect(item.Tags).Any();
-        }
-
-        private static bool IsStickerWithAnyTags(Type type, params ItemTag[] itemTags)
-        {
-            if (!IsItemClass(type)) return false;
-
-            Item item = Activator.CreateInstance(type) as Item;
-            return item.IsSticker() && itemTags.Intersect(item.Tags).Any();
+            return item.IsSticker() && item.Tags.Contains(itemTag);
         }
     }
 }

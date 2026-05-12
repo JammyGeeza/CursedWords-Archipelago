@@ -1,10 +1,14 @@
-﻿using Archipelago.MultiClient.Net.Models;
+﻿using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
+using Archipelago.MultiClient.Net.Helpers;
+using Archipelago.MultiClient.Net.Models;
 using BepInEx;
 using BepInEx.Configuration;
+using BepInEx.Logging;
 using HarmonyLib;
 using HarmonyLib.Tools;
 using Mod.Helpers;
 using Mod.Mappings;
+using Mod.Patches;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -12,22 +16,41 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Windows;
 
 namespace Modd
 {
     [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.0.0")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
-        public static CursedWordsArchipelago Instance = null;
-        private static Harmony Harmony = null;
+        #region Private Properties
 
-        // Private fields
-        private ConcurrentQueue<Func<IEnumerator>> actionQueue = new ConcurrentQueue<Func<IEnumerator>>();
+        private static Harmony Harmony { get; set; }
+
+        private ConcurrentQueue<Func<IEnumerator>> ActionQueue { get; set; } = new ConcurrentQueue<Func<IEnumerator>>();
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// The current instance of this mod.
+        /// </summary>
+        public static CursedWordsArchipelago Instance { get; private set; }
 
         /// <summary>
         /// Is the player currently in game? (Not in the save selection screen)
         /// </summary>
         public bool IsInGame { get; set; } = false;
+
+        public ManualLogSource LogSource
+        {
+            get => Logger;
+        }
+
+        #endregion
+
+        #region Unity Methods
 
         private void Awake()
         {
@@ -45,7 +68,7 @@ namespace Modd
             // Set instance
             if (Instance != null && Instance != this)
             {
-                Debug.LogWarning("Duplicate mod instance detected. Destroying...");
+                Logger.LogWarning("Duplicate mod instance detected. Destroying...");
                 Destroy(gameObject);
                 return;
             }
@@ -55,19 +78,22 @@ namespace Modd
 
             // Register event handlers
             ArchipelagoHelper.OnConnected += ArchipelagoHelper_OnConnected;
+            ArchipelagoHelper.OnDeathlink += ArchipelagoHelper_OnDeathlink;
             ArchipelagoHelper.OnCheckedLocationsUpdated += ArchipelagoHelper_OnCheckedLocationsUpdated;
             ArchipelagoHelper.OnItemsReceived += ArchipelagoHelper_OnItemsReceived;
 
-            Debug.Log("Printing blue stamps...");
-            foreach (Type type in Lookups.BlueStamps)
-            {
-                Debug.Log($"\t{type.Name}");
-            }
+            Logger.LogMessage("Clearing bulk unlocks");
+            BulkUnlock.AllBulkUnlocks.Clear();
 
-            Debug.Log("Printing blue stickers...");
-            foreach (Type type in Lookups.BlueStickers)
+            // Insert custom bulk uploads as requiring unlocks
+            Logger.LogInfo("Inserting custom bulk unlocks");
+            foreach (Type type in Lookups.ValidBulkUnlockTypes)
             {
-                Debug.Log($"\t{type.Name}");
+                BulkUnlock unlock = Activator.CreateInstance(type) as BulkUnlock;
+
+                Logger.LogInfo($"\t{unlock.Name}");
+
+                BulkUnlock.AllBulkUnlocks.Add(unlock);
             }
         }
 
@@ -82,52 +108,39 @@ namespace Modd
             }
 
             // De-queue action and perform it
-            if (Instance.actionQueue.TryDequeue(out Func<IEnumerator> action))
+            if (Instance.ActionQueue.TryDequeue(out Func<IEnumerator> action))
             {
                 Debug.Log("Dequeuing action...");
                 StartCoroutine(action());
             }
-        }
 
-        /// <summary>
-        /// Event handler for checked locations updated.
-        /// </summary>
-        private void ArchipelagoHelper_OnCheckedLocationsUpdated(System.Collections.ObjectModel.ReadOnlyCollection<long> newCheckedLocations)
-        {
-            foreach (long checkedLocation in newCheckedLocations)
+            if (UnityInput.Current.GetKeyUp(KeyCode.F2))
             {
-                Logger.LogInfo($"Checked location updated: {ArchipelagoHelper.GetLocationName(checkedLocation)}");
-            }
-        }
+                Logger.LogInfo($"F2 key-up");
 
-        /// <summary>
-        /// Event handler for connection established to archipelago session.
-        /// </summary>
-        private void ArchipelagoHelper_OnConnected()
-        {
-            Logger.LogMessage("Connected to archipelago");
-        }
-
-        /// <summary>
-        /// Event handler for items received from archipelago session
-        /// </summary>
-        /// <param name="helper"></param>
-        /// <exception cref="NotImplementedException"></exception>
-        private void ArchipelagoHelper_OnItemsReceived(Archipelago.MultiClient.Net.Helpers.ReceivedItemsHelper helper)
-        {
-            while (helper.DequeueItem() is ItemInfo itemInfo)
-            {
-                Logger.LogInfo($"Item received: {itemInfo.ItemName}");
-
-                // Add item action to queue, if exists
-                if (ItemMappings.Map.TryGetValue(itemInfo.ItemName, out Func<IEnumerator> action))
+                // Get controller
+                if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
                 {
-                    Logger.LogInfo($"Queuing item action for {itemInfo.ItemName}...");
+                    // Complete current encounter
+                    controller.DevCompleteEncounter();
+                }
+            }
+            else if (UnityInput.Current.GetKeyUp(KeyCode.F3))
+            {
+                Logger.LogInfo($"F3 key-up");
 
-                    QueueAction(action);
+                // Get controller
+                if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
+                {
+                    // Fail encounter
+                    controller.DevFailEncounter();
                 }
             }
         }
+
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// Add an action to the action queue.
@@ -135,7 +148,7 @@ namespace Modd
         /// <param name="action">The action to queue.</param>
         public void QueueAction(Func<IEnumerator> action)
         {
-            Instance.actionQueue.Enqueue(action);
+            Instance.ActionQueue.Enqueue(action);
         }
 
         /// <summary>
@@ -177,10 +190,97 @@ namespace Modd
             }
         }
 
+        #endregion
+
+        #region Coroutines
+
+        /// <summary>
+        /// Check a location by its name.
+        /// </summary>
+        /// <param name="locationName">The name of the location to check.</param>
         static IEnumerator CheckLocation(string locationName)
         {
-            ArchipelagoHelper.CheckLocation(locationName);
+            ArchipelagoHelper.TryCheckLocation(locationName);
             yield break;
         }
+
+        /// <summary>
+        /// Handle a deathlink received.
+        /// </summary>
+        /// <param name="deathlink">The received deathlink object.</param>
+        static IEnumerator HandleDeathlink(DeathLink deathlink)
+        {
+            // Check if in an encounter
+            if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
+            {
+                // Ignore death as received via deathlink
+                MusicController_Patches.IgnoreDeath = true;
+
+                // Trigger encounter failure
+                controller.DevFailEncounter();
+            }
+            else
+            {
+                Instance.Logger.LogWarning("Deathlink skipped - not currently in an encounter.");
+            }
+
+            yield break;
+        }
+
+        #endregion
+
+        #region Event Handlers
+
+        /// <summary>
+        /// Event handler for checked locations updated.
+        /// </summary>
+        private void ArchipelagoHelper_OnCheckedLocationsUpdated(System.Collections.ObjectModel.ReadOnlyCollection<long> newCheckedLocations)
+        {
+            foreach (long checkedLocation in newCheckedLocations)
+            {
+                Logger.LogInfo($"Checked location updated: {ArchipelagoHelper.GetLocationName(checkedLocation)}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler for connection established to archipelago session.
+        /// </summary>
+        private void ArchipelagoHelper_OnConnected()
+        {
+            Logger.LogMessage("Connected to archipelago");
+        }
+
+        /// <summary>
+        /// Event handler for items received from archipelago session
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void ArchipelagoHelper_OnItemsReceived(ReceivedItemsHelper helper)
+        {
+            while (helper.DequeueItem() is ItemInfo itemInfo)
+            {
+                Logger.LogInfo($"Item received: {itemInfo.ItemName}");
+
+                // Add item action to queue, if exists
+                if (ItemMappings.Map.TryGetValue(itemInfo.ItemName, out Func<IEnumerator> action))
+                {
+                    Logger.LogInfo($"Queuing item action for {itemInfo.ItemName}...");
+
+                    QueueAction(action);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Event handler for deathlink received from archipelago session.
+        /// </summary>
+        /// <param name="deathLink">The received deathlink</param>
+        private void ArchipelagoHelper_OnDeathlink(DeathLink deathLink)
+        {
+            Logger.LogInfo($"Queueing deathlink from '{deathLink.Source}'");
+            QueueAction(() => HandleDeathlink(deathLink));
+        }
+
+        #endregion
     }
 }

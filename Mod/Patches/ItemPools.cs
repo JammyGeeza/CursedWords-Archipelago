@@ -1,156 +1,81 @@
-﻿using BepInEx.Logging;
-using FullSerializer;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Mod.Helpers;
 using Mod.Mappings;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using UnityEngine;
 
 namespace Mod.Patches
 {
     [HarmonyPatch(typeof(ItemPools))]
-    internal class ItemPools_Patches
+    internal class ItemPools_Patches : PatchBase
     {
         /// <summary>
-        /// Prevent Stamps from appearing in the item pool if not yet received
-        /// </summary>
-        [HarmonyPatch(nameof(ItemPools.GetRandomStamp), typeof(List<Type>))]
-        [HarmonyPrefix]
-        private static void GetRandomStamp_Prefix(ref List<Type> blacklist)
-        {
-            Debug.Log($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomStamp)} postfix!");
-
-            if (!ArchipelagoHelper.HasReceivedItem("Stamp Bundle - Blue Tiles"))
-            {
-                blacklist.AddRange(Lookups.BlueStamps);
-            }
-
-            if (!ArchipelagoHelper.HasReceivedItem("Stamp Bundle - Number Tiles"))
-            {
-                blacklist.AddRange(Lookups.NumberStamps);
-            }
-
-            if (!ArchipelagoHelper.HasReceivedItem("Stamp Bundle - Red Tiles"))
-            {
-                blacklist.AddRange(Lookups.RedStamps);
-            }
-
-            if (!ArchipelagoHelper.HasReceivedItem("Stamp Bundle - Shiny Tiles"))
-            {
-                blacklist.AddRange(Lookups.ShinyStamps);
-            }
-
-            if (!ArchipelagoHelper.HasReceivedItem("Stamp Bundle - Void Tiles"))
-            {
-                blacklist.AddRange(Lookups.VoidStamps);
-            }
-
-            // Remove all duplicate entries
-            blacklist = blacklist.Distinct().ToList();
-
-            Debug.Log($"Blacklist:");
-            foreach (Type type in blacklist.OrderBy(t => t.Name))
-            {
-                Debug.Log($"\t{type.Name}");
-            }
-        }
-
-        /// <summary>
-        /// Prevent Stamps from appearing in the item pool if not yet received
-        /// </summary>
-        [HarmonyPatch(nameof(ItemPools.GetRandomStamp), typeof(List<Type>), typeof(ItemRarity))]
-        [HarmonyPrefix]
-        private static void GetRandomStamp_Overload_Prefix(ref List<Type> blacklist)
-        {
-            GetRandomStamp_Prefix(ref blacklist);
-        }
-
-        /// <summary>
-        /// Prevent Stamps from appearing in the item pool if not yet received
+        /// If build-biased stamp doesn't generate, generate a random stamp instead to fill the gap.
         /// </summary>
         [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedStamp), typeof(List<Type>))]
-        [HarmonyPrefix]
-        private static void GetRandomBuildBiasedStamp_Prefix(ref List<Type> unavailableItemTypes)
+        [HarmonyPostfix]
+        private static void OnGetRandomBuildBiasedStamp_Postfix(List<Type> unavailableItemTypes, ref Item __result)
         {
-            GetRandomStamp_Prefix(ref unavailableItemTypes);
+            Logger.LogInfo($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedStamp)} postfix!");
+
+            if (__result == null)
+            {
+                __result = ItemPools.GetRandomStamp(unavailableItemTypes);
+            }
+
+            Logger.LogWarning($"Generated stamp: {__result?.Name}");
         }
 
         /// <summary>
-        /// Prevent Stamps from appearing in the item pool if not yet received
+        /// If build-biased stamp doesn't generate, generate a random stamp instead to fill the gap.
         /// </summary>
         [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedStamp), typeof(List<Type>), typeof(ItemRarity))]
-        [HarmonyPrefix]
-        private static void GetRandomBuildBiasedStamp_Overload_Prefix(ref List<Type> unavailableItemTypes)
+        [HarmonyPostfix]
+        private static void OnGetRandomBuildBiasedStamp_Overload_Postfix(List<Type> unavailableItemTypes, ItemRarity rarity, ref Item __result)
         {
-            GetRandomStamp_Prefix(ref unavailableItemTypes);
+            Logger.LogInfo($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedStamp)}_Overload postfix!");
+
+            if (__result == null)
+            {
+                __result = ItemPools.GetRandomStamp(unavailableItemTypes, rarity);
+            }
+
+            Logger.LogWarning($"Generated stamp: {__result?.Name}");
         }
 
         /// <summary>
-        /// Prevent Stickers from appearing in the item pool if not yet received
-        /// </summary>
-        [HarmonyPatch(nameof(ItemPools.GetRandomSticker), typeof(List<Type>))]
-        [HarmonyPrefix]
-        private static void GetRandomSticker_Prefix(ref List<Type> blacklist)
-        {
-            Debug.Log($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomSticker)} postfix!");
-
-            if (!ArchipelagoHelper.HasReceivedItem("Sticker Bundle - Blue Tiles"))
-            {
-                blacklist.AddRange(Lookups.BlueStickers);
-            }
-
-            if (!ArchipelagoHelper.HasReceivedItem("Sticker Bundle - Number Tiles"))
-            {
-                blacklist.AddRange(Lookups.NumberStickers);
-            }
-
-            if (!ArchipelagoHelper.HasReceivedItem("Sticker Bundle - Red Tiles"))
-            {
-                blacklist.AddRange(Lookups.RedStickers);
-            }
-
-            if (!ArchipelagoHelper.HasReceivedItem("Sticker Bundle - Shiny Tiles"))
-            {
-                blacklist.AddRange(Lookups.ShinyStickers);
-            }
-
-            if (!ArchipelagoHelper.HasReceivedItem("Sticker Bundle - Void Tiles"))
-            {
-                blacklist.AddRange(Lookups.VoidStickers);
-            }
-        }
-
-        /// <summary>
-        /// Prevent Stickers from appearing in the item pool if not yet received
-        /// </summary>
-        [HarmonyPatch(nameof(ItemPools.GetRandomSticker), typeof(List<Type>), typeof(ItemRarity))]
-        [HarmonyPrefix]
-        private static void GetRandomSticker_Overload_Prefix(ref List<Type> blacklist)
-        {
-            GetRandomSticker_Prefix(ref blacklist);
-        }
-
-        /// <summary>
-        /// Prevent Stickers from appearing in the item pool if not yet received
+        /// If build-biased sticker doesn't generate, generate a random sticker instead to fill the gap.
         /// </summary>
         [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedSticker), typeof(List<Type>))]
-        [HarmonyPrefix]
-        private static void GetRandomBuildBiasedSticker_Prefix(ref List<Type> unavailableItemTypes)
+        [HarmonyPostfix]
+        private static void OnGetRandomBuildBiasedSticker_Postfix(List<Type> unavailableItemTypes, ref Item __result)
         {
-            GetRandomSticker_Prefix(ref unavailableItemTypes);
+            Logger.LogInfo($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedSticker)} postfix!");
+
+            if (__result == null)
+            {
+                __result = ItemPools.GetRandomSticker(unavailableItemTypes);
+            }
+
+            Logger.LogWarning($"Generated sticker: {__result?.Name}");
         }
 
         /// <summary>
-        /// Prevent Stickers from appearing in the item pool if not yet received
+        /// If build-biased sticker doesn't generate, generate a random sticker instead to fill the gap.
         /// </summary>
         [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedSticker), typeof(ItemRarity), typeof(List<Type>))]
-        [HarmonyPrefix]
-        private static void GetRandomBuildBiasedSticker_Overload_Prefix(ref List<Type> unavailableItemTypes)
+        [HarmonyPostfix]
+        private static void OnGetRandomBuildBiasedSticker_Overload_Postfix(ItemRarity rarity, List<Type> unavailableItemTypes, ref Item __result)
         {
-            GetRandomSticker_Prefix(ref unavailableItemTypes);
+            Logger.LogInfo($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedSticker)}_Overload postfix!");
+
+            if (__result == null)
+            {
+                __result = ItemPools.GetRandomSticker(unavailableItemTypes, rarity);
+            }
+
+            Logger.LogWarning($"Generated sticker: {__result?.Name}");
         }
     }
 }

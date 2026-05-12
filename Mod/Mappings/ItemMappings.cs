@@ -1,4 +1,5 @@
-﻿using Mod.Classes;
+﻿using BepInEx.Logging;
+using Mod.Classes;
 using Mod.Extensions;
 using Mod.Helpers;
 using Modd;
@@ -13,12 +14,17 @@ namespace Mod.Mappings
 {
     public static class ItemMappings
     {
+        private static ManualLogSource Logger
+        {
+            get => CursedWordsArchipelago.Instance.LogSource;
+        }
+
         public static Dictionary<string, Func<IEnumerator>> Map = new Dictionary<string, Func<IEnumerator>>()
         {
             // Characters
-            { "Rodman", () => UnlockRodman() },
-            { "Nina Nix", () => UnlockNinaNix() },
-            { "Hayley Bayles", () => UnlockHayleyBayles() },
+            { "Rodman", () => UnlockCharacter(typeof(WetDennis)) },
+            { "Nina Nix", () => UnlockCharacter(typeof(NinaNix)) },
+            { "Hayley Bayles", () => UnlockCharacter(typeof(HayleyBayles)) },
 
             // Re-rolls
             { "Progressive Re-roll", () => IncrementReroll() },
@@ -26,6 +32,20 @@ namespace Mod.Mappings
             // Slots
             { "Progressive Stamp Slot", () => FreeStampSlot() },
             { "Progressive Sticker Slot", () => FreeStickerSlot() },
+
+            // Stamps
+            { "Blue Stamps", () => UnlockBulkUnlock(new BlueBuildStampsUnlock()) },
+            { "Rainbow Stamps", () => UnlockBulkUnlock(new RainbowBuildStampsUnlock()) },
+            { "Red Stamps", () => UnlockBulkUnlock(new RedBuildStampsUnlock()) },
+            { "Shiny Stamps", () => UnlockBulkUnlock(new ShinyBuildStampsUnlock()) },
+            { "Void Stamps", () => UnlockBulkUnlock(new VoidBuildStampsUnlock()) },
+
+            // Stickers
+            { "Blue Stickers", () => UnlockBulkUnlock(new BlueBuildStickersUnlock()) },
+            { "Rainbow Stickers", () => UnlockBulkUnlock(new RainbowBuildStickersUnlock()) },
+            { "Red Stickers", () => UnlockBulkUnlock(new RedBuildStickersUnlock()) },
+            { "Shiny Stickers", () => UnlockBulkUnlock(new ShinyBuildStickersUnlock()) },
+            { "Void Stickers", () => UnlockBulkUnlock(new VoidBuildStickersUnlock()) },
 
             // Filler
             { "$1", () => IncrementMoney(1) },
@@ -47,6 +67,12 @@ namespace Mod.Mappings
             new LocationCriteria("Rodman - 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 3 && type == NodeType.EncounterFirst },
             new LocationCriteria("Rodman - 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 3 && type == NodeType.EncounterSecond },
             new LocationCriteria("Rodman - 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 3 && type == NodeType.Boss },
+            new LocationCriteria("Rodman - 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 4 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Rodman - 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 4 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Rodman - 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 4 && type == NodeType.Boss },
+            new LocationCriteria("Rodman - 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 5 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Rodman - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 5 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Rodman - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 5 && type == NodeType.Boss },
 
             // Nina Nix
             new LocationCriteria("Nina Nix - 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 1 && type == NodeType.EncounterFirst },
@@ -61,6 +87,9 @@ namespace Mod.Mappings
             new LocationCriteria("Nina Nix - 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 4 && type == NodeType.EncounterFirst },
             new LocationCriteria("Nina Nix - 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 4 && type == NodeType.EncounterSecond },
             new LocationCriteria("Nina Nix - 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 4 && type == NodeType.Boss },
+            new LocationCriteria("Nina Nix - 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 5 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Nina Nix - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 5 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Nina Nix - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 5 && type == NodeType.Boss },
 
             // Hayley Bayles
             new LocationCriteria("Hayley Bayles - 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 1 && type == NodeType.EncounterFirst },
@@ -118,9 +147,11 @@ namespace Mod.Mappings
             new LocationCriteria("Word Score > 10") { OnWordAction = (action, score) => action == "word_score" && score >= 10 },
             new LocationCriteria("Word Score > 25") { OnWordAction = (action, score) => action == "word_score" && score >= 25 },
             new LocationCriteria("Word Score > 50") { OnWordAction = (action, score) => action == "word_score" && score >= 50 },
+            new LocationCriteria("Word Score > 75") { OnWordAction = (action, score) => action == "word_score" && score >= 75 },
             new LocationCriteria("Word Score > 100") { OnWordAction = (action, score) => action == "word_score" && score >= 100 },
             new LocationCriteria("Word Score > 250") { OnWordAction = (action, score) => action == "word_score" && score >= 250 },
             new LocationCriteria("Word Score > 500") { OnWordAction = (action, score) => action == "word_score" && score >= 500 },
+            new LocationCriteria("Word Score > 750") { OnWordAction = (action, score) => action == "word_score" && score >= 750 },
             new LocationCriteria("Word Score > 1000") { OnWordAction = (action, score) => action == "word_score" && score >= 1000 },
 
             #endregion
@@ -130,12 +161,12 @@ namespace Mod.Mappings
         {
             if (CharacterInfoPanel.SingletonInventoryVisualController != null)
             {
-                Debug.Log("Attempting to free a stamp slot...");
+                Logger.LogInfo("Attempting to free a stamp slot...");
 
                 Player player = GameStatics.GetPlayer();
                 if (player.GetStamps().FirstOrDefault(itm => itm is APStampPadlock) is APStampPadlock stampPadlock && stampPadlock != null)
                 {
-                    Debug.Log("Removing stamp padlock...");
+                    Logger.LogInfo("Removing stamp padlock...");
                     player.RemoveItemFromInventory(stampPadlock);
                 }
 
@@ -149,12 +180,12 @@ namespace Mod.Mappings
         {
             if (CharacterInfoPanel.SingletonInventoryVisualController != null)
             {
-                Debug.Log("Attempting to free a sticker slot...");
+                Logger.LogInfo("Attempting to free a sticker slot...");
 
                 Player player = GameStatics.GetPlayer();
                 if (player.GetStickers().FirstOrDefault(itm => itm is APStickerPadlock) is APStickerPadlock stickerPadlock && stickerPadlock != null)
                 {
-                    Debug.Log("Removing sticker padlock...");
+                    Logger.LogInfo("Removing sticker padlock...");
                     player.RemoveItemFromInventory(stickerPadlock);
                 }
 
@@ -166,11 +197,11 @@ namespace Mod.Mappings
 
         static IEnumerator IncrementMoney(int amount)
         {
-            Debug.Log("Attempting to increment money...");
+            Logger.LogInfo("Attempting to increment money...");
 
             if (CharacterInfoPanel.SingletonInventoryVisualController != null)
             {
-                Debug.Log($"Incrementing money by {amount}...");
+                Logger.LogInfo($"Incrementing money by {amount}...");
 
                 Player player = GameStatics.GetPlayer();
                 player.ChangeMoney(amount);
@@ -183,36 +214,28 @@ namespace Mod.Mappings
 
         static IEnumerator IncrementReroll()
         {
-            Debug.Log("Attempting to increment re-roll count...");
+            Logger.LogInfo("Attempting to increment re-roll count...");
             
             if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController encounterController && encounterController != null)
             {
-                Debug.Log("Attempting to increment re-roll count...");
+                Logger.LogInfo("Attempting to increment re-roll count...");
                 encounterController.IncrementEncounterRerollAmount(1);
             }
 
             yield break;
         }
 
-        static IEnumerator UnlockRodman()
+        static IEnumerator UnlockBulkUnlock(BulkUnlock unlock)
         {
-            Debug.Log("Unlocking Rodman...");
-            SaveManager.AddCharacterToUnlockedCharacters(typeof(WetDennis));
+            Logger.LogInfo($"Unlocking bulk unlock '{unlock.Name}'...");
+            SaveManager.UnlockBulkUnlock(unlock);
             yield break;
         }
 
-        static IEnumerator UnlockNinaNix()
+        static IEnumerator UnlockCharacter(Type characterType)
         {
-            Debug.Log("Unlocking Nina Nix...");
-            SaveManager.AddCharacterToUnlockedCharacters(typeof(NinaNix));
-            SaveManager.SetSeenNinaIntroDialogue();
-            yield break;
-        }
-
-        static IEnumerator UnlockHayleyBayles()
-        {
-            Debug.Log("Unlocking Hayley Bayles...");
-            SaveManager.AddCharacterToUnlockedCharacters(typeof(HayleyBayles));
+            Logger.LogInfo($"Unlocking character '{characterType.Name}");
+            SaveManager.AddCharacterToUnlockedCharacters(characterType);
             yield break;
         }
     }

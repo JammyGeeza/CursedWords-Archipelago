@@ -1,20 +1,12 @@
-﻿using Archipelago.MultiClient.Net.Models;
-using FullSerializer;
-using HarmonyLib;
-using Mod.GameObjects;
+﻿using HarmonyLib;
 using Mod.Helpers;
-using Modd;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Mod.Patches
 {
     [HarmonyPatch(typeof(SaveSlotController))]
-    internal class SaveSlotController_Patches
+    internal class SaveSlotController_Patches : PatchBase
     {
         /// <summary>
         /// Produce dialog to enter/adjust archipelago credentials before loading save.
@@ -25,7 +17,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         public static void SelectSaveFile_Postfix(ref IEnumerator __result, int slotIndex)
         {
-            Debug.Log("SaveSlotController.SelectSaveFile Postfix!");
+            Logger.LogInfo("SaveSlotController.SelectSaveFile Postfix!");
 
             __result = Wrapped(__result, slotIndex);
         }
@@ -38,7 +30,7 @@ namespace Mod.Patches
         /// <returns></returns>
         private static IEnumerator Wrapped(IEnumerator original, int slotIndex)
         {
-            Debug.Log("Wrapped() started");
+            Logger.LogInfo("Wrapped() started");
 
             if (original == null)
             {
@@ -46,7 +38,7 @@ namespace Mod.Patches
                 yield break;
             }
 
-            Debug.Log("Getting archipelago data...");
+            Logger.LogInfo("Getting archipelago data...");
 
             // Create login controller
             ArchipelagoData archipelagodata = ArchipelagoData.GetDataForSaveSlot(slotIndex);
@@ -87,7 +79,7 @@ namespace Mod.Patches
             }
 
             // Continue with original method's tasks
-            Debug.Log("Completing original task...");
+            Logger.LogInfo("Completing original task...");
             while (original.MoveNext())
                 yield return original.Current;
         }
