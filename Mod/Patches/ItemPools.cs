@@ -21,10 +21,9 @@ namespace Mod.Patches
 
             if (__result == null)
             {
+                Logger.LogWarning($"Generated stamp was null, re-generating from pool");
                 __result = ItemPools.GetRandomStamp(unavailableItemTypes);
             }
-
-            Logger.LogWarning($"Generated stamp: {__result?.Name}");
         }
 
         /// <summary>
@@ -38,10 +37,9 @@ namespace Mod.Patches
 
             if (__result == null)
             {
+                Logger.LogWarning($"Generated stamp was null, re-generating from pool");
                 __result = ItemPools.GetRandomStamp(unavailableItemTypes, rarity);
             }
-
-            Logger.LogWarning($"Generated stamp: {__result?.Name}");
         }
 
         /// <summary>
@@ -55,10 +53,9 @@ namespace Mod.Patches
 
             if (__result == null)
             {
+                Logger.LogWarning($"Generated sticker was null, re-generating from pool");
                 __result = ItemPools.GetRandomSticker(unavailableItemTypes);
             }
-
-            Logger.LogWarning($"Generated sticker: {__result?.Name}");
         }
 
         /// <summary>
@@ -72,10 +69,9 @@ namespace Mod.Patches
 
             if (__result == null)
             {
+                Logger.LogWarning($"Generated sticker was null, re-generating from pool");
                 __result = ItemPools.GetRandomSticker(unavailableItemTypes, rarity);
             }
-
-            Logger.LogWarning($"Generated sticker: {__result?.Name}");
         }
     }
 }

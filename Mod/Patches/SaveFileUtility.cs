@@ -26,6 +26,8 @@ namespace Mod.Patches
                 __result.HasSeenFirstBossDraftDialogue = true;
                 __result.HasSeenFloorFourUnlockDialogue = true;
                 __result.HasSeenUpgradeFirstTimeDialogue = true;
+                __result.HasSeenNinaIntroDialogue = true;
+                __result.HasSeenNumbersUnlockDialogue = true;
             };
         }
     }

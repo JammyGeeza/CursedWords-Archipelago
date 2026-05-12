@@ -161,6 +161,7 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(character, stage, nodeType) == true))
             {
+                Logger.LogInfo($"Queueing location check: '{criteria.LocationName}'");
                 QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
@@ -173,6 +174,7 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnGenericAction?.Invoke(action) == true))
             {
+                Logger.LogInfo($"Queueing location check: '{criteria.LocationName}'");
                 QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
@@ -186,6 +188,7 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnWordAction?.Invoke(action, amount) == true))
             {
+                Logger.LogInfo($"Queueing location check: '{criteria.LocationName}'");
                 QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
