@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Mod.Extensions;
 using Mod.Helpers;
 using Mod.Mappings;
 using Modd;
@@ -13,6 +14,27 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(ShopController))]
     internal class ShopController_Patches : PatchBase
     {
+        /// <summary>
+        /// When leaving the shop, check for frozen items and trigge check
+        /// </summary>
+        [HarmonyPatch(nameof(ShopController.OnLeaveShopButtonClickedCallback))]
+        [HarmonyPrefix]
+        private static void OnOnLeaveShopButtonClickedCallback_Prefix(ShopController __instance)
+        {
+            Logger.LogInfo($"{nameof(ShopController)}.{nameof(ShopController.OnLeaveShopButtonClickedCallback)} prefix!");
+
+            // Check if any stickers have been frozen
+            if (__instance.GetStickersInStock().Any(s => s.IsFrozen))
+            {
+                CursedWordsArchipelago.Instance.TryCheckGenericLocations("freeze_sticker");
+            }
+
+            if (__instance.GetStampsInStock().Any(s => s.IsFrozen))
+            {
+                CursedWordsArchipelago.Instance.TryCheckGenericLocations("freeze_stamp");
+            }
+        }
+
         /// <summary>
         /// When generating goods in stock, re-populate the item pools so any received sticker/stamp bundles are available.
         /// </summary>

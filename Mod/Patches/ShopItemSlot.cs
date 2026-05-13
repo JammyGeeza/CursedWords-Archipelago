@@ -26,20 +26,5 @@ namespace Mod.Patches
             // Attempt to check shop locations
             CursedWordsArchipelago.Instance.TryCheckGenericLocations($"buy_{(__instance.IsStamp ? "stamp" : "sticker")}");
         }
-
-        //InventoryVisualController
-
-        /// <summary>
-        /// Check location when a stamp or sticker is frozen.
-        /// </summary>
-        [HarmonyPatch(nameof(ShopItemSlot.OnFreezeButtonClickedCallback))]
-        [HarmonyPostfix]
-        private static void OnFreezeButtonClickedCallback_Postfix(ShopItemSlot __instance)
-        {
-            Logger.LogInfo($"{nameof(ShopItemSlot)}.{nameof(ShopItemSlot.OnFreezeButtonClickedCallback)} Postfix!");
-
-            // Attempt to check shop locations
-            CursedWordsArchipelago.Instance.TryCheckGenericLocations($"freeze_{(__instance.IsStamp ? "stamp" : "sticker")}");
-        }
     }
 }

@@ -113,6 +113,7 @@
     <Compile Include="Classes\RainbowBuildStampsUnlock.cs" />
     <Compile Include="Classes\RainbowBuildStickersUnlock.cs" />
     <Compile Include="Extensions\EncounterControllerExtensions.cs" />
+    <Compile Include="Extensions\ShopControllerExtensions.cs" />
     <Compile Include="GameObjects\ArchipelagoDialog.cs" />
     <Compile Include="GameObjects\ArchipelagoLoginController.cs" />
     <Compile Include="Helpers\ArchipelagoHelper.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Mappings\ItemMappings.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Patches\GameStatics.cs" />
+    <Compile Include="Patches\InventoryVisualController.cs" />
     <Compile Include="Patches\PatchBase.cs" />
     <Compile Include="Patches\Player.cs" />
     <Compile Include="Patches\BulkUnlock.cs" />

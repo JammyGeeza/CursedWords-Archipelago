@@ -1,14 +1,11 @@
 ﻿using BepInEx.Logging;
 using Mod.Classes;
 using Mod.Extensions;
-using Mod.Helpers;
 using Modd;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using UnityEngine;
 
 namespace Mod.Mappings
 {
@@ -116,7 +113,7 @@ namespace Mod.Mappings
             new LocationCriteria("Buy a Sticker") { OnGenericAction = (action) => action == "buy_sticker" },
             new LocationCriteria("Buy a Tile") { OnGenericAction = (action) => action == "buy_tile" },
 
-            new LocationCriteria("Sell a Tile") { OnGenericAction = (action) => action == "destroy_tile" },
+            new LocationCriteria("Destroy a Tile") { OnGenericAction = (action) => action == "destroy_tile" },
 
             new LocationCriteria("Freeze a Stamp") { OnGenericAction = (action) => action == "freeze_stamp" },
             new LocationCriteria("Freeze a Sticker") { OnGenericAction = (action) => action == "freeze_sticker" },
