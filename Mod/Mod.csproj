@@ -148,7 +148,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>set target=D:\SteamLibrary\steamapps\common\Cursed Words\BepInEx\plugins\ArchipelagoRandomiser
+    <PostBuildEvent>set target=D:\SteamLibrary\steamapps\common\Cursed Words\BepInEx\plugins\Archipelago
 XCOPY "$(TargetDir)" "%25target%25" /S /I /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
