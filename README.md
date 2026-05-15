@@ -36,39 +36,74 @@ The currently available items are as follows:
 
 _More items will be added in future development_
 
-## Setup Guide
-### Requirements
-- The [Cursed Words: The Word Game That Isn't](https://store.steampowered.com/app/3856460/Cursed_Words_The_Word_Game_That_Isnt) game via Steam
-- Latest version of the [Archipelago Launcher](https://github.com/ArchipelagoMW/Archipelago/releases/latest)
+# Setup Guide
+
+## Required Software
+- [Cursed Words: The Word Game That Isn't](https://store.steampowered.com/app/3856460/Cursed_Words_The_Word_Game_That_Isnt)
 - [BepInEx v5.4.23.5](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.23.5)
-- Latest version of the [Cursed Words Archipelago](https://github.com/JammyGeeza/CursedWords-Archipelago/releases/latest) Mod
+- [Cursed Words Archipelago Mod Client](https://github.com/JammyGeeza/CursedWords-Archipelago/releases/latest)
 
-### Installing Archipelago
-Please visit the [Archipelago Setup Guide](https://archipelago.gg/tutorial/Archipelago/setup_en) for full instructions on how to install the Archipelago Launcher and generate games with YAML files.
+## Optional Software
+- [Archipelago Text Client](https://github.com/ArchipelagoMW/Archipelago/releases)
 
-### Installing BepInEx
-1. Unzip the entire contents of the `BepInEx_Win_x64_5.4.23.5.zip` file into your Cursed Words install folder, your install location should look like this:
-   
-   <img width="728" height="486" alt="image" src="https://github.com/user-attachments/assets/52d922b2-2bd2-4764-9f64-a83eb4057bd9" />
-2. Start the game - a console window should appear for a few seconds as the game boots. This should then create some additional folders (cache, config, core, patchers, plugins) in the `~/BepInEx/` folder and look like this:
-   
-   <img width="811" height="305" alt="image" src="https://github.com/user-attachments/assets/66024f06-5e30-4c0c-97da-a15c96313aae" />
-3. Close the game after it successfully launches to the save selection menu.
+## Installing BepInEx (Windows)
+1. Navigate to [BepInEx v5.4.23.5](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.23.5) and download the `BepInEx_Win_x64_5.4.23.5.zip` file.
+2. In File Explorer, find your Cursed Words install folder _(in Steam, right-click the game and go to Properties -> Installed Files -> Browse)_, unzip the file and place its entire contents into the folder alongside the `Cursed Words.exe` file.
+   Your file directory should look like this:
+      ```
+      Cursed Words/
+      ├── BepInEx/
+      │   └── core/
+      ├── Cursed Words_Data/
+      ├── ...
+      ├── Cursed Words.exe
+      └── ...
+      ```
+3. Launch the game - a console window should appear and the game will take slightly longer to start than normal.
+4. Once the game reaches the save selection menu, exit the game. It should have created some additional files in the `/BepInEx` folder.
+   It should now look like this:
+      ```
+      Cursed Words/
+      ├── BepInEx/
+      │   ├── cache/
+      │   ├── config/
+      │   ├── core/
+      │   ├── patches/
+      │   └── plugins/
+      ├── Cursed Words_Data/
+      ├── ...
+      ├── Cursed Words.exe
+      └── ...
+      ```
+5. You are now ready to install the mod client.
 
-### Installing the Mod
-1. Once BepInEx has been installed as per the instructions above, unzip the `CursedWords_Archipelago.zip` file and place the contents into the newly created `~/BepInEx/plugins` folder. It should look like this:
+## Installing the Mod Client (Windows)
+1. Navigate to [Cursed Words Archipelago Mod Client](https://github.com/JammyGeeza/CursedWords-Archipelago/releases/latest) and download the `CursedWords_Archipelago.zip` file from the latest release.
+2. In File Explorer, find your Cursed Words install folder _(in Steam, right-click the game and go to Properties -> Installed Files -> Browse)_, unzip the file and place the contents into the newly created `~/BepInEx/plugins` folder.
+   Your file directory should look like this:
+   ```
+   Cursed Words/
+      ├── BepInEx/
+      │   ├── ...
+      │   └── plugins/
+      │       └── Archipelago/
+      │           ├── Archipelago.MultiClient.Net.dll
+      │           ├── Mod.dll
+      │           └── Newtonsoft.Json.dll
+      ├── Cursed Words_Data/
+      ├── ...
+      ├── Cursed Words.exe
+      └── ...
+   ```
+3. Start the game - you should notice that any previous game saves are not shown. Don't worry, this is intentional and your saves are safe! The mod client creates separate save files for Archipelago. 
 
-   <img width="903" height="179" alt="image" src="https://github.com/user-attachments/assets/6eaef6f3-7324-4a95-b00a-0cf7da17d0fa" />
-2. Start the game.
+## Disabling the Mod Client (Windows)
+At the moment there is no in-game way to disable the mod client so you will need to remove the `/plugins/Archipelago` folder from the install directory. This should return your game to normal and your existing saves should become playable again.
 
-### Connecting to Archipelago
-1. After starting the game, your original game saves should not be visible - don't worry, they are safe! the mod creates separate saves for Archipelago.
-2. To create a new Archipelago save, click `SELECT` on an empty save slot. To load an existing Archipelago save, click `SELECT` on a filled save slot:
-   
-   <img width="1922" height="1112" alt="image" src="https://github.com/user-attachments/assets/7d76425f-f595-449d-8076-83c914036605" />
-3. A pop-up should appear to enter the Archipelago details. Enter the host _(including port)_, the slot name and a password _(if required)_.
-   If you are loading an existing save, the last known connection details for that save should be auto-populated.
+## Connecting to Archipelago
+1. To create a new Archipelago save, click **SELECT** on an empty save slot.
+2. A dialog window should prompt for Archipelago connection details. Enter the host _(including port)_, slot name and password _(if required)_ and click **Connect**.
+3. On successful connection, the game should load to the Main Menu. Otherwise, it should display an error and prompt to re-try.
 
-   <img width="560" height="384" alt="image" src="https://github.com/user-attachments/assets/d6830c14-ad09-454c-8347-b112f29339b1" />
-4. Click 'Connect' - if successful it will load to the Main Menu. Otherwise, it should display an error and allow a retry.
-5. Start playing!
+## Archipelago Text Client
+It is recommended to use the [Archipelago Text Client](https://github.com/ArchipelagoMW/Archipelago/releases) to keep track of items you have sent and received. There is currently no in-game way to review the history of sent/received items. Additionally, there is currently no in-game console to use hints, so you will need to do these via the Archipelago Text Client.
