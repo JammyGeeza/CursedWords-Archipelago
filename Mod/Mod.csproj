@@ -126,6 +126,7 @@
     <Compile Include="Patches\PatchBase.cs" />
     <Compile Include="Patches\Player.cs" />
     <Compile Include="Patches\BulkUnlock.cs" />
+    <Compile Include="Patches\GridLayoutController.cs" />
     <Compile Include="Patches\Tile.cs" />
     <Compile Include="Patches\ItemPools.cs" />
     <Compile Include="Patches\Character.cs" />

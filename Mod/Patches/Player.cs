@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Mod.Classes;
 using Mod.Helpers;
+using Modd;
 using System;
 
 namespace Mod.Patches
@@ -8,11 +9,21 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(Player))]
     internal class Player_Patches : PatchBase
     {
+        [HarmonyPatch(nameof(Player.ChangeMoney))]
+        [HarmonyPostfix]
+        private static void OnChangeMoney_Postfix(Player __instance)
+        {
+            Logger.LogInfo($"{nameof(Player)}.{nameof(Player.ChangeMoney)} postfix!");
+
+            // Attempt to check money location(s)
+            CursedWordsArchipelago.Instance.TryCheckNumericLocations("earn_money", __instance.CurrentRunProgress.CurrentRunStatistics.TotalCashEarned);
+        }
+
         [HarmonyPatch(nameof(Player.SetCharacter))]
         [HarmonyPostfix]
         private static void OnSetCharacter_Postfix(Player __instance)
         {
-            Logger.LogInfo($"{nameof(GameStatics)}.{nameof(GameStatics.InitialisePlayerForNewRun)} postfix!");
+            Logger.LogInfo($"{nameof(Player)}.{nameof(Player.SetCharacter)} postfix!");
 
             // Add sticker padlocks to fill slots not yet received as items
             int progressiveStickerSlots = ArchipelagoHelper.AmountOfItemReceived("Progressive Sticker Slot");

@@ -114,27 +114,28 @@ namespace Modd
                 StartCoroutine(action());
             }
 
+            // Development short-cuts
             if (UnityInput.Current.GetKeyUp(KeyCode.F2))
             {
                 Logger.LogInfo($"F2 key-up");
 
-                // Get controller
-                if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
-                {
-                    // Complete current encounter
-                    controller.DevCompleteEncounter();
-                }
+                //// Get controller
+                //if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
+                //{
+                //    // Complete current encounter
+                //    controller.DevCompleteEncounter();
+                //}
             }
             else if (UnityInput.Current.GetKeyUp(KeyCode.F3))
             {
                 Logger.LogInfo($"F3 key-up");
 
-                // Get controller
-                if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
-                {
-                    // Fail encounter
-                    controller.DevFailEncounter();
-                }
+                //// Get controller
+                //if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
+                //{
+                //    // Fail encounter
+                //    controller.DevFailEncounter();
+                //}
             }
         }
 
@@ -180,13 +181,13 @@ namespace Modd
         }
 
         /// <summary>
-        /// Attempt to check a location by its action and amount.
+        /// Attempt to check a numeric location.
         /// </summary>
         /// <param name="action">The action to check against.</param>
         /// <param name="amount">The amount to check against.</param>
-        public void TryCheckWordLocations(string action, long amount)
+        public void TryCheckNumericLocations(string action, long amount)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnWordAction?.Invoke(action, amount) == true))
+            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnNumericAction?.Invoke(action, amount) == true))
             {
                 Logger.LogInfo($"Queueing location check: '{criteria.LocationName}'");
                 QueueAction(() => CheckLocation(criteria.LocationName));

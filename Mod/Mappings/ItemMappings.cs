@@ -22,6 +22,9 @@ namespace Mod.Mappings
             { "Rodman", () => UnlockCharacter(typeof(WetDennis)) },
             { "Nina Nix", () => UnlockCharacter(typeof(NinaNix)) },
             { "Hayley Bayles", () => UnlockCharacter(typeof(HayleyBayles)) },
+            { "Bones the Dog", () => UnlockCharacter(typeof(BonesTheDog)) },
+            { "Sam Gambit", () => UnlockCharacter(typeof(SamGambit)) },
+            { "Octacles", () => UnlockCharacter(typeof(Octacles)) },
 
             // Re-rolls
             { "Progressive Re-roll", () => IncrementReroll() },
@@ -32,6 +35,8 @@ namespace Mod.Mappings
 
             // Stamps
             { "Blue Stamps", () => UnlockBulkUnlock(new BlueBuildStampsUnlock()) },
+            { "Card Stamps", () => UnlockBulkUnlock(new CardsBuildStampsUnlock()) },
+            { "Chess Stamps", () => UnlockBulkUnlock(new ChessBuildStampsUnlock()) },
             { "Rainbow Stamps", () => UnlockBulkUnlock(new RainbowBuildStampsUnlock()) },
             { "Red Stamps", () => UnlockBulkUnlock(new RedBuildStampsUnlock()) },
             { "Shiny Stamps", () => UnlockBulkUnlock(new ShinyBuildStampsUnlock()) },
@@ -39,6 +44,8 @@ namespace Mod.Mappings
 
             // Stickers
             { "Blue Stickers", () => UnlockBulkUnlock(new BlueBuildStickersUnlock()) },
+            { "Card Stickers", () => UnlockBulkUnlock(new CardsBuildStickersUnlock()) },
+            { "Chess Stickers", () => UnlockBulkUnlock(new ChessBuildStickersUnlock()) },
             { "Rainbow Stickers", () => UnlockBulkUnlock(new RainbowBuildStickersUnlock()) },
             { "Red Stickers", () => UnlockBulkUnlock(new RedBuildStickersUnlock()) },
             { "Shiny Stickers", () => UnlockBulkUnlock(new ShinyBuildStickersUnlock()) },
@@ -107,13 +114,32 @@ namespace Mod.Mappings
 
             #endregion
 
+            #region Encounters
+            
+            new LocationCriteria("Skip a Grid") { OnGenericAction = (action) => action == "skip_grid" },
+            new LocationCriteria("Place a Consumable Tile") { OnGenericAction = (action) => action == "place_tile" },
+
+            #endregion
+
+            #region Money
+
+            new LocationCriteria("Earn $10") { OnNumericAction = (action, total) => action == "earn_money" && total >= 10 },
+            new LocationCriteria("Earn $25") { OnNumericAction = (action, total) => action == "earn_money" && total >= 25 },
+            new LocationCriteria("Earn $50") { OnNumericAction = (action, total) => action == "earn_money" && total >= 50 },
+            new LocationCriteria("Earn $75") { OnNumericAction = (action, total) => action == "earn_money" && total >= 75 },
+            new LocationCriteria("Earn $100") { OnNumericAction = (action, total) => action == "earn_money" && total >= 100 },
+            new LocationCriteria("Earn $250") { OnNumericAction = (action, total) => action == "earn_money" && total >= 250 },
+            new LocationCriteria("Earn $500") { OnNumericAction = (action, total) => action == "earn_money" && total >= 500 },
+
+            #endregion
+
             #region Shop
 
             new LocationCriteria("Buy a Stamp") { OnGenericAction = (action) => action == "buy_stamp" },
             new LocationCriteria("Buy a Sticker") { OnGenericAction = (action) => action == "buy_sticker" },
-            new LocationCriteria("Buy a Tile") { OnGenericAction = (action) => action == "buy_tile" },
+            new LocationCriteria("Buy a Consumable Tile") { OnGenericAction = (action) => action == "buy_tile" },
 
-            new LocationCriteria("Destroy a Tile") { OnGenericAction = (action) => action == "destroy_tile" },
+            new LocationCriteria("Destroy a Consumable Tile") { OnGenericAction = (action) => action == "destroy_tile" },
 
             new LocationCriteria("Freeze a Stamp") { OnGenericAction = (action) => action == "freeze_stamp" },
             new LocationCriteria("Freeze a Sticker") { OnGenericAction = (action) => action == "freeze_sticker" },
@@ -128,28 +154,28 @@ namespace Mod.Mappings
             #region Words
 
             // Word lengths
-            new LocationCriteria("Word Length 1") { OnWordAction = (action, length) => action == "word_length" && length == 1 },
-            new LocationCriteria("Word Length 2") { OnWordAction = (action, length) => action == "word_length" && length == 2 },
-            new LocationCriteria("Word Length 3") { OnWordAction = (action, length) => action == "word_length" && length == 3 },
-            new LocationCriteria("Word Length 4") { OnWordAction = (action, length) => action == "word_length" && length == 4 },
-            new LocationCriteria("Word Length 5") { OnWordAction = (action, length) => action == "word_length" && length == 5 },
-            new LocationCriteria("Word Length 6") { OnWordAction = (action, length) => action == "word_length" && length == 6 },
-            new LocationCriteria("Word Length 7") { OnWordAction = (action, length) => action == "word_length" && length == 7 },
-            new LocationCriteria("Word Length 8") { OnWordAction = (action, length) => action == "word_length" && length == 8 },
-            new LocationCriteria("Word Length 9") { OnWordAction = (action, length) => action == "word_length" && length == 9 },
-            new LocationCriteria("Word Length 10") { OnWordAction = (action, length) => action == "word_length" && length == 10 },
+            new LocationCriteria("Word Length 1") { OnNumericAction = (action, length) => action == "word_length" && length == 1 },
+            new LocationCriteria("Word Length 2") { OnNumericAction = (action, length) => action == "word_length" && length == 2 },
+            new LocationCriteria("Word Length 3") { OnNumericAction = (action, length) => action == "word_length" && length == 3 },
+            new LocationCriteria("Word Length 4") { OnNumericAction = (action, length) => action == "word_length" && length == 4 },
+            new LocationCriteria("Word Length 5") { OnNumericAction = (action, length) => action == "word_length" && length == 5 },
+            new LocationCriteria("Word Length 6") { OnNumericAction = (action, length) => action == "word_length" && length == 6 },
+            new LocationCriteria("Word Length 7") { OnNumericAction = (action, length) => action == "word_length" && length == 7 },
+            new LocationCriteria("Word Length 8") { OnNumericAction = (action, length) => action == "word_length" && length == 8 },
+            new LocationCriteria("Word Length 9") { OnNumericAction = (action, length) => action == "word_length" && length == 9 },
+            new LocationCriteria("Word Length 10") { OnNumericAction = (action, length) => action == "word_length" && length == 10 },
 
             // Word scores
-            new LocationCriteria("Word Score > 5") { OnWordAction = (action, score) => action == "word_score" && score >= 5 },
-            new LocationCriteria("Word Score > 10") { OnWordAction = (action, score) => action == "word_score" && score >= 10 },
-            new LocationCriteria("Word Score > 25") { OnWordAction = (action, score) => action == "word_score" && score >= 25 },
-            new LocationCriteria("Word Score > 50") { OnWordAction = (action, score) => action == "word_score" && score >= 50 },
-            new LocationCriteria("Word Score > 75") { OnWordAction = (action, score) => action == "word_score" && score >= 75 },
-            new LocationCriteria("Word Score > 100") { OnWordAction = (action, score) => action == "word_score" && score >= 100 },
-            new LocationCriteria("Word Score > 250") { OnWordAction = (action, score) => action == "word_score" && score >= 250 },
-            new LocationCriteria("Word Score > 500") { OnWordAction = (action, score) => action == "word_score" && score >= 500 },
-            new LocationCriteria("Word Score > 750") { OnWordAction = (action, score) => action == "word_score" && score >= 750 },
-            new LocationCriteria("Word Score > 1000") { OnWordAction = (action, score) => action == "word_score" && score >= 1000 },
+            new LocationCriteria("Word Score > 5") { OnNumericAction = (action, score) => action == "word_score" && score >= 5 },
+            new LocationCriteria("Word Score > 10") { OnNumericAction = (action, score) => action == "word_score" && score >= 10 },
+            new LocationCriteria("Word Score > 25") { OnNumericAction = (action, score) => action == "word_score" && score >= 25 },
+            new LocationCriteria("Word Score > 50") { OnNumericAction = (action, score) => action == "word_score" && score >= 50 },
+            new LocationCriteria("Word Score > 75") { OnNumericAction = (action, score) => action == "word_score" && score >= 75 },
+            new LocationCriteria("Word Score > 100") { OnNumericAction = (action, score) => action == "word_score" && score >= 100 },
+            new LocationCriteria("Word Score > 250") { OnNumericAction = (action, score) => action == "word_score" && score >= 250 },
+            new LocationCriteria("Word Score > 500") { OnNumericAction = (action, score) => action == "word_score" && score >= 500 },
+            new LocationCriteria("Word Score > 750") { OnNumericAction = (action, score) => action == "word_score" && score >= 750 },
+            new LocationCriteria("Word Score > 1000") { OnNumericAction = (action, score) => action == "word_score" && score >= 1000 },
 
             #endregion
         };
@@ -242,7 +268,7 @@ namespace Mod.Mappings
         public Action Action { get; set; }
         public Func<string, bool> OnGenericAction { get; set; }
         public Func<Character, int, NodeType, bool> OnEncounterAction { get; set; }
-        public Func<string, long, bool> OnWordAction { get; set; }
+        public Func<string, long, bool> OnNumericAction { get; set; }
         public string LocationName { get; set; }
 
         public LocationCriteria(string locationName)

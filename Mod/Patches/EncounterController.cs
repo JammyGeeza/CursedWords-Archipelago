@@ -12,6 +12,9 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(EncounterController))]
     internal class EncounterController_Patches : PatchBase
     {
+        /// <summary>
+        /// On game setup, adjust re-roll amount per encounter.
+        /// </summary>
         [HarmonyPatch("GameSetup")]
         [HarmonyPostfix]
         private static IEnumerator OnGameSetup_Postfix(IEnumerator __result, EncounterController __instance)
@@ -54,7 +57,20 @@ namespace Mod.Patches
             Logger.LogInfo($"Word score: {finalScore.Score}");
 
             // Attempt to check word length locations
-            CursedWordsArchipelago.Instance.TryCheckWordLocations("word_score", finalScore.Score);
+            CursedWordsArchipelago.Instance.TryCheckNumericLocations("word_score", finalScore.Score);
+        }
+
+        /// <summary>
+        /// On word submission skip, check the skip location.
+        /// </summary>
+        [HarmonyPatch(nameof(EncounterController.SkipWordSubmission))]
+        [HarmonyPostfix]
+        private static void OnSkipWordSubmission_Postfix(EncounterController __instance)
+        {
+            Logger.LogInfo($"{nameof(EncounterController)}.{nameof(EncounterController.SkipWordSubmission)} postfix!");
+
+            // Check the 'Skip a Grid' location
+            CursedWordsArchipelago.Instance.TryCheckGenericLocations("skip_grid");
         }
 
         /// <summary>
@@ -68,7 +84,7 @@ namespace Mod.Patches
             Logger.LogInfo($"Word length: {tiles.Count}");
 
             // Attempt to check word length locations
-            CursedWordsArchipelago.Instance.TryCheckWordLocations("word_length", tiles.Count);
+            CursedWordsArchipelago.Instance.TryCheckNumericLocations("word_length", tiles.Count);
         }
     }
 }

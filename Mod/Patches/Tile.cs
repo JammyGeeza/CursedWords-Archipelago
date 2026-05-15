@@ -12,18 +12,6 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(Tile))]
     internal class Tile_Patches : PatchBase
     {
-        //[HarmonyPatch(nameof(Tile.GetStringRepresentation))]
-        //[HarmonyPrefix]
-        //public static void SetGlyphType_Prefix(Tile __instance, bool forWordValidity)
-        //{
-        //    Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.GetStringRepresentation)} prefix!");
-        //    Logger.LogWarning($"Glyph Type: {__instance.MyGlyphType}");
-        //    Logger.LogWarning($"Tile Type: {__instance.MyTileType}");
-        //    Logger.LogWarning($"Letter: {__instance.Letter}");
-        //    Logger.LogWarning($"Suit: {__instance.CardSuit}");
-
-        //}
-
         /// <summary>
         /// Prevent tiles with specific glyph types appearing if not yet received.
         /// </summary>
@@ -88,6 +76,24 @@ namespace Mod.Patches
             }
 
             Logger.LogInfo($"Output glyph type: {glyphType}");
+        }
+
+        /// <summary>
+        /// Prevent tiles with suits appearing if not yet received.
+        /// </summary>
+        [HarmonyPatch(nameof(Tile.SetSuit))]
+        [HarmonyPrefix]
+        public static void OnSetSuit_Prefix(Tile __instance, ref Suit suit)
+        {
+            Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetSuit)} prefix!");
+            Logger.LogInfo($"Input tile suit: {suit}");
+
+            if (!ArchipelagoHelper.HasReceivedItem("Card Tiles"))
+            {
+                suit = Suit.None;
+            }
+
+            Logger.LogInfo($"Output tile suit: {suit}");
         }
 
         /// <summary>
