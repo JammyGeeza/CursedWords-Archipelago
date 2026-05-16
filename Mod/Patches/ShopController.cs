@@ -24,12 +24,13 @@ namespace Mod.Patches
             Logger.LogInfo($"{nameof(ShopController)}.{nameof(ShopController.OnLeaveShopButtonClickedCallback)} prefix!");
 
             // Check if any stickers have been frozen
-            if (__instance.GetStickersInStock().Any(s => s.IsFrozen))
+            if (__instance.GetStickersInStock().Any(s => s != null && s.IsFrozen))
             {
                 CursedWordsArchipelago.Instance.TryCheckGenericLocations("freeze_sticker");
             }
 
-            if (__instance.GetStampsInStock().Any(s => s.IsFrozen))
+            // Check if any stamps have been frozen
+            if (__instance.GetStampsInStock().Any(s => s != null && s.IsFrozen))
             {
                 CursedWordsArchipelago.Instance.TryCheckGenericLocations("freeze_stamp");
             }

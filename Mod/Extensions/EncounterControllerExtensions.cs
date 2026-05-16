@@ -8,11 +8,18 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
+using BepInEx.Logging;
+using Modd;
 
 namespace Mod.Extensions
 {
     public static class EncounterControllerExtensions
     {
+        private static ManualLogSource Logger
+        {
+            get => CursedWordsArchipelago.Instance.LogSource;
+        }
+
         /// <summary>
         /// Get the current encounter re-roll amount.
         /// </summary>
@@ -43,10 +50,9 @@ namespace Mod.Extensions
         /// <param name="newAmount">The amount to set the amount to.</param>
         public static void SetEncounterRerollAmount(this EncounterController controller, int newAmount)
         {
-            //int rerollsReceived = ArchipelagoHelper.AmountOfItemReceived("Progressive Re-roll");
             bool isOverZero = newAmount > 0;
 
-            Debug.Log($"Setting encounter re-rolls to: {newAmount}");
+            Logger.LogInfo($"Setting encounter re-rolls to: {newAmount}");
 
             // Set re-roll count based on received items
             Traverse.Create(controller)
