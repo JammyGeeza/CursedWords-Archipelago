@@ -52,9 +52,12 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(MusicController)}.{nameof(MusicController.OnWinRun)} postfix!");
 
+            // Attempt to send run win check (Stage 5-3)
+            Player player = GameStatics.GetPlayer();
+            CursedWordsArchipelago.Instance.TryCheckEncounterLocations(player.MyCharacter, player.CurrentRunProgress.CurrentStage, player.CurrentRunProgress.CurrentNodeType);
+
             if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
             {
-                Player player = GameStatics.GetPlayer();
                 List<string> runsCompleted = SaveManager.GetCharactersWithAscensionsUnlocked()
                     .Select(c => (Activator.CreateInstance(c) as Character).GetName())
                     .ToList();

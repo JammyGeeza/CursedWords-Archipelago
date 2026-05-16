@@ -8,11 +8,18 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
+using BepInEx.Logging;
+using Modd;
 
 namespace Mod.Extensions
 {
     public static class ShopControllerExtensions
     {
+        private static ManualLogSource Logger
+        {
+            get => CursedWordsArchipelago.Instance.LogSource;
+        }
+
         /// <summary>
         /// Get the current stamps in stock.
         /// </summary>

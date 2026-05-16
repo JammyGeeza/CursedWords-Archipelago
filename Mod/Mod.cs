@@ -124,6 +124,7 @@ namespace Modd
                 //{
                 //    // Complete current encounter
                 //    controller.DevCompleteEncounter();
+                //    //controller.DevWinGame();
                 //}
             }
             else if (UnityInput.Current.GetKeyUp(KeyCode.F3))
@@ -162,7 +163,7 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(character, stage, nodeType) == true))
             {
-                Logger.LogInfo($"Queueing location check: '{criteria.LocationName}'");
+                Logger.LogWarning($"Queueing location check: '{criteria.LocationName}'");
                 QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
@@ -175,7 +176,7 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnGenericAction?.Invoke(action) == true))
             {
-                Logger.LogInfo($"Queueing location check: '{criteria.LocationName}'");
+                Logger.LogWarning($"Queueing location check: '{criteria.LocationName}'");
                 QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
@@ -189,7 +190,7 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnNumericAction?.Invoke(action, amount) == true))
             {
-                Logger.LogInfo($"Queueing location check: '{criteria.LocationName}'");
+                Logger.LogWarning($"Queueing location check: '{criteria.LocationName}'");
                 QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
@@ -263,13 +264,12 @@ namespace Modd
         {
             while (helper.DequeueItem() is ItemInfo itemInfo)
             {
-                Logger.LogInfo($"Item received: {itemInfo.ItemName}");
+                Logger.LogWarning($"Item received: {itemInfo.ItemName}");
 
                 // Add item action to queue, if exists
                 if (ItemMappings.Map.TryGetValue(itemInfo.ItemName, out Func<IEnumerator> action))
                 {
                     Logger.LogInfo($"Queuing item action for {itemInfo.ItemName}...");
-
                     QueueAction(action);
                 }
             }

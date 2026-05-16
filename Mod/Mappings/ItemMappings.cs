@@ -112,6 +112,57 @@ namespace Mod.Mappings
             new LocationCriteria("Hayley Bayles - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 5 && type == NodeType.EncounterSecond },
             new LocationCriteria("Hayley Bayles - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 5 && type == NodeType.Boss },
 
+            // Bones the Dog
+            new LocationCriteria("Bones the Dog - 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 1 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Bones the Dog - 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 1 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Bones the Dog - 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 1 && type == NodeType.Boss },
+            new LocationCriteria("Bones the Dog - 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 2 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Bones the Dog - 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 2 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Bones the Dog - 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 2 && type == NodeType.Boss },
+            new LocationCriteria("Bones the Dog - 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 3 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Bones the Dog - 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 3 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Bones the Dog - 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 3 && type == NodeType.Boss },
+            new LocationCriteria("Bones the Dog - 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 4 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Bones the Dog - 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 4 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Bones the Dog - 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 4 && type == NodeType.Boss },
+            new LocationCriteria("Bones the Dog - 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 5 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Bones the Dog - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 5 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Bones the Dog - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 5 && type == NodeType.Boss },
+
+            // Sam Gambit
+            new LocationCriteria("Sam Gambit - 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 1 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Sam Gambit - 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 1 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Sam Gambit - 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 1 && type == NodeType.Boss },
+            new LocationCriteria("Sam Gambit - 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 2 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Sam Gambit - 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 2 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Sam Gambit - 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 2 && type == NodeType.Boss },
+            new LocationCriteria("Sam Gambit - 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 3 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Sam Gambit - 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 3 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Sam Gambit - 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 3 && type == NodeType.Boss },
+            new LocationCriteria("Sam Gambit - 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 4 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Sam Gambit - 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 4 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Sam Gambit - 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 4 && type == NodeType.Boss },
+            new LocationCriteria("Sam Gambit - 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 5 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Sam Gambit - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 5 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Sam Gambit - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 5 && type == NodeType.Boss },
+
+            // Octacles
+            new LocationCriteria("Octacles - 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 1 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Octacles - 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 1 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Octacles - 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 1 && type == NodeType.Boss },
+            new LocationCriteria("Octacles - 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 2 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Octacles - 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 2 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Octacles - 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 2 && type == NodeType.Boss },
+            new LocationCriteria("Octacles - 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 3 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Octacles - 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 3 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Octacles - 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 3 && type == NodeType.Boss },
+            new LocationCriteria("Octacles - 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 4 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Octacles - 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 4 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Octacles - 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 4 && type == NodeType.Boss },
+            new LocationCriteria("Octacles - 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 5 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Octacles - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 5 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Octacles - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 5 && type == NodeType.Boss },
+
             #endregion
 
             #region Encounters

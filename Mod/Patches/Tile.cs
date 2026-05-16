@@ -64,8 +64,11 @@ namespace Mod.Patches
             // If glyph type was replaced with Letter type, generate letter
             if (inputGlyphType != glyphType && glyphType == GlyphType.Letter)
             {
-                // Set letter
-                __instance.SetLetter(Vocabulary.ActiveLanguageVocabulary.LanguageAlphabet.GetRandomLetterWeighted());
+                // Generate new letter if it doesn't have one
+                if (string.IsNullOrEmpty(__instance.Letter) || !Vocabulary.ActiveLanguageVocabulary.LanguageAlphabet.AllLetters.Contains(__instance.Letter))
+                {
+                    __instance.SetLetter(Vocabulary.ActiveLanguageVocabulary.LanguageAlphabet.GetRandomLetterWeighted());
+                }
 
                 // Wipe anything else
                 __instance.CactusGrowth = new ScorePacket(0L);

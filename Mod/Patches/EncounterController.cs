@@ -28,7 +28,7 @@ namespace Mod.Patches
             }
 
             // Set re-roll amount per encounter
-            int rerollsReceived = ArchipelagoHelper.AmountOfItemReceived("Progressive Re-roll");
+            int rerollsReceived = ArchipelagoHelper.AmountOfItemReceived("Progressive Grid Re-roll");
             __instance.SetEncounterRerollAmount(rerollsReceived);
         }
 
