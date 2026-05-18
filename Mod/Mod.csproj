@@ -119,6 +119,7 @@
     <Compile Include="GameObjects\ArchipelagoLoginController.cs" />
     <Compile Include="Helpers\ArchipelagoHelper.cs" />
     <Compile Include="Classes\ArchipelagoData.cs" />
+    <Compile Include="Helpers\RandomItemHelper.cs" />
     <Compile Include="Lookups\Lookups.cs" />
     <Compile Include="Mappings\ItemMappings.cs" />
     <Compile Include="Mod.cs" />

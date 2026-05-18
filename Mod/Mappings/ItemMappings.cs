@@ -1,6 +1,8 @@
 ﻿using BepInEx.Logging;
+using HarmonyLib;
 using Mod.Classes;
 using Mod.Extensions;
+using Mod.Helpers;
 using Modd;
 using System;
 using System.Collections;
@@ -55,6 +57,9 @@ namespace Mod.Mappings
             { "$1", () => IncrementMoney(1) },
             { "$2", () => IncrementMoney(2) },
             { "$3", () => IncrementMoney(3) },
+            { "Consumable Tile", () => AddRandomConsumableTile() },
+            { "Extra Re-roll", () => IncrementReroll() },
+            { "Random Tile Boost", () => RandomTileBoost() },
         };
 
         public static List<LocationCriteria> Locations = new List<LocationCriteria>()
@@ -231,12 +236,38 @@ namespace Mod.Mappings
             #endregion
         };
 
-        static IEnumerator FreeStampSlot()
+        static IEnumerator AddRandomConsumableTile()
         {
             if (CharacterInfoPanel.SingletonInventoryVisualController != null)
             {
-                Logger.LogInfo("Attempting to free a stamp slot...");
+                Logger.LogInfo("Attempting to add a random consumable tile...");
 
+                try
+                {
+                    // Generate random letter tile
+                    Tile tile = RandomItemHelper.GenerateRandomLetterTile();
+
+                    // Add tile to inventory
+                    Player player = GameStatics.GetPlayer();
+                    player.AddTileToInventory(tile);
+                }
+                catch
+                {
+                    Logger.LogInfo("No space for additional consumable tiles");
+                }
+
+                CharacterInfoPanel.SingletonInventoryVisualController.PopulateTiles();
+            }
+
+            yield break;
+        }
+
+        static IEnumerator FreeStampSlot()
+        {
+            Logger.LogInfo("Attempting to free a stamp slot in inventory...");
+
+            if (CharacterInfoPanel.SingletonInventoryVisualController != null)
+            {
                 Player player = GameStatics.GetPlayer();
                 if (player.GetStamps().FirstOrDefault(itm => itm is APStampPadlock) is APStampPadlock stampPadlock && stampPadlock != null)
                 {
@@ -246,16 +277,20 @@ namespace Mod.Mappings
 
                 CharacterInfoPanel.SingletonInventoryVisualController.PopulateStamps();
             }
+            else
+            {
+                Logger.LogInfo("No inventory found - aborted.");
+            }
 
             yield break;
         }
 
         static IEnumerator FreeStickerSlot()
         {
+            Logger.LogInfo("Attempting to free a sticker slot...");
+
             if (CharacterInfoPanel.SingletonInventoryVisualController != null)
             {
-                Logger.LogInfo("Attempting to free a sticker slot...");
-
                 Player player = GameStatics.GetPlayer();
                 if (player.GetStickers().FirstOrDefault(itm => itm is APStickerPadlock) is APStickerPadlock stickerPadlock && stickerPadlock != null)
                 {
@@ -264,6 +299,10 @@ namespace Mod.Mappings
                 }
 
                 CharacterInfoPanel.SingletonInventoryVisualController.PopulateStickers();
+            }
+            else
+            {
+                Logger.LogInfo("No inventory found - aborted.");
             }
 
             yield break;
@@ -282,6 +321,10 @@ namespace Mod.Mappings
 
                 CharacterInfoPanel.SingletonInventoryVisualController.PopulateCash();
             }
+            else
+            {
+                Logger.LogInfo("No inventory found - aborted.");
+            }
 
             yield break;
         }
@@ -294,6 +337,50 @@ namespace Mod.Mappings
             {
                 Logger.LogInfo("Attempting to increment re-roll count...");
                 encounterController.IncrementEncounterRerollAmount(1);
+            }
+            else
+            {
+                Logger.LogInfo("Not currently in an encounter - aborted.");
+            }
+
+            yield break;
+        }
+
+        static IEnumerator RandomTileBoost()
+        {
+            Logger.LogInfo("Attempting to boost a random tile...");
+
+            // Get current encounter
+            if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController encounterController && encounterController != null)
+            {
+                try
+                {
+                    // Get grid layout controller
+                    GridLayoutController gridLayoutController = Traverse.Create(encounterController)
+                        .Field("_gridLayoutController")
+                        .GetValue<GridLayoutController>();
+
+                    // Get active tiles
+                    List<TileObject> activeTiles = gridLayoutController.GetTileObjects()
+                        .Where(t => t != null && t.isActiveAndEnabled)
+                        .ToList();
+
+                    // Randomly select a tile and modify its value by 5
+                    TileObject selectedTile = activeTiles[UnityEngine.Random.Range(0, activeTiles.Count)];
+                    int modifyBy = selectedTile.MyTile.GetTileType() != TileType.Void ? 5 : -5;
+                    selectedTile.MyTile.ChangeValueModifier(new ScorePacket(modifyBy));
+
+                    // Re-populate the tile
+                    selectedTile.Populate();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"An error occurred when attempting to boost a random tile: {ex}");
+                }
+            }
+            else
+            {
+                Logger.LogInfo("Not currently in an encounter - aborted.");
             }
 
             yield break;
