@@ -110,7 +110,6 @@ namespace Modd
             // De-queue action and perform it
             if (Instance.ActionQueue.TryDequeue(out Func<IEnumerator> action))
             {
-                Debug.Log("Dequeuing action...");
                 StartCoroutine(action());
             }
 
@@ -163,7 +162,7 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(character, stage, nodeType) == true))
             {
-                Logger.LogWarning($"Queueing location check: '{criteria.LocationName}'");
+                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
@@ -176,7 +175,7 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnGenericAction?.Invoke(action) == true))
             {
-                Logger.LogWarning($"Queueing location check: '{criteria.LocationName}'");
+                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
@@ -190,7 +189,7 @@ namespace Modd
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnNumericAction?.Invoke(action, amount) == true))
             {
-                Logger.LogWarning($"Queueing location check: '{criteria.LocationName}'");
+                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 QueueAction(() => CheckLocation(criteria.LocationName));
             }
         }
@@ -269,7 +268,7 @@ namespace Modd
                 // Add item action to queue, if exists
                 if (ItemMappings.Map.TryGetValue(itemInfo.ItemName, out Func<IEnumerator> action))
                 {
-                    Logger.LogInfo($"Queuing item action for {itemInfo.ItemName}...");
+                    Logger.LogWarning($"Queueing item received action for '{itemInfo.ItemName}'...");
                     QueueAction(action);
                 }
             }

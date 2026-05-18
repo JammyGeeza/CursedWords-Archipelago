@@ -112,6 +112,7 @@
     <Compile Include="Classes\BlueBuildStickersUnlock.cs" />
     <Compile Include="Classes\RainbowBuildStampsUnlock.cs" />
     <Compile Include="Classes\RainbowBuildStickersUnlock.cs" />
+    <Compile Include="Extensions\GridLayoutControllerExtensions.cs" />
     <Compile Include="Extensions\EncounterControllerExtensions.cs" />
     <Compile Include="Extensions\ShopControllerExtensions.cs" />
     <Compile Include="GameObjects\ArchipelagoDialog.cs" />
