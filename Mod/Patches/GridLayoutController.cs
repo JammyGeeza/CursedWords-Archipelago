@@ -27,7 +27,7 @@ namespace Mod.Patches
         }
 
         /// <summary>
-        /// When a consumable tile is applied, attempt to check the location.
+        /// When a grid is generated, hide tiles if not yet unlocked.
         /// </summary>
         [HarmonyPatch(nameof(GridLayoutController.GenerateGrid))]
         [HarmonyPostfix]
