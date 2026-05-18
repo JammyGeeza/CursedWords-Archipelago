@@ -25,5 +25,48 @@ namespace Mod.Patches
             // Check the 'Use a Consumable Tile' location
             CursedWordsArchipelago.Instance.TryCheckGenericLocations("place_tile");
         }
+
+        /// <summary>
+        /// When a consumable tile is applied, attempt to check the location.
+        /// </summary>
+        [HarmonyPatch(nameof(GridLayoutController.GenerateGrid))]
+        [HarmonyPostfix]
+        public static void OnGenerateGrid_Postfix(GridLayoutController __instance)
+        {
+            Logger.LogInfo($"{nameof(GridLayoutController)}.{nameof(GridLayoutController.ApplyConsumableTile)} postfix!");
+
+            int receivedTilePositions = ArchipelagoHelper.AmountOfItemReceived("Progressive Tile Position");
+
+            Logger.LogInfo($"Received {receivedTilePositions} tile positions");
+
+            for (int i = receivedTilePositions; i < ArchipelagoHelper.SlotData.ProgressiveTilePositions.Count; i++)
+            {
+                Logger.LogInfo($"Getting locked tile position {i}...");
+
+                (int x, int y) coordinate = ArchipelagoHelper.SlotData.ProgressiveTilePositions[i];
+
+                Logger.LogInfo($"Attempting to lock tile at coordinate {coordinate.x},{coordinate.y}");
+
+                try
+                {
+                    TileObject tile = __instance.GetTileObjects()
+                        .First(t => t.GridCoordinate == new Vector2Int { x = coordinate.x, y = coordinate.y });
+
+                    Logger.LogInfo($"Tile found!");
+
+                    //TileObject tile = __instance.GetTileObjectFromCoordinates(new Vector2Int() { x = coordinate.x, y = coordinate.y });
+                    GameObject tileGO = Traverse.Create(tile)
+                        .Field("_tileGO")
+                        .GetValue<GameObject>();
+
+                    // Hide the tile
+                    tileGO.SetActive(false);
+                }
+                catch
+                {
+                    Logger.LogWarning($"No tile found at co-ordinate {coordinate.x},{coordinate.y}");
+                }
+            }
+        }
     }
 }

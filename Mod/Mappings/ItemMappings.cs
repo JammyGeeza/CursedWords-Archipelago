@@ -27,7 +27,7 @@ namespace Mod.Mappings
             { "Octacles", () => UnlockCharacter(typeof(Octacles)) },
 
             // Re-rolls
-            { "Progressive Grid Re-roll", () => IncrementReroll() },
+            { "Progressive Encounter Re-roll", () => IncrementReroll() },
 
             // Slots
             { "Progressive Stamp Slot", () => FreeStampSlot() },

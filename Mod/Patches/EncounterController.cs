@@ -6,12 +6,42 @@ using Modd;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Mod.Patches
 {
     [HarmonyPatch(typeof(EncounterController))]
     internal class EncounterController_Patches : PatchBase
     {
+        /// <summary>
+        /// Override Grid Dimensions
+        /// </summary>
+        [HarmonyPatch("GetGridDimensions")]
+        [HarmonyPostfix]
+        private static void OnGetGridDimensions_Postfix(ref Vector2Int __result)
+        {
+            Logger.LogInfo("EncounterController.GetGridDimensions postfix!");
+
+            // Ignore if progressive grid size disabled
+            if (!ArchipelagoHelper.SlotData.ProgressiveGridSize)
+            {
+                return;
+            }
+
+            // Get progressive grid size item received count and calculate grid size
+            int received = ArchipelagoHelper.AmountOfItemReceived("Progressive Grid Size");
+            int newSize = 3 + received;
+
+            // If grid is smaller than received, ignore - this is probably because a boss modifier is applied
+            if (__result.x < newSize || __result.y < newSize)
+            {
+                return;
+            }
+
+            // Set new grid size
+            __result = new Vector2Int() { x = newSize, y = newSize };
+        }
+
         /// <summary>
         /// On game setup, adjust re-roll amount per encounter.
         /// </summary>
@@ -28,7 +58,7 @@ namespace Mod.Patches
             }
 
             // Set re-roll amount per encounter
-            int rerollsReceived = ArchipelagoHelper.AmountOfItemReceived("Progressive Grid Re-roll");
+            int rerollsReceived = ArchipelagoHelper.AmountOfItemReceived("Progressive Encounter Re-roll");
             __instance.SetEncounterRerollAmount(rerollsReceived);
         }
 
