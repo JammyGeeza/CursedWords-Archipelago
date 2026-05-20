@@ -2,6 +2,7 @@
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
+using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using BepInEx.Logging;
 using Modd;
@@ -245,6 +246,22 @@ namespace Mod.Helpers
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <param name="gameName"></param>
+        /// <returns></returns>
+        public static List<long> GetUncheckedLocationsByName(string searchTerm, string gameName = "Cursed Words")
+        {
+            if (!IsConnected)
+                return new List<long>();
+
+            return Session.Locations.AllMissingLocations
+                .Where(l => Session.Locations.GetLocationNameFromId(l, gameName).Contains(searchTerm))
+                .ToList();
+        }
+
+        /// <summary>
         /// Get the slot data for the session.
         /// </summary>
         /// <returns>A populated slot data dictionary or empty if not connected.</returns>
@@ -281,6 +298,19 @@ namespace Mod.Helpers
                 return false;
 
             return Session.Items.AllItemsReceived.Count(item => item.ItemName.Equals(itemName, StringComparison.OrdinalIgnoreCase)) >= amount;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public static async Task<Dictionary<long, ScoutedItemInfo>> ScoutLocationsByIdAsync(params long[] ids)
+        {
+            if (!IsConnected)
+                return new Dictionary<long, ScoutedItemInfo>();
+
+            return await Session.Locations.ScoutLocationsAsync(false, ids);
         }
 
         /// <summary>
