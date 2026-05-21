@@ -38,10 +38,10 @@ namespace Mod.Patches
 
                 // Make sure it's not disabled due to not enough money
                 Player player = GameStatics.GetPlayer();
-                if (itemInStock.Cost <= player.Money)
+                if (itemInStock.Cost <= 1000)// player.Money)
                 {
                     //Logger.LogInfo("Attempting to re-enable buy button...");
-                    //__instance.StartCoroutine(SetBuyButtonNextFrame(__instance));
+                    __instance.StartCoroutine(SetBuyButtonNextFrame(__instance));
                 }
             }
         }

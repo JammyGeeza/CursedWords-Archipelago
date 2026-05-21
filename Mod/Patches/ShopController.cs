@@ -21,6 +21,70 @@ namespace Mod.Patches
 
         private static int ShopCheckChance = 3;
 
+        [HarmonyPatch("OnItemBuyButtonClicked")]
+        [HarmonyPrefix]
+        private static bool OnItemBuyButtonClicked_Prefix(ShopController __instance, int boughtSlotIndex, bool isStamp)
+        {
+            Logger.LogInfo($"{nameof(ShopController)}.OnItemBuyButtonClicked postfix!");
+
+            try
+            {
+                ShopVisualController shopVisualController = __instance.GetShopVisualController();
+                ShopItemSlot itemSlot = shopVisualController.GetShopItemSlotFromIndex(boughtSlotIndex, isStamp);
+                if (itemSlot.MyItemInStock.MyItem is ArchipelagoShopitem archipelagoShopItem)
+                {
+                    // Check if player can afford
+                    Player player = GameStatics.GetPlayer();
+                    if (player.Money > archipelagoShopItem.Cost)
+                    {
+                        // Play purchase sound
+                        PersistentSound.SingletonSoundController.BuyItem(archipelagoShopItem, false);
+
+                        // Subtract money, remove frozen stamp
+                        player.ChangeMoney(-archipelagoShopItem.Cost);
+
+                        if (isStamp)
+                        {
+                            // Remove frozen and remove from stock
+                            player.FrozenStamps[__instance.GetStampInStockIndex(itemSlot.MyItemInStock)] = null;
+                            __instance.RemoveStampInStock(boughtSlotIndex);
+                        }
+                        else
+                        {
+                            player.FrozenStickers[__instance.GetStickerInStockIndex(itemSlot.MyItemInStock)] = null;
+                            __instance.RemoveStickerInStock(boughtSlotIndex);
+                        }
+
+                        // Stop showing item
+                        shopVisualController.ChangeSlotVisibility(itemSlot, isVisible: false);
+
+                        // Update cash and clear inspected item
+                        CharacterInfoPanel.SingletonInventoryVisualController.PopulateCash();
+                        CharacterInfoPanel.SingletonInventoryVisualController.ClearInspectedItem();
+
+                        // Re-populate shop items
+                        shopVisualController.RepopulateShopItems(__instance.GetRerollPrice());
+
+                        // Send shop check
+                        CursedWordsArchipelago.Instance.TryCheckLocation(archipelagoShopItem.ItemInfo.LocationDisplayName);
+                    }
+                    else
+                    {
+                        PersistentSound.SingletonSoundController.FailedPurchase();
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"An error occurred when attempting to purchase an archipelago item: {ex}");
+                return false;
+            }
+
+            return true;
+        }
+
         [HarmonyPatch("BuyStamp")]
         [HarmonyPostfix]
         private static void OnBuySticker_Postfix(ShopController __instance, ShopItemSlot itemSlot)
