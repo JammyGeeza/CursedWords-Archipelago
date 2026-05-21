@@ -17,6 +17,10 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(ShopController))]
     internal class ShopController_Patches : PatchBase
     {
+        private static List<long> CurrentlyUsedShopLocations = new List<long>();
+
+        private static int ShopCheckChance = 3;
+
         [HarmonyPatch("BuyStamp")]
         [HarmonyPostfix]
         private static void OnBuySticker_Postfix(ShopController __instance, ShopItemSlot itemSlot)
@@ -84,6 +88,9 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(ShopController)}.GenerateGoodsInStock postfix!");
 
+            // Clear in-use shop checks
+            CurrentlyUsedShopLocations.Clear();
+
             // If this is a re-roll, attempt to send the check
             if (isReroll)
             {
@@ -109,28 +116,34 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(ShopController)}.GenerateStampInStock prefix!");
 
-            // Ignore if no shop item checks remain
-            int remaining = CursedWordsArchipelago.Instance.RemainingShopStampChecks.Count;
-            if (index > 0 || remaining == 0)
-            {
-                return true;
-            }
-
-            // Roll chance to spawn archipelago stamp item (30%, for now)
-            int chance = UnityEngine.Random.Range(0, 10);
-            if (chance > 10)
+            // Ignore if first shop, is not the item at Index 0 or random chance fails (30%)
+            if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 10) < ShopCheckChance)
             {
                 return true;
             }
 
             try
-            {   
-                // Randomly select location check
-                int selectedCheck = UnityEngine.Random.Range(0, remaining);
-                KeyValuePair<long, ScoutedItemInfo> scoutedItem = CursedWordsArchipelago.Instance.RemainingShopStampChecks.ElementAt(selectedCheck);
-                
+            {
+                // Get remaining, not-in-use shop checks
+                Dictionary<long, ScoutedItemInfo> remainingShopChecks = CursedWordsArchipelago.Instance.RemainingShopChecks
+                    .Where(sc => !CurrentlyUsedShopLocations.Contains(sc.Key))
+                    .ToDictionary(x => x.Key, x => x.Value);
+
+                // Ignore if none remain
+                if (remainingShopChecks.Count == 0)
+                {
+                    return true;
+                }
+
+                // Randomly select location
+                int selectedCheck = UnityEngine.Random.Range(0, remainingShopChecks.Count);
+                KeyValuePair<long, ScoutedItemInfo> shopCheck = remainingShopChecks.ElementAt(selectedCheck);
+
+                // Add to in-use shop checks
+                CurrentlyUsedShopLocations.Add(shopCheck.Key);
+
                 // Add stamp to stamps in stock
-                ItemInStock itemInStock = new ItemInStock(new ArchipelagoShopitem(scoutedItem.Value, false));
+                ItemInStock itemInStock = new ItemInStock(new ArchipelagoShopitem(shopCheck.Value, false));
                 Traverse.Create(__instance)
                     .Method("PopulateStampInStock", itemInStock, index, false, false)
                     .GetValue();
@@ -152,28 +165,34 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(ShopController)}.GenerateStickerInStock prefix!");
 
-            // Ignore if no shop item checks remain
-            int shopChecksRemaining = CursedWordsArchipelago.Instance.RemainingShopStickerChecks.Count;
-            if (index > 0 || shopChecksRemaining == 0)
-            {
-                return true;
-            }
-
-            // Roll chance to spawn shop item (30%, for now)
-            int chance = UnityEngine.Random.Range(0, 10);
-            if (chance > 10)
+            // Ignore if first shop, is not the item at Index 0 or random chance fails (30%)
+            if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 10) < ShopCheckChance)
             {
                 return true;
             }
 
             try
             {
+                // Get remaining, not-in-use shop checks
+                Dictionary<long, ScoutedItemInfo> remainingShopChecks = CursedWordsArchipelago.Instance.RemainingShopChecks
+                    .Where(sc => !CurrentlyUsedShopLocations.Contains(sc.Key))
+                    .ToDictionary(x => x.Key, x => x.Value);
+
+                // Ignore if none remain
+                if (remainingShopChecks.Count == 0)
+                {
+                    return true;
+                }
+
                 // Randomly select location check
-                int selectedCheck = UnityEngine.Random.Range(0, shopChecksRemaining);
-                KeyValuePair<long, ScoutedItemInfo> scoutedItem = CursedWordsArchipelago.Instance.RemainingShopStickerChecks.ElementAt(selectedCheck);
+                int selectedCheck = UnityEngine.Random.Range(0, remainingShopChecks.Count);
+                KeyValuePair<long, ScoutedItemInfo> shopCheck = remainingShopChecks.ElementAt(selectedCheck);
+
+                // Add to in-use shop checks
+                CurrentlyUsedShopLocations.Add(shopCheck.Key);
 
                 // Add sticker to stickers in stock
-                ItemInStock itemInStock = new ItemInStock(new ArchipelagoShopitem(scoutedItem.Value));
+                ItemInStock itemInStock = new ItemInStock(new ArchipelagoShopitem(shopCheck.Value));
                 __instance.PopulateStickerInStock(itemInStock, index, false, false);
             }
             catch (Exception ex)

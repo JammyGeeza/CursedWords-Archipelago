@@ -52,12 +52,7 @@ namespace Modd
         /// <summary>
         /// All un-checked shop stamp checks
         /// </summary>
-        public Dictionary<long, ScoutedItemInfo> RemainingShopStampChecks { get; set; } = new Dictionary<long, ScoutedItemInfo>();
-
-        /// <summary>
-        /// All un-checked shop stamp checks
-        /// </summary>
-        public Dictionary<long, ScoutedItemInfo> RemainingShopStickerChecks { get; set; } = new Dictionary<long, ScoutedItemInfo>();
+        public Dictionary<long, ScoutedItemInfo> RemainingShopChecks { get; set; } = new Dictionary<long, ScoutedItemInfo>();
 
         #endregion
 
@@ -278,8 +273,7 @@ namespace Modd
                 Logger.LogInfo($"Checked location updated: {ArchipelagoHelper.GetLocationName(checkedLocation)}");
 
                 // Attempt to remove from unchecked shop items
-                RemainingShopStampChecks.Remove(checkedLocation);
-                RemainingShopStickerChecks.Remove(checkedLocation);
+                RemainingShopChecks.Remove(checkedLocation);
             }
         }
 
@@ -291,19 +285,15 @@ namespace Modd
             Logger.LogMessage("Connected to archipelago");
 
             // Get un-checked shop checks
-            List<long> uncheckedShopStampChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Shop Stamp Item");
-            List<long> uncheckedShopStickerChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Shop Sticker Item");
-            if (uncheckedShopStampChecks.Count == 0 && uncheckedShopStickerChecks.Count == 0)
+            List<long> uncheckedShopChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Shop Item");
+            if (uncheckedShopChecks.Count == 0)
             {
                 return;
             }
 
             // Scout and store un-checked shop checks
-            RemainingShopStampChecks = await ArchipelagoHelper.ScoutLocationsByIdAsync(uncheckedShopStampChecks.ToArray());
-            RemainingShopStampChecks = RemainingShopStampChecks.OrderBy((kvp) => kvp.Value.LocationName).ToDictionary(x => x.Key, x => x.Value);
-
-            RemainingShopStickerChecks = await ArchipelagoHelper.ScoutLocationsByIdAsync(uncheckedShopStickerChecks.ToArray());
-            RemainingShopStickerChecks = RemainingShopStickerChecks.OrderBy((kvp) => kvp.Value.LocationName).ToDictionary(x => x.Key, x => x.Value);
+            RemainingShopChecks = await ArchipelagoHelper.ScoutLocationsByIdAsync(uncheckedShopChecks.ToArray());
+            RemainingShopChecks = RemainingShopChecks.OrderBy((kvp) => kvp.Value.LocationName).ToDictionary(x => x.Key, x => x.Value);
         }
 
         /// <summary>

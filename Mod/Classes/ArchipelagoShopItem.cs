@@ -1,5 +1,8 @@
-﻿using Archipelago.MultiClient.Net.Models;
+﻿using Archipelago.MultiClient.Net.Enums;
+using Archipelago.MultiClient.Net.Models;
 using HarmonyLib;
+using Mod.Helpers;
+using Modd;
 using nickeltin.SDF.Runtime;
 using System.Collections.Generic;
 using System.IO;
@@ -22,9 +25,10 @@ namespace Mod.Classes
 
         public ArchipelagoShopitem(ScoutedItemInfo itemInfo, bool isSticker = true) : base()
         {
-            Cost = 10;
+            Cost = ArchipelagoHelper.SlotData.ShopsanityLocationCost;
             ItemInfo = itemInfo;
             Name = itemInfo.ItemDisplayName;
+            Rarity = ItemRarity.Unique;
 
             if (isSticker)
             {
@@ -103,7 +107,16 @@ namespace Mod.Classes
 
         public override string GetDescription()
         {
-            return $"This is a {ItemInfo.Flags} item for {ItemInfo.Player.Name}";
+            string type = ItemInfo.Flags switch
+            {
+                ItemFlags.Advancement | ItemFlags.NeverExclude => "an especially important",
+                ItemFlags.Advancement => "an important",
+                ItemFlags.NeverExclude => "a useful",
+                ItemFlags.Trap => "a trap",
+                _ => "an unimportant"
+            };
+
+            return $"This is {type} item for {ItemInfo.Player.Name}";
         }
     }
 }

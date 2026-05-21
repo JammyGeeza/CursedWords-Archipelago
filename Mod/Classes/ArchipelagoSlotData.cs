@@ -36,6 +36,11 @@ namespace Mod.Helpers
         /// </summary>
         public List<(int x, int y)> ProgressiveTilePositions { get; private set; } = new List<(int x, int y)>();
 
+        /// <summary>
+        /// Gets or sets the amount that shopsanity items should cost.
+        /// </summary>
+        public int ShopsanityLocationCost { get; private set; } = 0;
+
 
         private ArchipelagoSlotData(Dictionary<string, object> slotData)
         {
@@ -59,8 +64,6 @@ namespace Mod.Helpers
             {
                 try
                 {
-                    Logger.LogInfo($"Goal type: {goalRequirements?.GetType().FullName}");
-
                     if (goalRequirements is IEnumerable enumerable)
                     {
                         GoalRequirements = enumerable
@@ -106,8 +109,6 @@ namespace Mod.Helpers
             {
                 try
                 {
-                    Logger.LogInfo($"Progressive Tile Positions type: {progressiveTilePositions?.GetType().FullName}");
-
                     if (progressiveTilePositions is IEnumerable<object> enumerable)
                     {
                         ProgressiveTilePositions = enumerable
@@ -134,6 +135,21 @@ namespace Mod.Helpers
             {
                 Logger.LogInfo($"\t\t{position.x},{position.y}");
             }
+
+
+            if (slotData.TryGetValue("shopsanity_location_cost", out object shopsanityLocationCost))
+            {
+                try
+                {
+                    ShopsanityLocationCost = Convert.ToInt32(shopsanityLocationCost);
+                }
+                catch
+                {
+                    Logger.LogWarning("Shopsanity Location Cost slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\tShopsanity Location Cost: {ShopsanityLocationCost}");
         }
 
         public static ArchipelagoSlotData Parse(Dictionary<string, object> slotData)
