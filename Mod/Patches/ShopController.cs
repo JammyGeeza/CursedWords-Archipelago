@@ -19,7 +19,7 @@ namespace Mod.Patches
     {
         private static List<long> CurrentlyUsedShopLocations = new List<long>();
 
-        private static int ShopCheckChance = 3;
+        private static int ShopCheckChance = 33;
 
         [HarmonyPatch("OnItemBuyButtonClicked")]
         [HarmonyPrefix]
@@ -180,8 +180,8 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(ShopController)}.GenerateStampInStock prefix!");
 
-            // Ignore if first shop, is not the item at Index 0 or random chance fails (30%)
-            if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 10) < ShopCheckChance)
+            // Ignore if first shop, is not the item at Index 0 or random chance fails (33%)
+            if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 100) < ShopCheckChance)
             {
                 return true;
             }
@@ -229,8 +229,8 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(ShopController)}.GenerateStickerInStock prefix!");
 
-            // Ignore if first shop, is not the item at Index 0 or random chance fails (30%)
-            if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 10) < ShopCheckChance)
+            // Ignore if first shop, is not the item at Index 0 or random chance fails (33%)
+            if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 100) < ShopCheckChance)
             {
                 return true;
             }
