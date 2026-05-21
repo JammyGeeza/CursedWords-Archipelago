@@ -35,7 +35,7 @@ namespace Mod.Patches
                 {
                     // Check if player can afford
                     Player player = GameStatics.GetPlayer();
-                    if (player.Money > archipelagoShopItem.Cost)
+                    if (player.Money >= archipelagoShopItem.Cost)
                     {
                         // Play purchase sound
                         PersistentSound.SingletonSoundController.BuyItem(archipelagoShopItem, false);

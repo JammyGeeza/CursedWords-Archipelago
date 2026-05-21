@@ -34,13 +34,10 @@ namespace Mod.Patches
             // Show 'Buy' button even if player's sticker/stamp slots are full
             if (itemInStock.MyItem is ArchipelagoShopitem archipelagoShopitem)
             {
-                Logger.LogInfo("Item is an archipelago shop item!");
-
                 // Make sure it's not disabled due to not enough money
                 Player player = GameStatics.GetPlayer();
-                if (itemInStock.Cost <= 1000)// player.Money)
+                if (player.Money >= itemInStock.Cost)
                 {
-                    //Logger.LogInfo("Attempting to re-enable buy button...");
                     __instance.StartCoroutine(SetBuyButtonNextFrame(__instance));
                 }
             }
