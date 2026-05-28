@@ -96,9 +96,6 @@ namespace Modd
             foreach (Type type in Lookups.ValidBulkUnlockTypes)
             {
                 BulkUnlock unlock = Activator.CreateInstance(type) as BulkUnlock;
-
-                //Logger.LogInfo($"\t{unlock.Name}");
-
                 BulkUnlock.AllBulkUnlocks.Add(unlock);
             }
 
