@@ -9,6 +9,21 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(Player))]
     internal class Player_Patches : PatchBase
     {
+        /// <summary>
+        /// When adding an item to inventory, ignore if it's an Archipelago Shop Item.
+        /// </summary>
+        [HarmonyPatch(nameof(Player.AddItemToInventory))]
+        [HarmonyPrefix]
+        private static bool OnAddItemToInventory_Prefix(Item item)
+        {
+            Logger.LogInfo($"{nameof(Player)}.{nameof(Player.AddItemToInventory)} prefix!");
+
+            return !(item is ArchipelagoShopitem);
+        }
+
+        /// <summary>
+        /// When money is changed, send location checks for total money earned.
+        /// </summary>
         [HarmonyPatch(nameof(Player.ChangeMoney))]
         [HarmonyPostfix]
         private static void OnChangeMoney_Postfix(Player __instance)
@@ -19,6 +34,9 @@ namespace Mod.Patches
             CursedWordsArchipelago.Instance.TryCheckNumericLocations("earn_money", __instance.CurrentRunProgress.CurrentRunStatistics.TotalCashEarned);
         }
 
+        /// <summary>
+        /// When setting up a character, add locked sticker/stamp slots.
+        /// </summary>
         [HarmonyPatch(nameof(Player.SetCharacter))]
         [HarmonyPostfix]
         private static void OnSetCharacter_Postfix(Player __instance)

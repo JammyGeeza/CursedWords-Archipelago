@@ -2,6 +2,7 @@
 using Mod.Helpers;
 using Modd;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,11 +48,16 @@ namespace Mod.Patches
 
                     Logger.LogInfo($"Locking tile at co-ordinate {coordinate.x},{coordinate.y}");
 
+                    // Set as 'gone' (as in 'eaten')
+                    tile.MyTile.HasBeenDestroyed = true;
+                    tile.MyTile.Gone = true;
+
                     GameObject tileGO = Traverse.Create(tile)
                         .Field("_tileGO")
                         .GetValue<GameObject>();
 
                     // Hide the tile
+                    // TODO: Would prefer it to be .SetCrossOut() but for some reason doesn't cross it out.
                     tileGO.SetActive(false);
                 }
                 catch

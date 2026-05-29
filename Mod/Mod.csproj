@@ -1,155 +1,83 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6F655C05-1639-44F0-AF73-CF2C8FC3AB8B}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mod</RootNamespace>
-    <AssemblyName>Mod</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GamePath>D:\SteamLibrary\steamapps\common\Cursed Words</GamePath>
-    <BepInExPath>$(GamePath)\BepInEx</BepInExPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Archipelago.MultiClient.Net, Version=6.7.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Archipelago.MultiClient.Net.6.7.1\lib\net45\Archipelago.MultiClient.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Archipelago.MultiClient.Net.6.7.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="0Harmony">
-      <HintPath>$(BepInExPath)\core\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>$(GamePath)\Cursed Words_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>$(BepInExPath)\core\BepInEx.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="TMPro">
-      <HintPath>$(GamePath)\Cursed Words_Data\Managed\Unity.TextMeshPro.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.UIModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Classes\APStampPadlock.cs" />
-    <Compile Include="Classes\APStickerPadlock.cs" />
-    <Compile Include="Classes\ArchipelagoSlotData.cs" />
-    <Compile Include="Classes\CardsBuildStampsUnlock.cs" />
-    <Compile Include="Classes\ChessBuildStampsUnlock.cs" />
-    <Compile Include="Classes\CardsBuildStickersUnlock.cs" />
-    <Compile Include="Classes\CurrencyBuildStampsUnlock.cs" />
-    <Compile Include="Classes\ChessBuildStickersUnlock.cs" />
-    <Compile Include="Classes\CurseBuildStampsUnlock.cs" />
-    <Compile Include="Classes\CurrencyBuildStickersUnlock.cs" />
-    <Compile Include="Classes\CurseBuildStickersUnlock.cs" />
-    <Compile Include="Classes\NumberBuildStampsUnlock.cs" />
-    <Compile Include="Classes\NumberBuildStickersUnlock.cs" />
-    <Compile Include="Classes\ScatteredBuildStampsUnlock.cs" />
-    <Compile Include="Classes\ShinyBuildStampsUnlock.cs" />
-    <Compile Include="Classes\ScatteredBuildStickersUnlock.cs" />
-    <Compile Include="Classes\ShinyBuildStickersUnlock.cs" />
-    <Compile Include="Classes\VoidBuildStampsUnlock.cs" />
-    <Compile Include="Classes\VoidBuildStickersUnlock.cs" />
-    <Compile Include="Classes\RedBuildStickersUnlock.cs" />
-    <Compile Include="Classes\RedBuildStampsUnlock.cs" />
-    <Compile Include="Classes\BlueBuildStampsUnlock.cs" />
-    <Compile Include="Classes\BlueBuildStickersUnlock.cs" />
-    <Compile Include="Classes\RainbowBuildStampsUnlock.cs" />
-    <Compile Include="Classes\RainbowBuildStickersUnlock.cs" />
-    <Compile Include="Extensions\GridLayoutControllerExtensions.cs" />
-    <Compile Include="Extensions\EncounterControllerExtensions.cs" />
-    <Compile Include="Extensions\ShopControllerExtensions.cs" />
-    <Compile Include="GameObjects\ArchipelagoDialog.cs" />
-    <Compile Include="GameObjects\ArchipelagoLoginController.cs" />
-    <Compile Include="Helpers\ArchipelagoHelper.cs" />
-    <Compile Include="Classes\ArchipelagoData.cs" />
-    <Compile Include="Lookups\Lookups.cs" />
-    <Compile Include="Mappings\ItemMappings.cs" />
-    <Compile Include="Mod.cs" />
-    <Compile Include="Patches\GameStatics.cs" />
-    <Compile Include="Patches\InventoryVisualController.cs" />
-    <Compile Include="Patches\PatchBase.cs" />
-    <Compile Include="Patches\Player.cs" />
-    <Compile Include="Patches\BulkUnlock.cs" />
-    <Compile Include="Patches\GridLayoutController.cs" />
-    <Compile Include="Patches\Tile.cs" />
-    <Compile Include="Patches\ItemPools.cs" />
-    <Compile Include="Patches\Character.cs" />
-    <Compile Include="Patches\ShopController.cs" />
-    <Compile Include="Patches\ShopTile.cs" />
-    <Compile Include="Patches\ShopItemSlot.cs" />
-    <Compile Include="Patches\MusicController.cs" />
-    <Compile Include="Patches\EncounterController.cs" />
-    <Compile Include="Patches\SaveFile.cs" />
-    <Compile Include="Patches\TransitionController.cs" />
-    <Compile Include="Patches\SaveFileUtility.cs" />
-    <Compile Include="Patches\SaveSlotController.cs" />
-    <Compile Include="Patches\SaveManager.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>set target=D:\SteamLibrary\steamapps\common\Cursed Words\BepInEx\plugins\Archipelago
-XCOPY "$(TargetDir)" "%25target%25" /S /I /Y</PostBuildEvent>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<RootNamespace>Mod</RootNamespace>
+		<AssemblyName>Mod</AssemblyName>
+		<GamePath>D:\SteamLibrary\steamapps\common\Cursed Words</GamePath>
+		<BepInExPath>$(GamePath)\BepInEx</BepInExPath>
+	</PropertyGroup>
+	<ItemGroup>
+	  <None Remove="Sprites\archipelago.png" />
+	  <None Remove="Sprites\SDF\archipelago.png" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="Sprites\archipelago.png" />
+	  <EmbeddedResource Include="Sprites\SDF\archipelago.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="Archipelago.MultiClient.Net">
+			<HintPath>..\packages\Archipelago.MultiClient.Net.6.7.1\lib\net45\Archipelago.MultiClient.Net.dll</HintPath>
+		</Reference>
+		<Reference Include="Newtonsoft.Json">
+			<HintPath>..\packages\Archipelago.MultiClient.Net.6.7.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+		</Reference>
+		<Reference Include="0Harmony">
+			<HintPath>$(BepInExPath)\core\0Harmony.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>$(GamePath)\Cursed Words_Data\Managed\Assembly-CSharp.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="BepInEx">
+			<HintPath>$(BepInExPath)\core\BepInEx.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="nickeltin.Core.Runtime">
+			<HintPath>$(GamePath)\Cursed Words_Data\Managed\nickeltin.Core.Runtime.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="nickeltin.SDF.Runtime">
+			<HintPath>$(GamePath)\Cursed Words_Data\Managed\nickeltin.SDF.Runtime.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="TMPro">
+			<HintPath>$(GamePath)\Cursed Words_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ImageConversionModule">
+			<HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.TextRenderingModule">
+			<HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UI">
+			<HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.UI.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UIModule">
+			<HintPath>$(GamePath)\Cursed Words_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="Build">
+		<ItemGroup>
+			<FilesToCopy Include="$(OutputPath)*.*" Exclude="$(OutputPath)*.pdb;$(OutputPath)*.xml;$(OutputPath)*.json" />
+			<FilesToCopy Include="Sprites\archipelago.png" />
+		</ItemGroup>
+		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(BepInExPath)\plugins\Archipelago" />
+		<Copy SourceFiles="Sprites\archipelago.png" DestinationFolder="$(BepInExPath)\plugins\Archipelago\Sprites" />
+	</Target>
 </Project>

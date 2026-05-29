@@ -12,6 +12,7 @@ using Mod.Patches;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -47,6 +48,11 @@ namespace Modd
         {
             get => Logger;
         }
+
+        /// <summary>
+        /// All un-checked shop stamp checks
+        /// </summary>
+        public Dictionary<long, ScoutedItemInfo> RemainingShopChecks { get; set; } = new Dictionary<long, ScoutedItemInfo>();
 
         #endregion
 
@@ -90,9 +96,6 @@ namespace Modd
             foreach (Type type in Lookups.ValidBulkUnlockTypes)
             {
                 BulkUnlock unlock = Activator.CreateInstance(type) as BulkUnlock;
-
-                //Logger.LogInfo($"\t{unlock.Name}");
-
                 BulkUnlock.AllBulkUnlocks.Add(unlock);
             }
         }
@@ -118,7 +121,7 @@ namespace Modd
             {
                 Logger.LogInfo($"F2 key-up");
 
-                //// Get controller
+                // Get controller
                 //if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
                 //{
                 //    // Complete current encounter
@@ -153,6 +156,15 @@ namespace Modd
         }
 
         /// <summary>
+        /// Try to check a location by its name.
+        /// </summary>
+        /// <param name="locationName">The name of the location.</param>
+        public void TryCheckLocation(string locationName)
+        {
+            QueueAction(() => CheckLocation(locationName));
+        }
+
+        /// <summary>
         /// Attempt to check an encounter location.
         /// </summary>
         /// <param name="character">The character to check against.</param>
@@ -163,7 +175,7 @@ namespace Modd
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(character, stage, nodeType) == true))
             {
                 Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
-                QueueAction(() => CheckLocation(criteria.LocationName));
+                TryCheckLocation(criteria.LocationName);
             }
         }
 
@@ -176,7 +188,7 @@ namespace Modd
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnGenericAction?.Invoke(action) == true))
             {
                 Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
-                QueueAction(() => CheckLocation(criteria.LocationName));
+                TryCheckLocation(criteria.LocationName);
             }
         }
 
@@ -190,7 +202,7 @@ namespace Modd
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnNumericAction?.Invoke(action, amount) == true))
             {
                 Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
-                QueueAction(() => CheckLocation(criteria.LocationName));
+                TryCheckLocation(criteria.LocationName);
             }
         }
 
@@ -243,15 +255,29 @@ namespace Modd
             foreach (long checkedLocation in newCheckedLocations)
             {
                 Logger.LogInfo($"Checked location updated: {ArchipelagoHelper.GetLocationName(checkedLocation)}");
+
+                // Attempt to remove from unchecked shop items
+                RemainingShopChecks.Remove(checkedLocation);
             }
         }
 
         /// <summary>
         /// Event handler for connection established to archipelago session.
         /// </summary>
-        private void ArchipelagoHelper_OnConnected()
+        private async void ArchipelagoHelper_OnConnected()
         {
             Logger.LogMessage("Connected to archipelago");
+
+            // Get un-checked shop checks
+            List<long> uncheckedShopChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Shop Item");
+            if (uncheckedShopChecks.Count == 0)
+            {
+                return;
+            }
+
+            // Scout and store un-checked shop checks
+            RemainingShopChecks = await ArchipelagoHelper.ScoutLocationsByIdAsync(uncheckedShopChecks.ToArray());
+            RemainingShopChecks = RemainingShopChecks.OrderBy((kvp) => kvp.Value.LocationName).ToDictionary(x => x.Key, x => x.Value);
         }
 
         /// <summary>

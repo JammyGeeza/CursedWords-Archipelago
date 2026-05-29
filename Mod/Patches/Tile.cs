@@ -13,6 +13,39 @@ namespace Mod.Patches
     internal class Tile_Patches : PatchBase
     {
         /// <summary>
+        /// Prevent chess piece being set if tile type not yet received.
+        /// </summary>
+        [HarmonyPatch(nameof(Tile.SetChessPiece), typeof(ChessPiece), typeof(bool))]
+        [HarmonyPrefix]
+        public static bool OnSetChessPiece_Prefix(Tile __instance, ref ChessPiece piece, ref bool isWhite)
+        {
+            Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetChessPiece)} prefix!");
+            return ArchipelagoHelper.HasReceivedItem("Chess Tiles");
+        }
+
+        /// <summary>
+        /// Prevent currency being set if tile type not yet received.
+        /// </summary>
+        [HarmonyPatch(nameof(Tile.SetCurrency))]
+        [HarmonyPrefix]
+        public static bool OnSetCurrency_Prefix(Tile __instance, string currency)
+        {
+            Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetCurrency)} prefix!");
+            return ArchipelagoHelper.HasReceivedItem("Currency Tiles");
+        }
+
+        /// <summary>
+        /// Prevent fraction being set if tile type not yet received.
+        /// </summary>
+        [HarmonyPatch(nameof(Tile.SetFractionNumbers))]
+        [HarmonyPrefix]
+        public static bool OnSetFractionNumbers_Prefix(Tile __instance, List<int> fractionNumbers)
+        {
+            Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetCurrency)} prefix!");
+            return ArchipelagoHelper.HasReceivedItem("Fraction Tiles");
+        }
+
+        /// <summary>
         /// Prevent tiles with specific glyph types appearing if not yet received.
         /// </summary>
         [HarmonyPatch(nameof(Tile.SetGlyphType))]
@@ -79,6 +112,17 @@ namespace Mod.Patches
             }
 
             Logger.LogInfo($"Output glyph type: {glyphType}");
+        }
+
+        /// <summary>
+        /// Prevent number being set if tile type not yet received.
+        /// </summary>
+        [HarmonyPatch(nameof(Tile.SetNumber))]
+        [HarmonyPrefix]
+        public static bool OnSetNumber_Prefix(Tile __instance, int number)
+        {
+            Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetCurrency)} prefix!");
+            return ArchipelagoHelper.HasReceivedItem("Number Tiles");
         }
 
         /// <summary>

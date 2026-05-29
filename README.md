@@ -57,7 +57,9 @@ _More items will be added in future development_
       ├── Cursed Words_Data/
       ├── ...
       ├── Cursed Words.exe
-      └── ...
+      ├── ...
+      ├── doorstop_config.ini
+      └── winhttp.dll
       ```
 3. Launch the game - a console window should appear and the game will take slightly longer to start than normal.
 4. Once the game reaches the save selection menu, exit the game. It should have created some additional files in the `/BepInEx` folder.
@@ -73,7 +75,9 @@ _More items will be added in future development_
       ├── Cursed Words_Data/
       ├── ...
       ├── Cursed Words.exe
-      └── ...
+      ├── ...
+      ├── doorstop_config.ini
+      └── winhttp.dll
       ```
 5. You are now ready to install the mod client.
 
@@ -93,7 +97,9 @@ _More items will be added in future development_
       ├── Cursed Words_Data/
       ├── ...
       ├── Cursed Words.exe
-      └── ...
+      ├── ...
+      ├── doorstop_config.ini
+      └── winhttp.dll
    ```
 3. Start the game - you should notice that any previous game saves are not shown. Don't worry, this is intentional and your saves are safe! The mod client creates separate save files for Archipelago. 
 
