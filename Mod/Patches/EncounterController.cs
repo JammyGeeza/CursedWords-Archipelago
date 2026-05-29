@@ -23,7 +23,7 @@ namespace Mod.Patches
             Logger.LogInfo("EncounterController.GetGridDimensions postfix!");
 
             // Ignore if progressive grid size disabled
-            if (!ArchipelagoHelper.SlotData.ProgressiveGridSize)
+            if (!ArchipelagoHelper.SlotData.ShuffleGridSize)
             {
                 return;
             }
@@ -84,9 +84,15 @@ namespace Mod.Patches
         private static void ShowScoreCalculation_Prefix(ScorePacket finalScore)
         {
             Logger.LogInfo($"{nameof(EncounterController)}.ShowScoreCalculation Prefix!");
-            Logger.LogInfo($"Word score: {finalScore.Score}");
+
+            // Ignore if scoresanity disabled
+            if (!ArchipelagoHelper.SlotData.Scoresanity)
+            {
+                return;
+            }
 
             // Attempt to check word length locations
+            Logger.LogInfo($"Word score: {finalScore.Score}");
             CursedWordsArchipelago.Instance.TryCheckNumericLocations("word_score", finalScore.Score);
         }
 
@@ -111,9 +117,15 @@ namespace Mod.Patches
         private static void SubmitWord_Postfix(EncounterController __instance, List<TileSelection> tiles)
         {
             Logger.LogInfo($"{nameof(EncounterController)}.{nameof(EncounterController.SubmitWord)} Postfix!");
-            Logger.LogInfo($"Word length: {tiles.Count}");
+
+            // Ignore if lengthsanity disabled
+            if (!ArchipelagoHelper.SlotData.Lengthsanity)
+            {
+                return;
+            }
 
             // Attempt to check word length locations
+            Logger.LogInfo($"Word length: {tiles.Count}");
             CursedWordsArchipelago.Instance.TryCheckNumericLocations("word_length", tiles.Count);
         }
     }

@@ -27,19 +27,39 @@ namespace Mod.Helpers
         public string[] GoalRequirements { get; private set; } = Array.Empty<string>();
 
         /// <summary>
-        /// Gets or sets whether progressive grid size is enabled.
+        /// Gets or sets whether lengthsanity is enabled.
         /// </summary>
-        public bool ProgressiveGridSize { get; private set; } = false;
+        public bool Lengthsanity { get; private set; } = false;
+
+        /// <summary>
+        /// Gets or sets whether shuffle grid size is enabled.
+        /// </summary>
+        public bool ShuffleGridSize { get; private set; } = false;
+
+        /// <summary>
+        /// Gets or sets whether shuffle inventory slots is enabled.
+        /// </summary>
+        public bool ShuffleInventorySlots { get; private set; } = false;
 
         /// <summary>
         /// Gets or sets the locked tile positions.
         /// </summary>
-        public List<(int x, int y)> ProgressiveTilePositions { get; private set; } = new List<(int x, int y)>();
+        public List<(int x, int y)> ShuffleTilePositions { get; private set; } = new List<(int x, int y)>();
+
+        /// <summary>
+        /// Gets or sets whether scoresanity is enabled.
+        /// </summary>
+        public bool Scoresanity { get; private set; } = false;
+
+        /// <summary>
+        /// Gets or sets whether shopsanity is enabled.
+        /// </summary>
+        public bool Shopsanity { get; private set; } = false;
 
         /// <summary>
         /// Gets or sets the amount that shopsanity items should cost.
         /// </summary>
-        public int ShopsanityLocationCost { get; private set; } = 0;
+        public int ShopsanityCost { get; private set; } = 0;
 
 
         private ArchipelagoSlotData(Dictionary<string, object> slotData)
@@ -91,27 +111,41 @@ namespace Mod.Helpers
                 Logger.LogInfo($"\t\t{goalRequirement}");
             }
 
-            if (slotData.TryGetValue("progressive_grid_size", out object progressiveGridSize))
+            if (slotData.TryGetValue("shuffle_grid_size", out object shuffleGridSize))
             {
                 try
                 {
-                    ProgressiveGridSize = Convert.ToBoolean(progressiveGridSize);
+                    ShuffleGridSize = Convert.ToBoolean(shuffleGridSize);
                 }
                 catch
                 {
-                    Logger.LogWarning("Progressive Grid Size slot data in unexpected format, defaulting to 'false'");
+                    Logger.LogWarning("Shuffle Grid Size slot data in unexpected format, defaulting to 'false'");
                 }
             }
 
-            Logger.LogInfo($"\tProgressive Grid Size: {ProgressiveGridSize}");
+            Logger.LogInfo($"\tShuffle Grid Size: {ShuffleGridSize}");
 
-            if (slotData.TryGetValue("progressive_tile_positions", out object progressiveTilePositions))
+            if (slotData.TryGetValue("shuffle_inventory_slots", out object shuffleInventorySlots))
             {
                 try
                 {
-                    if (progressiveTilePositions is IEnumerable<object> enumerable)
+                    ShuffleInventorySlots = Convert.ToBoolean(shuffleInventorySlots);
+                }
+                catch
+                {
+                    Logger.LogWarning("Shuffle Inventory Slots slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\tShuffle Inventory Slots: {ShuffleInventorySlots}");
+
+            if (slotData.TryGetValue("shuffle_tile_positions", out object shuffleTilePositions))
+            {
+                try
+                {
+                    if (shuffleTilePositions is IEnumerable<object> enumerable)
                     {
-                        ProgressiveTilePositions = enumerable
+                        ShuffleTilePositions = enumerable
                             .Cast<IEnumerable>()
                             .Where(coord => coord != null)
                             .Select(coord => coord.Cast<object>().Take(2).ToList())
@@ -126,30 +160,71 @@ namespace Mod.Helpers
                 }
                 catch
                 {
-                    Logger.LogWarning("Progressive Tile Positions slot data in unexpected format, defaulting to none");
+                    Logger.LogWarning("Shuffle Tile Positions slot data in unexpected format, defaulting to none");
                 }
             }
 
-            Logger.LogInfo("\tProgressive Tile Positions:");
-            foreach ((int x, int y) position in ProgressiveTilePositions)
+            Logger.LogInfo("\tShuffle Tile Positions:");
+            foreach ((int x, int y) position in ShuffleTilePositions)
             {
                 Logger.LogInfo($"\t\t{position.x},{position.y}");
             }
 
-
-            if (slotData.TryGetValue("shopsanity_location_cost", out object shopsanityLocationCost))
+            if (slotData.TryGetValue("lengthsanity", out object lengthsanity))
             {
                 try
                 {
-                    ShopsanityLocationCost = Convert.ToInt32(shopsanityLocationCost);
+                    Lengthsanity = Convert.ToBoolean(lengthsanity);
                 }
                 catch
                 {
-                    Logger.LogWarning("Shopsanity Location Cost slot data in unexpected format, defaulting to 'false'");
+                    Logger.LogWarning("Lengthsanity slot data in unexpected format, defaulting to 'false'");
                 }
             }
 
-            Logger.LogInfo($"\tShopsanity Location Cost: {ShopsanityLocationCost}");
+            Logger.LogInfo($"\tLengthsanity: {Lengthsanity}");
+
+            if (slotData.TryGetValue("scoresanity", out object scoresanity))
+            {
+                try
+                {
+                    Scoresanity = Convert.ToBoolean(scoresanity);
+                }
+                catch
+                {
+                    Logger.LogWarning("Scoresanity slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\tScoresanity: {Scoresanity}");
+
+            if (slotData.TryGetValue("shopsanity", out object shopsanity))
+            {
+                try
+                {
+                    Shopsanity = Convert.ToBoolean(shopsanity);
+                }
+                catch
+                {
+                    Logger.LogWarning("Shopsanity slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\tShopsanity: {Shopsanity}");
+
+            if (slotData.TryGetValue("shopsanity_cost", out object shopsanityCost))
+            {
+                try
+                {
+                    ShopsanityCost = Convert.ToInt32(shopsanityCost);
+                }
+                catch
+                {
+                    Logger.LogWarning("Shopsanity Cost slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\tShopsanity Cost: {ShopsanityCost}");
         }
 
         public static ArchipelagoSlotData Parse(Dictionary<string, object> slotData)

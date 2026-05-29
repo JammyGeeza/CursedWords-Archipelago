@@ -37,9 +37,9 @@ namespace Mod.Patches
             Logger.LogInfo($"{nameof(GridLayoutController)}.{nameof(GridLayoutController.ApplyConsumableTile)} postfix!");
 
             int receivedTilePositions = ArchipelagoHelper.AmountOfItemReceived("Progressive Tile Position");
-            for (int i = receivedTilePositions; i < ArchipelagoHelper.SlotData.ProgressiveTilePositions.Count; i++)
+            for (int i = receivedTilePositions; i < ArchipelagoHelper.SlotData.ShuffleTilePositions.Count; i++)
             {
-                (int x, int y) coordinate = ArchipelagoHelper.SlotData.ProgressiveTilePositions[i];
+                (int x, int y) coordinate = ArchipelagoHelper.SlotData.ShuffleTilePositions[i];
 
                 try
                 {

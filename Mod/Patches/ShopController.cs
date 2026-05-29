@@ -172,13 +172,19 @@ namespace Mod.Patches
         }
 
         /// <summary>
-        /// When generating goods in stock, re-populate the item pools so any received sticker/stamp bundles are available.
+        /// When generating goods in stock, roll chance for Shopsanity location checks and populate.
         /// </summary>
         [HarmonyPatch("GenerateStampInStock")]
         [HarmonyPrefix]
         private static bool OnGenerateStampInStock_Prefix(ShopController __instance, int index, bool isFirstShop, bool freeItem)
         {
             Logger.LogInfo($"{nameof(ShopController)}.GenerateStampInStock prefix!");
+
+            // Ignore if shopsanity disabled
+            if (!ArchipelagoHelper.SlotData.Shopsanity)
+            {
+                return true;
+            }
 
             // Ignore if first shop, is not the item at Index 0 or random chance fails (33%)
             if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 100) < ShopCheckChance)
@@ -221,13 +227,19 @@ namespace Mod.Patches
         }
 
         /// <summary>
-        /// When generating goods in stock, re-populate the item pools so any received sticker/stamp bundles are available.
+        /// When generating goods in stock, roll chance for Shopsanity location checks and populate.
         /// </summary>
         [HarmonyPatch("GenerateStickerInStock")]
         [HarmonyPrefix]
         private static bool OnGenerateStickerInStock_Prefix(ShopController __instance, int index, bool isFirstShop, bool freeItem)
         {
             Logger.LogInfo($"{nameof(ShopController)}.GenerateStickerInStock prefix!");
+
+            // Ignore if shopsanity disabled
+            if (!ArchipelagoHelper.SlotData.Shopsanity)
+            {
+                return true;
+            }
 
             // Ignore if first shop, is not the item at Index 0 or random chance fails (33%)
             if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 100) < ShopCheckChance)
