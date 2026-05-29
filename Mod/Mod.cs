@@ -98,19 +98,6 @@ namespace Modd
                 BulkUnlock unlock = Activator.CreateInstance(type) as BulkUnlock;
                 BulkUnlock.AllBulkUnlocks.Add(unlock);
             }
-
-            DustyCoffin dc = new DustyCoffin();
-            var sprite = dc.SpriteData.First().GetSprite();
-
-            Logger.LogInfo($"Existing sprite texture size: {sprite.texture.width}x{sprite.texture.height}");
-            Logger.LogInfo($"Existing sprite rect: {sprite.rect}");
-            Logger.LogInfo($"Existing sprite bounds: {sprite.bounds}");
-
-            var sdfSprite = dc.SpriteData.First().GetSDFSprite();
-            Logger.LogInfo($"Existing SDF sprite offset: {sdfSprite.Metadata.BorderOffset}");
-            Logger.LogInfo($"Source sprite: {sdfSprite.Metadata.SourceSprite.texture.width}x{sdfSprite.Metadata.SourceSprite.texture.height} format: {sdfSprite.Metadata.SourceSprite.texture.format}");
-            Logger.LogInfo($"SDF sprite: {sdfSprite.Metadata.SDFSprite.texture.width}x{sdfSprite.Metadata.SDFSprite.texture.height} format: {sdfSprite.Metadata.SDFSprite.texture.format}");
-
         }
 
         /// <summary>
