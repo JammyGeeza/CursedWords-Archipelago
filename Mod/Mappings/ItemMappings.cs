@@ -41,7 +41,7 @@ namespace Mod.Mappings
             { "Chess Stamps", () => UnlockBulkUnlock(new ChessBuildStampsUnlock()) },
             { "Rainbow Stamps", () => UnlockBulkUnlock(new RainbowBuildStampsUnlock()) },
             { "Red Stamps", () => UnlockBulkUnlock(new RedBuildStampsUnlock()) },
-            { "Scattered Stamps", () => UnlockBulkUnlock(new ScatteredBuildStampsUnlock()) },
+            { "Scatter Stamps", () => UnlockBulkUnlock(new ScatteredBuildStampsUnlock()) },
             { "Shiny Stamps", () => UnlockBulkUnlock(new ShinyBuildStampsUnlock()) },
             { "Void Stamps", () => UnlockBulkUnlock(new VoidBuildStampsUnlock()) },
 
@@ -51,7 +51,7 @@ namespace Mod.Mappings
             { "Chess Stickers", () => UnlockBulkUnlock(new ChessBuildStickersUnlock()) },
             { "Rainbow Stickers", () => UnlockBulkUnlock(new RainbowBuildStickersUnlock()) },
             { "Red Stickers", () => UnlockBulkUnlock(new RedBuildStickersUnlock()) },
-            { "Scattered Stickers", () => UnlockBulkUnlock(new ScatteredBuildStickersUnlock()) },
+            { "Scatter Stickers", () => UnlockBulkUnlock(new ScatteredBuildStickersUnlock()) },
             { "Shiny Stickers", () => UnlockBulkUnlock(new ShinyBuildStickersUnlock()) },
             { "Void Stickers", () => UnlockBulkUnlock(new VoidBuildStickersUnlock()) },
 
