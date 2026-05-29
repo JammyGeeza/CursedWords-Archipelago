@@ -41,6 +41,7 @@ namespace Mod.Mappings
             { "Chess Stamps", () => UnlockBulkUnlock(new ChessBuildStampsUnlock()) },
             { "Rainbow Stamps", () => UnlockBulkUnlock(new RainbowBuildStampsUnlock()) },
             { "Red Stamps", () => UnlockBulkUnlock(new RedBuildStampsUnlock()) },
+            { "Scattered Stamps", () => UnlockBulkUnlock(new ScatteredBuildStampsUnlock()) },
             { "Shiny Stamps", () => UnlockBulkUnlock(new ShinyBuildStampsUnlock()) },
             { "Void Stamps", () => UnlockBulkUnlock(new VoidBuildStampsUnlock()) },
 
@@ -50,6 +51,7 @@ namespace Mod.Mappings
             { "Chess Stickers", () => UnlockBulkUnlock(new ChessBuildStickersUnlock()) },
             { "Rainbow Stickers", () => UnlockBulkUnlock(new RainbowBuildStickersUnlock()) },
             { "Red Stickers", () => UnlockBulkUnlock(new RedBuildStickersUnlock()) },
+            { "Scattered Stickers", () => UnlockBulkUnlock(new ScatteredBuildStickersUnlock()) },
             { "Shiny Stickers", () => UnlockBulkUnlock(new ShinyBuildStickersUnlock()) },
             { "Void Stickers", () => UnlockBulkUnlock(new VoidBuildStickersUnlock()) },
 
@@ -220,6 +222,8 @@ namespace Mod.Mappings
             new LocationCriteria("Word Length 8") { OnNumericAction = (action, length) => action == "word_length" && length == 8 },
             new LocationCriteria("Word Length 9") { OnNumericAction = (action, length) => action == "word_length" && length == 9 },
             new LocationCriteria("Word Length 10") { OnNumericAction = (action, length) => action == "word_length" && length == 10 },
+            new LocationCriteria("Word Length 11") { OnNumericAction = (action, length) => action == "word_length" && length == 11 },
+            new LocationCriteria("Word Length 12") { OnNumericAction = (action, length) => action == "word_length" && length == 12 },
 
             // Word scores
             new LocationCriteria("Word Score > 5") { OnNumericAction = (action, score) => action == "word_score" && score >= 5 },
@@ -232,6 +236,7 @@ namespace Mod.Mappings
             new LocationCriteria("Word Score > 500") { OnNumericAction = (action, score) => action == "word_score" && score >= 500 },
             new LocationCriteria("Word Score > 750") { OnNumericAction = (action, score) => action == "word_score" && score >= 750 },
             new LocationCriteria("Word Score > 1000") { OnNumericAction = (action, score) => action == "word_score" && score >= 1000 },
+            new LocationCriteria("Word Score > 1500") { OnNumericAction = (action, score) => action == "word_score" && score >= 1500 },
 
             #endregion
         };
