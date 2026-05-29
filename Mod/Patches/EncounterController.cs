@@ -23,7 +23,7 @@ namespace Mod.Patches
             Logger.LogInfo("EncounterController.GetGridDimensions postfix!");
 
             // Ignore if progressive grid size disabled
-            if (!ArchipelagoHelper.SlotData.ProgressiveGridSize)
+            if (!ArchipelagoHelper.SlotData.ShuffleGridSize)
             {
                 return;
             }
