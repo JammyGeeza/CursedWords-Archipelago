@@ -6,6 +6,7 @@ using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using BepInEx.Logging;
 using Modd;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -47,6 +48,11 @@ namespace Mod.Helpers
         {
             get => Session != null && Session.Socket.Connected;
         }
+
+        /// <summary>
+        /// Gets the handled items for the currently connected slot.
+        /// </summary>
+        public static Dictionary<string, int> HandledItems { get; private set; }
 
         /// <summary>
         /// Gets the room info for the currently connected slot.
@@ -202,6 +208,10 @@ namespace Mod.Helpers
 
                 Logger.LogInfo($"Successfully connected to archipelago session!");
 
+                // Get handled items
+                JToken? handledItems = await Session.DataStorage[Scope.Slot, "handled_items"].GetAsync();
+                HandledItems = handledItems?.ToObject<Dictionary<string, int>>() ?? new Dictionary<string, int>();
+
                 // Trigger connected event
                 OnConnected?.Invoke();
             }
@@ -233,6 +243,19 @@ namespace Mod.Helpers
         }
 
         /// <summary>
+        /// Get the amount of times a specific item has been handled.
+        /// </summary>
+        /// <param name="itemName">The item name to check.</param>
+        /// <returns>The amount of times the item name has been handled or -1 if not connected.</returns>
+        public static int AmountOfItemHandled(string itemName)
+        {
+            if (!IsConnected)
+                return -1;
+
+            return HandledItems.GetValueOrDefault(itemName, 0);
+        }
+
+        /// <summary>
         /// Get the amount of times a specific item has been received.
         /// </summary>
         /// <param name="itemName">The item name to check.</param>
@@ -243,6 +266,19 @@ namespace Mod.Helpers
                 return -1;
 
             return Session.Items.AllItemsReceived.Count(item => item.ItemName.Equals(itemName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// Get the difference between how many times an item has been handled vs how many times it has been received.
+        /// </summary>
+        /// <param name="itemName">The name of the item to check.</param>
+        /// <returns>The calculated difference or -1 if not connected.</returns>
+        public static int GetItemCountDifference(string itemName)
+        {
+            if (!IsConnected)
+                return -1;
+
+            return AmountOfItemReceived(itemName) - AmountOfItemHandled(itemName);
         }
 
         /// <summary>
@@ -364,6 +400,23 @@ namespace Mod.Helpers
                 Logger.LogWarning($"Checking location: {locationName}");
                 Session.Locations.CompleteLocationChecks(new long[] { locationId });
             }
+        }
+
+        /// <summary>
+        /// Increment the handled count for a specific item.
+        /// </summary>
+        /// <param name="itemName">The name of the item.</param>
+        /// <param name="amount">The amount to increment by.</param>
+        public static void IncrementHandledItem(string itemName, int amount)
+        {
+            if (!IsConnected)
+                return;
+
+            // Store the new value in the dictionary
+            HandledItems[itemName] = HandledItems.GetValueOrDefault(itemName, 0) + amount;
+
+            // Save the new dict in the session data storage
+            Session.DataStorage[Scope.Slot, "handled_items"] = JObject.FromObject(HandledItems);
         }
 
         private static void Cleanup()

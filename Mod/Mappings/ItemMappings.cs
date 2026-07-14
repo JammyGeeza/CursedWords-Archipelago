@@ -11,6 +11,32 @@ using System.Linq;
 
 namespace Mod.Mappings
 {
+    public enum ActionCue
+    {
+        None,
+        Encounter,
+        // Other cues here, if any...
+    }
+
+    public class CuedAction
+    {
+        /// <summary>
+        /// The action to be performed.
+        /// </summary>
+        public Func<IEnumerator> Action { get; set; }
+
+        /// <summary>
+        /// The cue required for the action to be performed.
+        /// </summary>
+        public ActionCue Cue { get; set; } = ActionCue.None;
+
+        public CuedAction(Func<IEnumerator> action, ActionCue cue = ActionCue.None)
+        {
+            Action = action;
+            Cue = cue;
+        }
+    }
+
     public static class ItemMappings
     {
         private static ManualLogSource Logger
@@ -18,48 +44,48 @@ namespace Mod.Mappings
             get => CursedWordsArchipelago.Instance.LogSource;
         }
 
-        public static Dictionary<string, Func<IEnumerator>> Map = new Dictionary<string, Func<IEnumerator>>()
+        public static Dictionary<string, CuedAction> Map = new Dictionary<string, CuedAction>()
         {
             // Characters
-            { "Rodman", () => UnlockCharacter(typeof(WetDennis)) },
-            { "Nina Nix", () => UnlockCharacter(typeof(NinaNix)) },
-            { "Hayley Bayles", () => UnlockCharacter(typeof(HayleyBayles)) },
-            { "Bones the Dog", () => UnlockCharacter(typeof(BonesTheDog)) },
-            { "Sam Gambit", () => UnlockCharacter(typeof(SamGambit)) },
-            { "Octacles", () => UnlockCharacter(typeof(Octacles)) },
+            { "Rodman", new CuedAction(() => UnlockCharacter(typeof(WetDennis))) },
+            { "Nina Nix", new CuedAction(() => UnlockCharacter(typeof(NinaNix))) },
+            { "Hayley Bayles", new CuedAction(() => UnlockCharacter(typeof(HayleyBayles))) },
+            { "Bones the Dog", new CuedAction(() => UnlockCharacter(typeof(BonesTheDog))) },
+            { "Sam Gambit", new CuedAction(() => UnlockCharacter(typeof(SamGambit))) },
+            { "Octacles", new CuedAction(() => UnlockCharacter(typeof(Octacles))) },
 
             // Re-rolls
-            { "Progressive Encounter Re-roll", () => IncrementReroll() },
+            { "Progressive Encounter Re-roll", new CuedAction(() => IncrementReroll()) },
 
             // Slots
-            { "Progressive Stamp Slot", () => FreeStampSlot() },
-            { "Progressive Sticker Slot", () => FreeStickerSlot() },
+            { "Progressive Stamp Slot", new CuedAction(() => FreeStampSlot()) },
+            { "Progressive Sticker Slot", new CuedAction(() => FreeStickerSlot()) },
 
             // Stamps
-            { "Blue Stamps", () => UnlockBulkUnlock(new BlueBuildStampsUnlock()) },
-            { "Card Stamps", () => UnlockBulkUnlock(new CardsBuildStampsUnlock()) },
-            { "Chess Stamps", () => UnlockBulkUnlock(new ChessBuildStampsUnlock()) },
-            { "Rainbow Stamps", () => UnlockBulkUnlock(new RainbowBuildStampsUnlock()) },
-            { "Red Stamps", () => UnlockBulkUnlock(new RedBuildStampsUnlock()) },
-            { "Shiny Stamps", () => UnlockBulkUnlock(new ShinyBuildStampsUnlock()) },
-            { "Void Stamps", () => UnlockBulkUnlock(new VoidBuildStampsUnlock()) },
+            { "Blue Stamps", new CuedAction(() => UnlockBulkUnlock(new BlueBuildStampsUnlock())) },
+            { "Card Stamps", new CuedAction(() => UnlockBulkUnlock(new CardsBuildStampsUnlock())) },
+            { "Chess Stamps", new CuedAction(() => UnlockBulkUnlock(new ChessBuildStampsUnlock())) },
+            { "Rainbow Stamps", new CuedAction(() => UnlockBulkUnlock(new RainbowBuildStampsUnlock())) },
+            { "Red Stamps", new CuedAction(() => UnlockBulkUnlock(new RedBuildStampsUnlock())) },
+            { "Shiny Stamps", new CuedAction(() => UnlockBulkUnlock(new ShinyBuildStampsUnlock())) },
+            { "Void Stamps", new CuedAction(() => UnlockBulkUnlock(new VoidBuildStampsUnlock())) },
 
             // Stickers
-            { "Blue Stickers", () => UnlockBulkUnlock(new BlueBuildStickersUnlock()) },
-            { "Card Stickers", () => UnlockBulkUnlock(new CardsBuildStickersUnlock()) },
-            { "Chess Stickers", () => UnlockBulkUnlock(new ChessBuildStickersUnlock()) },
-            { "Rainbow Stickers", () => UnlockBulkUnlock(new RainbowBuildStickersUnlock()) },
-            { "Red Stickers", () => UnlockBulkUnlock(new RedBuildStickersUnlock()) },
-            { "Shiny Stickers", () => UnlockBulkUnlock(new ShinyBuildStickersUnlock()) },
-            { "Void Stickers", () => UnlockBulkUnlock(new VoidBuildStickersUnlock()) },
+            { "Blue Stickers", new CuedAction(() => UnlockBulkUnlock(new BlueBuildStickersUnlock())) },
+            { "Card Stickers", new CuedAction(() => UnlockBulkUnlock(new CardsBuildStickersUnlock())) },
+            { "Chess Stickers", new CuedAction(() => UnlockBulkUnlock(new ChessBuildStickersUnlock())) },
+            { "Rainbow Stickers", new CuedAction(() => UnlockBulkUnlock(new RainbowBuildStickersUnlock())) },
+            { "Red Stickers", new CuedAction(() => UnlockBulkUnlock(new RedBuildStickersUnlock())) },
+            { "Shiny Stickers", new CuedAction(() => UnlockBulkUnlock(new ShinyBuildStickersUnlock())) },
+            { "Void Stickers", new CuedAction(() => UnlockBulkUnlock(new VoidBuildStickersUnlock())) },
 
             // Filler
-            { "$1", () => IncrementMoney(1) },
-            { "$2", () => IncrementMoney(2) },
-            { "$3", () => IncrementMoney(3) },
-            { "Consumable Tile", () => AddRandomConsumableTile() },
-            { "Extra Re-roll", () => IncrementReroll() },
-            { "Random Tile Boost", () => RandomTileBoost() },
+            { "$1", new CuedAction(() => IncrementMoney(1), ActionCue.Encounter) },
+            { "$2", new CuedAction(() => IncrementMoney(2), ActionCue.Encounter) },
+            { "$3", new CuedAction(() => IncrementMoney(3), ActionCue.Encounter) },
+            { "Consumable Tile", new CuedAction(() => AddRandomConsumableTile(), ActionCue.Encounter) },
+            { "Extra Re-roll", new CuedAction(() => IncrementReroll(true), ActionCue.Encounter) },
+            { "Random Tile Boost", new CuedAction(() => RandomTileBoost(), ActionCue.Encounter) },
         };
 
         public static List<LocationCriteria> Locations = new List<LocationCriteria>()
@@ -250,10 +276,13 @@ namespace Mod.Mappings
                     // Add tile to inventory
                     Player player = GameStatics.GetPlayer();
                     player.AddTileToInventory(tile);
+
+                    // Increment handled count
+                    ArchipelagoHelper.IncrementHandledItem("Consumable Tile", 1);
                 }
                 catch
                 {
-                    Logger.LogInfo("No space for additional consumable tiles");
+                    Logger.LogWarning("No space for additional consumable tiles");
                 }
 
                 CharacterInfoPanel.SingletonInventoryVisualController.PopulateTiles();
@@ -276,6 +305,21 @@ namespace Mod.Mappings
                 }
 
                 CharacterInfoPanel.SingletonInventoryVisualController.PopulateStamps();
+                
+                // If in the shop, re-populate just in case
+                if (UnityEngine.Object.FindFirstObjectByType<ShopController>() is ShopController shopController && shopController != null)
+                {
+                    // Refresh each stamp in stock
+                    List<ItemInStock> stampsInStock = shopController.GetStampsInStock();
+                    for (int i = 0; i < stampsInStock.Count; i++)
+                    {
+                        ItemInStock stampInStock = stampsInStock[i];
+                        if (stampInStock != null && stampInStock.MyItem != null)
+                        {
+                            shopController.CallPopulateStampInStock(stampInStock, i, stampInStock.IsFirstDiscount, stampInStock.IsFree);
+                        }
+                    }
+                }
             }
             else
             {
@@ -299,6 +343,21 @@ namespace Mod.Mappings
                 }
 
                 CharacterInfoPanel.SingletonInventoryVisualController.PopulateStickers();
+
+                // If in the shop, re-populate sticker items
+                if (UnityEngine.Object.FindFirstObjectByType<ShopController>() is ShopController shopController && shopController != null)
+                {
+                    // Refresh each stamp in stock
+                    List<ItemInStock> stickersInStock = shopController.GetStickersInStock().ToList();
+                    for (int i = 0; i < stickersInStock.Count; i++)
+                    {
+                        ItemInStock stickerInStock = stickersInStock[i];
+                        if (stickerInStock != null && stickerInStock.MyItem != null)
+                        {
+                            shopController.PopulateStickerInStock(stickerInStock, i, stickerInStock.IsFirstDiscount, stickerInStock.IsFree);
+                        }
+                    }
+                }
             }
             else
             {
@@ -320,6 +379,9 @@ namespace Mod.Mappings
                 player.ChangeMoney(amount);
 
                 CharacterInfoPanel.SingletonInventoryVisualController.PopulateCash();
+
+                // Increment handled item count
+                ArchipelagoHelper.IncrementHandledItem($"${amount}", 1);
             }
             else
             {
@@ -329,7 +391,7 @@ namespace Mod.Mappings
             yield break;
         }
 
-        static IEnumerator IncrementReroll()
+        static IEnumerator IncrementReroll(bool isTemporary = false)
         {
             Logger.LogInfo("Attempting to increment re-roll count...");
             
@@ -337,6 +399,12 @@ namespace Mod.Mappings
             {
                 Logger.LogInfo("Attempting to increment re-roll count...");
                 encounterController.IncrementEncounterRerollAmount(1);
+
+                // Increment handled count
+                if (isTemporary)
+                {
+                    ArchipelagoHelper.IncrementHandledItem("Extra Re-roll", 1);
+                }
             }
             else
             {
@@ -353,29 +421,41 @@ namespace Mod.Mappings
             // Get current encounter
             if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController encounterController && encounterController != null)
             {
-                try
+                if (encounterController.IsWaitingForWordSubmission())
                 {
-                    // Get grid layout controller
-                    GridLayoutController gridLayoutController = Traverse.Create(encounterController)
-                        .Field("_gridLayoutController")
-                        .GetValue<GridLayoutController>();
+                    try
+                    {
+                        // Get grid layout controller
+                        GridLayoutController gridLayoutController = Traverse.Create(encounterController)
+                            .Field("_gridLayoutController")
+                            .GetValue<GridLayoutController>();
 
-                    // Get active tiles
-                    List<TileObject> activeTiles = gridLayoutController.GetTileObjects()
-                        .Where(t => t != null && t.isActiveAndEnabled)
-                        .ToList();
+                        // Get active tiles
+                        List<TileObject> activeTiles = gridLayoutController.GetTileObjects()
+                            .Where(t => t != null && t.isActiveAndEnabled)
+                            .ToList();
 
-                    // Randomly select a tile and modify its value by 5
-                    TileObject selectedTile = activeTiles[UnityEngine.Random.Range(0, activeTiles.Count)];
-                    int modifyBy = selectedTile.MyTile.GetTileType() != TileType.Void ? 5 : -5;
-                    selectedTile.MyTile.ChangeValueModifier(new ScorePacket(modifyBy));
+                        // Randomly select a tile and modify its value by 5
+                        TileObject selectedTile = activeTiles[UnityEngine.Random.Range(0, activeTiles.Count)];
+                        int modifyBy = selectedTile.MyTile.GetTileType() != TileType.Void ? 5 : -5;
+                        selectedTile.MyTile.ChangeValueModifier(new ScorePacket(modifyBy));
 
-                    // Re-populate the tile
-                    selectedTile.Populate();
+                        Logger.LogInfo($"Boosted tile '{selectedTile.MyTile.Letter}' at position '{selectedTile.MyTile.Coordinates}'");
+
+                        // Re-populate the tile
+                        selectedTile.Populate();
+
+                        // Increment handled count
+                        ArchipelagoHelper.IncrementHandledItem("Random Tile Boost", 1);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError($"An error occurred when attempting to boost a random tile: {ex}");
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Logger.LogError($"An error occurred when attempting to boost a random tile: {ex}");
+                    Logger.LogInfo("Not currently in correct encounter state - aborted.");
                 }
             }
             else
