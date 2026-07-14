@@ -6,6 +6,7 @@ using Modd;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Mod.Patches
@@ -74,6 +75,31 @@ namespace Mod.Patches
 
             // Attempt to check shop locations
             CursedWordsArchipelago.Instance.TryCheckGenericLocations($"sell_{(item.IsStamp() ? "stamp" : "sticker")}");
+        }
+
+        /// <summary>
+        /// Attempt to handle items that have not yet been handled.
+        /// </summary>
+        [HarmonyPatch(nameof(EncounterController.SetEncounterThreadStage))]
+        [HarmonyPostfix]
+        private static void SetEncounterThreadStage_Postfix(EncounterThreadStage newThreadStage)
+        {
+            Logger.LogInfo($"{nameof(EncounterController)}.{nameof(EncounterController.SetEncounterThreadStage)} Postfix!");
+            Logger.LogInfo($"Stage changed to: {newThreadStage}");
+
+            // If now waiting for word submission...
+            if (newThreadStage is EncounterThreadStage.WaitingForWordSubmission)
+            {
+                // Get item mappings where the cue is the start of an encounter
+                foreach (KeyValuePair<string, CuedAction> encounterItem in ItemMappings.Map.Where(kvp => kvp.Value.Cue == ActionCue.Encounter))
+                {
+                    // Perform action if not handled the amount of times received.
+                    for (int i = 0; i < ArchipelagoHelper.GetItemCountDifference(encounterItem.Key); i++)
+                    {
+                        CursedWordsArchipelago.Instance.QueueAction(encounterItem.Value.Action);
+                    }
+                }
+            }
         }
 
         /// <summary>

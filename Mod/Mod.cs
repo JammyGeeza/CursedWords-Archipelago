@@ -21,7 +21,7 @@ using UnityEngine.Windows;
 
 namespace Modd
 {
-    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.0.0")]
+    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.2.2")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
         #region Private Properties
@@ -292,10 +292,10 @@ namespace Modd
                 Logger.LogWarning($"Item received: {itemInfo.ItemName}");
 
                 // Add item action to queue, if exists
-                if (ItemMappings.Map.TryGetValue(itemInfo.ItemName, out Func<IEnumerator> action))
+                if (ItemMappings.Map.TryGetValue(itemInfo.ItemName, out CuedAction cuedAction))
                 {
                     Logger.LogWarning($"Queueing item received action for '{itemInfo.ItemName}'...");
-                    QueueAction(action);
+                    QueueAction(cuedAction.Action);
                 }
             }
         }
