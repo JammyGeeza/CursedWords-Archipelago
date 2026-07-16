@@ -15,8 +15,8 @@ namespace Mod.Patches
         /// <summary>
         /// Prevent chess piece being set if tile type not yet received.
         /// </summary>
-        [HarmonyPatch(nameof(Tile.SetChessPiece), typeof(ChessPiece), typeof(bool))]
-        [HarmonyPrefix]
+        //[HarmonyPatch(nameof(Tile.SetChessPiece), typeof(ChessPiece), typeof(bool))]
+        //[HarmonyPrefix]
         public static bool OnSetChessPiece_Prefix(Tile __instance, ref ChessPiece piece, ref bool isWhite)
         {
             Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetChessPiece)} prefix!");
@@ -26,8 +26,8 @@ namespace Mod.Patches
         /// <summary>
         /// Prevent currency being set if tile type not yet received.
         /// </summary>
-        [HarmonyPatch(nameof(Tile.SetCurrency))]
-        [HarmonyPrefix]
+        //[HarmonyPatch(nameof(Tile.SetCurrency))]
+        //[HarmonyPrefix]
         public static bool OnSetCurrency_Prefix(Tile __instance, string currency)
         {
             Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetCurrency)} prefix!");
@@ -37,8 +37,8 @@ namespace Mod.Patches
         /// <summary>
         /// Prevent fraction being set if tile type not yet received.
         /// </summary>
-        [HarmonyPatch(nameof(Tile.SetFractionNumbers))]
-        [HarmonyPrefix]
+        //[HarmonyPatch(nameof(Tile.SetFractionNumbers))]
+        //[HarmonyPrefix]
         public static bool OnSetFractionNumbers_Prefix(Tile __instance, List<int> fractionNumbers)
         {
             Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetCurrency)} prefix!");
@@ -48,8 +48,8 @@ namespace Mod.Patches
         /// <summary>
         /// Prevent tiles with specific glyph types appearing if not yet received.
         /// </summary>
-        [HarmonyPatch(nameof(Tile.SetGlyphType))]
-        [HarmonyPrefix]
+        //[HarmonyPatch(nameof(Tile.SetGlyphType))]
+        //[HarmonyPrefix]
         public static void SetGlyphType_Prefix(Tile __instance, ref GlyphType glyphType)
         {
             Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetGlyphType)} prefix!");
@@ -117,8 +117,8 @@ namespace Mod.Patches
         /// <summary>
         /// Prevent number being set if tile type not yet received.
         /// </summary>
-        [HarmonyPatch(nameof(Tile.SetNumber))]
-        [HarmonyPrefix]
+        //[HarmonyPatch(nameof(Tile.SetNumber))]
+        //[HarmonyPrefix]
         public static bool OnSetNumber_Prefix(Tile __instance, int number)
         {
             Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetCurrency)} prefix!");
@@ -128,8 +128,8 @@ namespace Mod.Patches
         /// <summary>
         /// Prevent tiles with suits appearing if not yet received.
         /// </summary>
-        [HarmonyPatch(nameof(Tile.SetSuit))]
-        [HarmonyPrefix]
+        //[HarmonyPatch(nameof(Tile.SetSuit))]
+        //[HarmonyPrefix]
         public static void OnSetSuit_Prefix(Tile __instance, ref Suit suit)
         {
             Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetSuit)} prefix!");
@@ -146,8 +146,8 @@ namespace Mod.Patches
         /// <summary>
         /// Prevent tiles with specific colour types appearing if not yet received.
         /// </summary>
-        [HarmonyPatch(nameof(Tile.SetTileType))]
-        [HarmonyPrefix]
+        //[HarmonyPatch(nameof(Tile.SetTileType))]
+        //[HarmonyPrefix]
         public static void SetTileType_Prefix(Tile __instance, ref TileType tileType)
         {
             Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.SetTileType)} prefix!");

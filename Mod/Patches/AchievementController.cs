@@ -19,6 +19,9 @@ namespace Mod.Patches
             static MethodBase TargetMethod() =>
                 AccessTools.Method(typeof(Achievements), "UnlockAchievement", new Type[] { typeof(Achievement), typeof(bool) });
 
+            /// <summary>
+            /// Prevent achievements from unlocking items.
+            /// </summary>
             [HarmonyPrefix]
             private static bool OnUnlockAchievement_Prefix(Achievement achievement, bool isBypassingViz, ref bool __result)
             {

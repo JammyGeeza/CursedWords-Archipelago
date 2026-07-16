@@ -1,17 +1,34 @@
 ﻿using HarmonyLib;
-using Mod.Extensions;
+using Mod.Classes;
 using Mod.Helpers;
-using Mod.Mappings;
 using Modd;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Mod.Patches
 {
     [HarmonyPatch(typeof(GameStatics))]
     internal class GameStatics_Patches : PatchBase
     {
+        /// <summary>
+        /// Override items requiring unlock with items not yet received from the multiworld.
+        /// </summary>
+        [HarmonyPatch(nameof(GameStatics.GetItemsRequiringUnlock))]
+        [HarmonyPrefix]
+        private static bool OnGetItemsRequiringUnlock_Prefix(ref List<Type> __result)
+        {
+            Logger.LogInfo($"{nameof(SaveManager)}.{nameof(GameStatics.GetItemsRequiringUnlock)} prefix!");
+
+            __result = CursedWordsArchipelago.Instance.ItemTypeCache
+                .Where(kvp => !ArchipelagoHelper.HasReceivedItem(kvp.Value))
+                .Select(kvp => kvp.Key)
+                .ToList();
+
+            return false;
+        }
+
         [HarmonyPatch(nameof(GameStatics.GetNumberOfStages))]
         [HarmonyPrefix]
         private static bool OnGetNumberOfStages_Prefix(ref int __result)

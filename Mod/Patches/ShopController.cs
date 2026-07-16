@@ -180,6 +180,12 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(ShopController)}.GenerateStampInStock prefix!");
 
+            // Ignore if Shopsanity is disabled
+            if (!ArchipelagoHelper.SlotData.Shopsanity)
+            {
+                return true;
+            }
+
             // Ignore if first shop, is not the item at Index 0 or random chance fails (33%)
             if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 100) < ShopCheckChance)
             {
@@ -228,6 +234,12 @@ namespace Mod.Patches
         private static bool OnGenerateStickerInStock_Prefix(ShopController __instance, int index, bool isFirstShop, bool freeItem)
         {
             Logger.LogInfo($"{nameof(ShopController)}.GenerateStickerInStock prefix!");
+
+            // Ignore if Shopsanity is disabled
+            if (!ArchipelagoHelper.SlotData.Shopsanity)
+            {
+                return true;
+            }
 
             // Ignore if first shop, is not the item at Index 0 or random chance fails (33%)
             if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 100) < ShopCheckChance)

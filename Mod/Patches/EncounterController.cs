@@ -24,7 +24,7 @@ namespace Mod.Patches
             Logger.LogInfo("EncounterController.GetGridDimensions postfix!");
 
             // Ignore if progressive grid size disabled
-            if (!ArchipelagoHelper.SlotData.ProgressiveGridSize)
+            if (!ArchipelagoHelper.SlotData.ShuffleGridSize)
             {
                 return;
             }
@@ -141,6 +141,12 @@ namespace Mod.Patches
 
             // Attempt to check word length locations
             CursedWordsArchipelago.Instance.TryCheckNumericLocations("word_length", tiles.Count);
+
+            // Attempt to check tile type locations
+            foreach (TileSelection tile in tiles)
+            {
+                CursedWordsArchipelago.Instance.TryCheckTileLocations("use_tile", tile.SelectedTile);
+            }
         }
     }
 }

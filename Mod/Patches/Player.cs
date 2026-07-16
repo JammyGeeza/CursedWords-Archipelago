@@ -43,6 +43,12 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(Player)}.{nameof(Player.SetCharacter)} postfix!");
 
+            // Ignore if 'Shuffle Inventory Slots' is disabled.
+            if (!ArchipelagoHelper.SlotData.ShuffleInventorySlots)
+            {
+                return;
+            }
+
             // Add sticker padlocks to fill slots not yet received as items
             int progressiveStickerSlots = ArchipelagoHelper.AmountOfItemReceived("Progressive Sticker Slot");
             Logger.LogInfo($"Received {progressiveStickerSlots} sticker slots");

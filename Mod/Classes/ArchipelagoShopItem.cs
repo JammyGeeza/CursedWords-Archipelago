@@ -25,7 +25,7 @@ namespace Mod.Classes
 
         public ArchipelagoShopitem(ScoutedItemInfo itemInfo, bool isSticker = true) : base()
         {
-            Cost = ArchipelagoHelper.SlotData.ShopsanityLocationCost;
+            Cost = ArchipelagoHelper.SlotData.ShopsanityCost;
             ItemInfo = itemInfo;
             Name = itemInfo.ItemDisplayName;
             Rarity = ItemRarity.Unique;

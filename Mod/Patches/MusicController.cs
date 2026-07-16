@@ -27,8 +27,19 @@ namespace Mod.Patches
 
             if (isWin)
             {
-                // Try and check encounter location
-                CursedWordsArchipelago.Instance.TryCheckEncounterLocations(player.MyCharacter, player.CurrentRunProgress.CurrentStage, player.CurrentRunProgress.CurrentNodeType);
+                if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
+                {
+                    // Try and check encounter location(s)
+                    CursedWordsArchipelago.Instance.TryCheckEncounterLocations(
+                        player.MyCharacter,
+                        player.CurrentRunProgress.CurrentStage,
+                        player.CurrentRunProgress.CurrentNodeType,
+                        controller.GetBossModifiers());
+                }
+                else
+                {
+                    Logger.LogWarning("Encounter has been won, but no encounter controller was found.");
+                }
             }
             else if (!isWin && ArchipelagoHelper.SlotData.Deathlink)
             {
@@ -54,10 +65,15 @@ namespace Mod.Patches
 
             // Attempt to send run win check (Stage 5-3)
             Player player = GameStatics.GetPlayer();
-            CursedWordsArchipelago.Instance.TryCheckEncounterLocations(player.MyCharacter, player.CurrentRunProgress.CurrentStage, player.CurrentRunProgress.CurrentNodeType);
 
             if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
             {
+                CursedWordsArchipelago.Instance.TryCheckEncounterLocations(
+                    player.MyCharacter,
+                    player.CurrentRunProgress.CurrentStage,
+                    player.CurrentRunProgress.CurrentNodeType,
+                    controller.GetBossModifiers());
+
                 List<string> runsCompleted = SaveManager.GetCharactersWithAscensionsUnlocked()
                     .Select(c => (Activator.CreateInstance(c) as Character).GetName())
                     .ToList();
