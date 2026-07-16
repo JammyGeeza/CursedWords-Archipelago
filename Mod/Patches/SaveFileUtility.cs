@@ -20,14 +20,31 @@ namespace Mod.Patches
             {
                 Logger.LogInfo("Adjusting new save file");
 
-                __result.IsTutorialComplete = true;
+                // Default progress wipe
                 __result.CharacterHighestCompletedAscensions = new Dictionary<Type, int>();
                 __result.BulkUnlocksUnlocked = new List<Type>();
+
+                // Dialogue skips
+                __result.IsTutorialComplete = true;
+                __result.HasSeenBonesIntroDialogue = true;
+                __result.HasSeenChallengeUnlockDialogue = true;
+                __result.HasSeenChessUnlockDialogue = true;
+                __result.HasSeenCrownsUnlockDialogue = true;
+                __result.HasSeenCurrencyFirstTimeDialogue = true;
+                __result.HasSeenFairyInClubhouseDialogue = true;
                 __result.HasSeenFirstBossDraftDialogue = true;
+                __result.HasSeenFirstPinDraftDialogue = true;
                 __result.HasSeenFloorFourUnlockDialogue = true;
-                __result.HasSeenUpgradeFirstTimeDialogue = true;
+                __result.HasSeenFractionUnlockDialogue = true;
+                __result.HasSeenGlitchTileDialogue = true;
+                __result.HasSeenNatIntroDialogue = true;
                 __result.HasSeenNinaIntroDialogue = true;
                 __result.HasSeenNumbersUnlockDialogue = true;
+                __result.HasSeenOctaclesIntroDialogue = true;
+                __result.HasSeenScatteredItemDialogue = true;
+                __result.HasSeenUpgradeFirstTimeDialogue = true;
+                __result.HasSeenWeirdColourDialogue = true;
+                __result.HasSeenWobblyFirstTimeDialogue = true;
             };
         }
     }

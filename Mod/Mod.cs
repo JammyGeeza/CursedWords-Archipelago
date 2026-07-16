@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,6 +31,10 @@ namespace Modd
 
         private ConcurrentQueue<Func<IEnumerator>> ActionQueue { get; set; } = new ConcurrentQueue<Func<IEnumerator>>();
 
+        private Dictionary<Type, string> _characterTypeCache;
+
+        private Dictionary<Type, string> _itemTypeCache;
+
         #endregion
 
         #region Public Properties
@@ -43,6 +48,24 @@ namespace Modd
         /// Is the player currently in game? (Not in the save selection screen)
         /// </summary>
         public bool IsInGame { get; set; } = false;
+
+        /// <summary>
+        /// Cache item names to types to prevent needing to do this multiple times.
+        /// </summary>
+        public Dictionary<Type, string> CharacterTypeCache =>
+            _characterTypeCache ??= Assembly.GetAssembly(typeof(Character))
+                .GetTypes()
+                .Where(t => t.IsClass && t.IsSubclassOf(typeof(Character)))
+                .ToDictionary(t => t, t => (Activator.CreateInstance(t) as Character).GetName());
+
+        /// <summary>
+        /// Cache item names to types to prevent needing to do this multiple times.
+        /// </summary>
+        public Dictionary<Type, string> ItemTypeCache =>
+            _itemTypeCache ??= Assembly.GetAssembly(typeof(Item))
+                .GetTypes()
+                .Where(t => t.IsClass && t.IsSubclassOf(typeof(Item)))
+                .ToDictionary(t => t, t => (Activator.CreateInstance(t) as Item).Name);
 
         public ManualLogSource LogSource
         {
@@ -92,12 +115,12 @@ namespace Modd
             BulkUnlock.AllBulkUnlocks.Clear();
 
             // Insert custom bulk uploads as requiring unlocks
-            Logger.LogInfo("Inserting custom bulk unlocks");
-            foreach (Type type in Lookups.ValidBulkUnlockTypes)
-            {
-                BulkUnlock unlock = Activator.CreateInstance(type) as BulkUnlock;
-                BulkUnlock.AllBulkUnlocks.Add(unlock);
-            }
+            //Logger.LogInfo("Inserting custom bulk unlocks");
+            //foreach (Type type in Lookups.ValidBulkUnlockTypes)
+            //{
+            //    BulkUnlock unlock = Activator.CreateInstance(type) as BulkUnlock;
+            //    BulkUnlock.AllBulkUnlocks.Add(unlock);
+            //}
         }
 
         /// <summary>
@@ -170,9 +193,9 @@ namespace Modd
         /// <param name="character">The character to check against.</param>
         /// <param name="stage">The stage to check against.</param>
         /// <param name="nodeType">The encounter node type to check against.</param>
-        public void TryCheckEncounterLocations(Character character, int stage, NodeType nodeType)
+        public void TryCheckEncounterLocations(Character character, int stage, NodeType nodeType, List<BossModifier> bossModifiers)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(character, stage, nodeType) == true))
+            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(character, stage, nodeType, bossModifiers) == true))
             {
                 Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 TryCheckLocation(criteria.LocationName);
@@ -200,6 +223,20 @@ namespace Modd
         public void TryCheckNumericLocations(string action, long amount)
         {
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnNumericAction?.Invoke(action, amount) == true))
+            {
+                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
+                TryCheckLocation(criteria.LocationName);
+            }
+        }
+
+        /// <summary>
+        /// Attempt to check a numeric location.
+        /// </summary>
+        /// <param name="action">The action to check against.</param>
+        /// <param name="amount">The amount to check against.</param>
+        public void TryCheckTileLocations(string action, Tile tile)
+        {
+            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnTileAction?.Invoke(action, tile) == true))
             {
                 Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 TryCheckLocation(criteria.LocationName);

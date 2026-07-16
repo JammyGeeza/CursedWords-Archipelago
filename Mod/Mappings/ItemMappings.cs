@@ -47,6 +47,7 @@ namespace Mod.Mappings
         public static Dictionary<string, CuedAction> Map = new Dictionary<string, CuedAction>()
         {
             // Characters
+            // NOTE: These are only being unlocked so they appear in the save selection menu.
             { "Rodman", new CuedAction(() => UnlockCharacter(typeof(WetDennis))) },
             { "Nina Nix", new CuedAction(() => UnlockCharacter(typeof(NinaNix))) },
             { "Hayley Bayles", new CuedAction(() => UnlockCharacter(typeof(HayleyBayles))) },
@@ -61,25 +62,25 @@ namespace Mod.Mappings
             { "Progressive Stamp Slot", new CuedAction(() => FreeStampSlot()) },
             { "Progressive Sticker Slot", new CuedAction(() => FreeStickerSlot()) },
 
-            // Stamps
-            { "Blue Stamps", new CuedAction(() => UnlockBulkUnlock(new BlueBuildStampsUnlock())) },
-            { "Card Stamps", new CuedAction(() => UnlockBulkUnlock(new CardsBuildStampsUnlock())) },
-            { "Chess Stamps", new CuedAction(() => UnlockBulkUnlock(new ChessBuildStampsUnlock())) },
-            { "Rainbow Stamps", new CuedAction(() => UnlockBulkUnlock(new RainbowBuildStampsUnlock())) },
-            { "Red Stamps", new CuedAction(() => UnlockBulkUnlock(new RedBuildStampsUnlock())) },
-            { "Scatter Stamps", new CuedAction(() => UnlockBulkUnlock(new ScatteredBuildStampsUnlock())) },
-            { "Shiny Stamps", new CuedAction(() => UnlockBulkUnlock(new ShinyBuildStampsUnlock())) },
-            { "Void Stamps", new CuedAction(() => UnlockBulkUnlock(new VoidBuildStampsUnlock())) },
+            //// Stamps
+            //{ "Blue Stamps", new CuedAction(() => UnlockBulkUnlock(new BlueBuildStampsUnlock())) },
+            //{ "Card Stamps", new CuedAction(() => UnlockBulkUnlock(new CardsBuildStampsUnlock())) },
+            //{ "Chess Stamps", new CuedAction(() => UnlockBulkUnlock(new ChessBuildStampsUnlock())) },
+            //{ "Rainbow Stamps", new CuedAction(() => UnlockBulkUnlock(new RainbowBuildStampsUnlock())) },
+            //{ "Red Stamps", new CuedAction(() => UnlockBulkUnlock(new RedBuildStampsUnlock())) },
+            //{ "Scatter Stamps", new CuedAction(() => UnlockBulkUnlock(new ScatteredBuildStampsUnlock())) },
+            //{ "Shiny Stamps", new CuedAction(() => UnlockBulkUnlock(new ShinyBuildStampsUnlock())) },
+            //{ "Void Stamps", new CuedAction(() => UnlockBulkUnlock(new VoidBuildStampsUnlock())) },
 
-            // Stickers
-            { "Blue Stickers", new CuedAction(() => UnlockBulkUnlock(new BlueBuildStickersUnlock())) },
-            { "Card Stickers", new CuedAction(() => UnlockBulkUnlock(new CardsBuildStickersUnlock())) },
-            { "Chess Stickers", new CuedAction(() => UnlockBulkUnlock(new ChessBuildStickersUnlock())) },
-            { "Rainbow Stickers", new CuedAction(() => UnlockBulkUnlock(new RainbowBuildStickersUnlock())) },
-            { "Red Stickers", new CuedAction(() => UnlockBulkUnlock(new RedBuildStickersUnlock())) },
-            { "Scatter Stickers", new CuedAction(() => UnlockBulkUnlock(new ScatteredBuildStickersUnlock())) },
-            { "Shiny Stickers", new CuedAction(() => UnlockBulkUnlock(new ShinyBuildStickersUnlock())) },
-            { "Void Stickers", new CuedAction(() => UnlockBulkUnlock(new VoidBuildStickersUnlock())) },
+            //// Stickers
+            //{ "Blue Stickers", new CuedAction(() => UnlockBulkUnlock(new BlueBuildStickersUnlock())) },
+            //{ "Card Stickers", new CuedAction(() => UnlockBulkUnlock(new CardsBuildStickersUnlock())) },
+            //{ "Chess Stickers", new CuedAction(() => UnlockBulkUnlock(new ChessBuildStickersUnlock())) },
+            //{ "Rainbow Stickers", new CuedAction(() => UnlockBulkUnlock(new RainbowBuildStickersUnlock())) },
+            //{ "Red Stickers", new CuedAction(() => UnlockBulkUnlock(new RedBuildStickersUnlock())) },
+            //{ "Scatter Stickers", new CuedAction(() => UnlockBulkUnlock(new ScatteredBuildStickersUnlock())) },
+            //{ "Shiny Stickers", new CuedAction(() => UnlockBulkUnlock(new ShinyBuildStickersUnlock())) },
+            //{ "Void Stickers", new CuedAction(() => UnlockBulkUnlock(new VoidBuildStickersUnlock())) },
 
             // Filler
             { "$1", new CuedAction(() => IncrementMoney(1), ActionCue.Encounter) },
@@ -95,111 +96,132 @@ namespace Mod.Mappings
             #region Encounters
 
             // Rodman
-            new LocationCriteria("Rodman - 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 1 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Rodman - 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 1 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Rodman - 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 1 && type == NodeType.Boss },
-            new LocationCriteria("Rodman - 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 2 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Rodman - 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 2 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Rodman - 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 2 && type == NodeType.Boss },
-            new LocationCriteria("Rodman - 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 3 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Rodman - 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 3 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Rodman - 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 3 && type == NodeType.Boss },
-            new LocationCriteria("Rodman - 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 4 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Rodman - 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 4 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Rodman - 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 4 && type == NodeType.Boss },
-            new LocationCriteria("Rodman - 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 5 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Rodman - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 5 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Rodman - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is WetDennis && stage == 5 && type == NodeType.Boss },
+            new LocationCriteria("Rodman: 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List<BossModifier> bossModifiers) => character is WetDennis && stage == 1 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Rodman: 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 1 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Rodman: 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 1 && type == NodeType.Boss },
+            new LocationCriteria("Rodman: 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 2 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Rodman: 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 2 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Rodman: 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 2 && type == NodeType.Boss },
+            new LocationCriteria("Rodman: 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 3 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Rodman: 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 3 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Rodman: 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 3 && type == NodeType.Boss },
+            new LocationCriteria("Rodman: 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 4 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Rodman: 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 4 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Rodman: 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 4 && type == NodeType.Boss },
+            new LocationCriteria("Rodman: 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 5 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Rodman: 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 5 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Rodman: 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is WetDennis && stage == 5 && type == NodeType.Boss },
 
             // Nina Nix
-            new LocationCriteria("Nina Nix - 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 1 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Nina Nix - 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 1 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Nina Nix - 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 1 && type == NodeType.Boss },
-            new LocationCriteria("Nina Nix - 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 2 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Nina Nix - 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 2 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Nina Nix - 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 2 && type == NodeType.Boss },
-            new LocationCriteria("Nina Nix - 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 3 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Nina Nix - 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 3 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Nina Nix - 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 3 && type == NodeType.Boss },
-            new LocationCriteria("Nina Nix - 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 4 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Nina Nix - 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 4 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Nina Nix - 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 4 && type == NodeType.Boss },
-            new LocationCriteria("Nina Nix - 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 5 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Nina Nix - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 5 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Nina Nix - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is NinaNix && stage == 5 && type == NodeType.Boss },
+            new LocationCriteria("Nina Nix: 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 1 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Nina Nix: 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 1 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Nina Nix: 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 1 && type == NodeType.Boss },
+            new LocationCriteria("Nina Nix: 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 2 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Nina Nix: 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 2 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Nina Nix: 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 2 && type == NodeType.Boss },
+            new LocationCriteria("Nina Nix: 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 3 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Nina Nix: 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 3 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Nina Nix: 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 3 && type == NodeType.Boss },
+            new LocationCriteria("Nina Nix: 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 4 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Nina Nix: 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 4 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Nina Nix: 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 4 && type == NodeType.Boss },
+            new LocationCriteria("Nina Nix: 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 5 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Nina Nix: 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 5 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Nina Nix: 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is NinaNix && stage == 5 && type == NodeType.Boss },
 
             // Hayley Bayles
-            new LocationCriteria("Hayley Bayles - 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 1 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Hayley Bayles - 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 1 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Hayley Bayles - 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 1 && type == NodeType.Boss },
-            new LocationCriteria("Hayley Bayles - 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 2 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Hayley Bayles - 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 2 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Hayley Bayles - 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 2 && type == NodeType.Boss },
-            new LocationCriteria("Hayley Bayles - 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 3 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Hayley Bayles - 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 3 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Hayley Bayles - 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 3 && type == NodeType.Boss },
-            new LocationCriteria("Hayley Bayles - 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 4 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Hayley Bayles - 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 4 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Hayley Bayles - 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 4 && type == NodeType.Boss },
-            new LocationCriteria("Hayley Bayles - 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 5 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Hayley Bayles - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 5 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Hayley Bayles - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is HayleyBayles && stage == 5 && type == NodeType.Boss },
+            new LocationCriteria("Hayley Bayles: 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 1 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Hayley Bayles: 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 1 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Hayley Bayles: 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 1 && type == NodeType.Boss },
+            new LocationCriteria("Hayley Bayles: 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 2 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Hayley Bayles: 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 2 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Hayley Bayles: 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 2 && type == NodeType.Boss },
+            new LocationCriteria("Hayley Bayles: 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 3 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Hayley Bayles: 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 3 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Hayley Bayles: 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 3 && type == NodeType.Boss },
+            new LocationCriteria("Hayley Bayles: 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 4 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Hayley Bayles: 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 4 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Hayley Bayles: 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 4 && type == NodeType.Boss },
+            new LocationCriteria("Hayley Bayles: 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 5 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Hayley Bayles: 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 5 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Hayley Bayles: 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is HayleyBayles && stage == 5 && type == NodeType.Boss },
 
             // Bones the Dog
-            new LocationCriteria("Bones the Dog - 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 1 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Bones the Dog - 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 1 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Bones the Dog - 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 1 && type == NodeType.Boss },
-            new LocationCriteria("Bones the Dog - 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 2 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Bones the Dog - 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 2 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Bones the Dog - 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 2 && type == NodeType.Boss },
-            new LocationCriteria("Bones the Dog - 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 3 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Bones the Dog - 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 3 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Bones the Dog - 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 3 && type == NodeType.Boss },
-            new LocationCriteria("Bones the Dog - 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 4 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Bones the Dog - 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 4 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Bones the Dog - 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 4 && type == NodeType.Boss },
-            new LocationCriteria("Bones the Dog - 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 5 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Bones the Dog - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 5 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Bones the Dog - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is BonesTheDog && stage == 5 && type == NodeType.Boss },
+            new LocationCriteria("Bones the Dog: 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 1 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Bones the Dog: 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 1 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Bones the Dog: 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 1 && type == NodeType.Boss },
+            new LocationCriteria("Bones the Dog: 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 2 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Bones the Dog: 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 2 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Bones the Dog: 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 2 && type == NodeType.Boss },
+            new LocationCriteria("Bones the Dog: 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 3 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Bones the Dog: 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 3 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Bones the Dog: 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 3 && type == NodeType.Boss },
+            new LocationCriteria("Bones the Dog: 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 4 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Bones the Dog: 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 4 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Bones the Dog: 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 4 && type == NodeType.Boss },
+            new LocationCriteria("Bones the Dog: 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 5 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Bones the Dog: 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 5 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Bones the Dog: 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is BonesTheDog && stage == 5 && type == NodeType.Boss },
 
             // Sam Gambit
-            new LocationCriteria("Sam Gambit - 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 1 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Sam Gambit - 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 1 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Sam Gambit - 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 1 && type == NodeType.Boss },
-            new LocationCriteria("Sam Gambit - 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 2 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Sam Gambit - 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 2 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Sam Gambit - 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 2 && type == NodeType.Boss },
-            new LocationCriteria("Sam Gambit - 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 3 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Sam Gambit - 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 3 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Sam Gambit - 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 3 && type == NodeType.Boss },
-            new LocationCriteria("Sam Gambit - 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 4 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Sam Gambit - 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 4 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Sam Gambit - 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 4 && type == NodeType.Boss },
-            new LocationCriteria("Sam Gambit - 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 5 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Sam Gambit - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 5 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Sam Gambit - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is SamGambit && stage == 5 && type == NodeType.Boss },
+            new LocationCriteria("Sam Gambit: 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 1 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Sam Gambit: 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 1 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Sam Gambit: 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 1 && type == NodeType.Boss },
+            new LocationCriteria("Sam Gambit: 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 2 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Sam Gambit: 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 2 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Sam Gambit: 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 2 && type == NodeType.Boss },
+            new LocationCriteria("Sam Gambit: 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 3 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Sam Gambit: 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 3 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Sam Gambit: 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 3 && type == NodeType.Boss },
+            new LocationCriteria("Sam Gambit: 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 4 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Sam Gambit: 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 4 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Sam Gambit: 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 4 && type == NodeType.Boss },
+            new LocationCriteria("Sam Gambit: 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 5 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Sam Gambit: 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 5 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Sam Gambit: 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is SamGambit && stage == 5 && type == NodeType.Boss },
 
             // Octacles
-            new LocationCriteria("Octacles - 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 1 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Octacles - 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 1 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Octacles - 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 1 && type == NodeType.Boss },
-            new LocationCriteria("Octacles - 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 2 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Octacles - 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 2 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Octacles - 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 2 && type == NodeType.Boss },
-            new LocationCriteria("Octacles - 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 3 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Octacles - 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 3 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Octacles - 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 3 && type == NodeType.Boss },
-            new LocationCriteria("Octacles - 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 4 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Octacles - 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 4 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Octacles - 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 4 && type == NodeType.Boss },
-            new LocationCriteria("Octacles - 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 5 && type == NodeType.EncounterFirst },
-            new LocationCriteria("Octacles - 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 5 && type == NodeType.EncounterSecond },
-            new LocationCriteria("Octacles - 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type) => character is Octacles && stage == 5 && type == NodeType.Boss },
+            new LocationCriteria("Octacles: 1-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 1 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Octacles: 1-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 1 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Octacles: 1-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 1 && type == NodeType.Boss },
+            new LocationCriteria("Octacles: 2-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 2 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Octacles: 2-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 2 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Octacles: 2-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 2 && type == NodeType.Boss },
+            new LocationCriteria("Octacles: 3-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 3 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Octacles: 3-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 3 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Octacles: 3-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 3 && type == NodeType.Boss },
+            new LocationCriteria("Octacles: 4-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 4 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Octacles: 4-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 4 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Octacles: 4-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 4 && type == NodeType.Boss },
+            new LocationCriteria("Octacles: 5-1 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 5 && type == NodeType.EncounterFirst },
+            new LocationCriteria("Octacles: 5-2 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 5 && type == NodeType.EncounterSecond },
+            new LocationCriteria("Octacles: 5-3 Complete") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => character is Octacles && stage == 5 && type == NodeType.Boss },
 
             #endregion
 
-            #region Encounters
-            
+            #region Boss-sanity
+
+            new LocationCriteria("Defeat Axolotl") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is ExtraQs) },
+            new LocationCriteria("Defeat Badger") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is FewerGrids) },
+            new LocationCriteria("Defeat Bat") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is SmallGrid) },
+            new LocationCriteria("Defeat Bison") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is AddNumbers) },
+            new LocationCriteria("Defeat Capybara") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is RandomiseItemOrder) },
+            new LocationCriteria("Defeat Cobra") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is MinWordLength) },
+            new LocationCriteria("Defeat Fox") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is StealsMoney) },
+            new LocationCriteria("Defeat Hyena") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is ForcedSell) },
+            new LocationCriteria("Defeat Mole") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is ExtraVoids) },
+            new LocationCriteria("Defeat Robo-Eel") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is DestroyGrid) },
+            new LocationCriteria("Defeat Robo-Monkey") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is NegativeMoney) },
+            new LocationCriteria("Defeat Salamander") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is ReducedLetterValue) },
+            new LocationCriteria("Defeat Toothed Whale") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is BigBoss) },
+            new LocationCriteria("Defeat Wolf") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is MaxWordLength) },
+            new LocationCriteria("Defeat Yeti Crab") { OnEncounterAction = (Character character, int stage, NodeType type, List < BossModifier > bossModifiers) => type is NodeType.Boss && bossModifiers.Any(bm => bm is DiscolourTiles) },
+
+            #endregion
+
+            #region Other Actions
+
+            new LocationCriteria("Destroy a Consumable Tile") { OnGenericAction = (action) => action == "destroy_tile" },
             new LocationCriteria("Skip a Grid") { OnGenericAction = (action) => action == "skip_grid" },
             new LocationCriteria("Place a Consumable Tile") { OnGenericAction = (action) => action == "place_tile" },
 
@@ -207,13 +229,31 @@ namespace Mod.Mappings
 
             #region Money
 
-            new LocationCriteria("Earn $10") { OnNumericAction = (action, total) => action == "earn_money" && total >= 10 },
-            new LocationCriteria("Earn $25") { OnNumericAction = (action, total) => action == "earn_money" && total >= 25 },
-            new LocationCriteria("Earn $50") { OnNumericAction = (action, total) => action == "earn_money" && total >= 50 },
-            new LocationCriteria("Earn $75") { OnNumericAction = (action, total) => action == "earn_money" && total >= 75 },
-            new LocationCriteria("Earn $100") { OnNumericAction = (action, total) => action == "earn_money" && total >= 100 },
-            new LocationCriteria("Earn $250") { OnNumericAction = (action, total) => action == "earn_money" && total >= 250 },
-            new LocationCriteria("Earn $500") { OnNumericAction = (action, total) => action == "earn_money" && total >= 500 },
+            new LocationCriteria("Earn $5 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 5 },
+            new LocationCriteria("Earn $10 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 10 },
+            new LocationCriteria("Earn $15 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 15 },
+            new LocationCriteria("Earn $20 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 20 },
+            new LocationCriteria("Earn $30 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 30 },
+            new LocationCriteria("Earn $40 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 40 },
+            new LocationCriteria("Earn $50 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 50 },
+            new LocationCriteria("Earn $70 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 75 },
+            new LocationCriteria("Earn $100 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 100 },
+            new LocationCriteria("Earn $125 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 125 },
+            new LocationCriteria("Earn $150 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 150 },
+            new LocationCriteria("Earn $175 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 175 },
+            new LocationCriteria("Earn $200 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 200 },
+            new LocationCriteria("Earn $225 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 225 },
+            new LocationCriteria("Earn $250 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 250 },
+            new LocationCriteria("Earn $300 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 300 },
+            new LocationCriteria("Earn $350 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 350 },
+            new LocationCriteria("Earn $400 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 400 },
+            new LocationCriteria("Earn $450 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 450 },
+            new LocationCriteria("Earn $500 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 500 },
+            new LocationCriteria("Earn $600 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 600 },
+            new LocationCriteria("Earn $700 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 700 },
+            new LocationCriteria("Earn $800 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 800 },
+            new LocationCriteria("Earn $900 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 900 },
+            new LocationCriteria("Earn $1000 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 1000 },
 
             #endregion
 
@@ -222,14 +262,9 @@ namespace Mod.Mappings
             new LocationCriteria("Buy a Stamp") { OnGenericAction = (action) => action == "buy_stamp" },
             new LocationCriteria("Buy a Sticker") { OnGenericAction = (action) => action == "buy_sticker" },
             new LocationCriteria("Buy a Consumable Tile") { OnGenericAction = (action) => action == "buy_tile" },
-
-            new LocationCriteria("Destroy a Consumable Tile") { OnGenericAction = (action) => action == "destroy_tile" },
-
             new LocationCriteria("Freeze a Stamp") { OnGenericAction = (action) => action == "freeze_stamp" },
             new LocationCriteria("Freeze a Sticker") { OnGenericAction = (action) => action == "freeze_sticker" },
-
             new LocationCriteria("Restock the Shop") { OnGenericAction = (action) => action == "restock_shop" },
-
             new LocationCriteria("Sell a Stamp") { OnGenericAction = (action) => action == "sell_stamp" },
             new LocationCriteria("Sell a Sticker") { OnGenericAction = (action) => action == "sell_sticker" },
 
@@ -237,32 +272,67 @@ namespace Mod.Mappings
 
             #region Words
 
-            // Word lengths
-            new LocationCriteria("Word Length 1") { OnNumericAction = (action, length) => action == "word_length" && length == 1 },
-            new LocationCriteria("Word Length 2") { OnNumericAction = (action, length) => action == "word_length" && length == 2 },
-            new LocationCriteria("Word Length 3") { OnNumericAction = (action, length) => action == "word_length" && length == 3 },
-            new LocationCriteria("Word Length 4") { OnNumericAction = (action, length) => action == "word_length" && length == 4 },
-            new LocationCriteria("Word Length 5") { OnNumericAction = (action, length) => action == "word_length" && length == 5 },
-            new LocationCriteria("Word Length 6") { OnNumericAction = (action, length) => action == "word_length" && length == 6 },
-            new LocationCriteria("Word Length 7") { OnNumericAction = (action, length) => action == "word_length" && length == 7 },
-            new LocationCriteria("Word Length 8") { OnNumericAction = (action, length) => action == "word_length" && length == 8 },
-            new LocationCriteria("Word Length 9") { OnNumericAction = (action, length) => action == "word_length" && length == 9 },
-            new LocationCriteria("Word Length 10") { OnNumericAction = (action, length) => action == "word_length" && length == 10 },
-            new LocationCriteria("Word Length 11") { OnNumericAction = (action, length) => action == "word_length" && length == 11 },
-            new LocationCriteria("Word Length 12") { OnNumericAction = (action, length) => action == "word_length" && length == 12 },
+            // Word Lengths
+            new LocationCriteria("Word Length: 1 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 1 },
+            new LocationCriteria("Word Length: 2 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 2 },
+            new LocationCriteria("Word Length: 3 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 3 },
+            new LocationCriteria("Word Length: 4 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 4 },
+            new LocationCriteria("Word Length: 5 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 5 },
+            new LocationCriteria("Word Length: 6 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 6 },
+            new LocationCriteria("Word Length: 7 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 7 },
+            new LocationCriteria("Word Length: 8 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 8 },
+            new LocationCriteria("Word Length: 9 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 9 },
+            new LocationCriteria("Word Length: 10 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 10 },
+            new LocationCriteria("Word Length: 11 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 11 },
+            new LocationCriteria("Word Length: 12 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 12 },
 
-            // Word scores
-            new LocationCriteria("Word Score > 5") { OnNumericAction = (action, score) => action == "word_score" && score >= 5 },
-            new LocationCriteria("Word Score > 10") { OnNumericAction = (action, score) => action == "word_score" && score >= 10 },
-            new LocationCriteria("Word Score > 25") { OnNumericAction = (action, score) => action == "word_score" && score >= 25 },
-            new LocationCriteria("Word Score > 50") { OnNumericAction = (action, score) => action == "word_score" && score >= 50 },
-            new LocationCriteria("Word Score > 75") { OnNumericAction = (action, score) => action == "word_score" && score >= 75 },
-            new LocationCriteria("Word Score > 100") { OnNumericAction = (action, score) => action == "word_score" && score >= 100 },
-            new LocationCriteria("Word Score > 250") { OnNumericAction = (action, score) => action == "word_score" && score >= 250 },
-            new LocationCriteria("Word Score > 500") { OnNumericAction = (action, score) => action == "word_score" && score >= 500 },
-            new LocationCriteria("Word Score > 750") { OnNumericAction = (action, score) => action == "word_score" && score >= 750 },
-            new LocationCriteria("Word Score > 1000") { OnNumericAction = (action, score) => action == "word_score" && score >= 1000 },
-            new LocationCriteria("Word Score > 1500") { OnNumericAction = (action, score) => action == "word_score" && score >= 1500 },
+            // Word Scores
+            new LocationCriteria("Word Score: 5+") { OnNumericAction = (action, score) => action == "word_score" && score >= 5 },
+            new LocationCriteria("Word Score: 10+") { OnNumericAction = (action, score) => action == "word_score" && score >= 10 },
+            new LocationCriteria("Word Score: 15+") { OnNumericAction = (action, score) => action == "word_score" && score >= 15 },
+            new LocationCriteria("Word Score: 20+") { OnNumericAction = (action, score) => action == "word_score" && score >= 20 },
+            new LocationCriteria("Word Score: 30+") { OnNumericAction = (action, score) => action == "word_score" && score >= 30 },
+            new LocationCriteria("Word Score: 40+") { OnNumericAction = (action, score) => action == "word_score" && score >= 40 },
+            new LocationCriteria("Word Score: 50+") { OnNumericAction = (action, score) => action == "word_score" && score >= 50 },
+            new LocationCriteria("Word Score: 75+") { OnNumericAction = (action, score) => action == "word_score" && score >= 75 },
+            new LocationCriteria("Word Score: 100+") { OnNumericAction = (action, score) => action == "word_score" && score >= 100 },
+            new LocationCriteria("Word Score: 125+") { OnNumericAction = (action, score) => action == "word_score" && score >= 125 },
+            new LocationCriteria("Word Score: 150+") { OnNumericAction = (action, score) => action == "word_score" && score >= 150 },
+            new LocationCriteria("Word Score: 175+") { OnNumericAction = (action, score) => action == "word_score" && score >= 175 },
+            new LocationCriteria("Word Score: 200+") { OnNumericAction = (action, score) => action == "word_score" && score >= 200 },
+            new LocationCriteria("Word Score: 225+") { OnNumericAction = (action, score) => action == "word_score" && score >= 225 },
+            new LocationCriteria("Word Score: 250+") { OnNumericAction = (action, score) => action == "word_score" && score >= 250 },
+            new LocationCriteria("Word Score: 300+") { OnNumericAction = (action, score) => action == "word_score" && score >= 300 },
+            new LocationCriteria("Word Score: 350+") { OnNumericAction = (action, score) => action == "word_score" && score >= 350 },
+            new LocationCriteria("Word Score: 400+") { OnNumericAction = (action, score) => action == "word_score" && score >= 400 },
+            new LocationCriteria("Word Score: 450+") { OnNumericAction = (action, score) => action == "word_score" && score >= 450 },
+            new LocationCriteria("Word Score: 500+") { OnNumericAction = (action, score) => action == "word_score" && score >= 500 },
+            new LocationCriteria("Word Score: 600+") { OnNumericAction = (action, score) => action == "word_score" && score >= 600 },
+            new LocationCriteria("Word Score: 700+") { OnNumericAction = (action, score) => action == "word_score" && score >= 700 },
+            new LocationCriteria("Word Score: 800+") { OnNumericAction = (action, score) => action == "word_score" && score >= 800 },
+            new LocationCriteria("Word Score: 900+") { OnNumericAction = (action, score) => action == "word_score" && score >= 900 },
+            new LocationCriteria("Word Score: 1000+") { OnNumericAction = (action, score) => action == "word_score" && score >= 1000 },
+            new LocationCriteria("Word Score: 1250+") { OnNumericAction = (action, score) => action == "word_score" && score >= 1250 },
+            new LocationCriteria("Word Score: 1500+") { OnNumericAction = (action, score) => action == "word_score" && score >= 1500 },
+            new LocationCriteria("Word Score: 1750+") { OnNumericAction = (action, score) => action == "word_score" && score >= 1750 },
+            new LocationCriteria("Word Score: 2000+") { OnNumericAction = (action, score) => action == "word_score" && score >= 2000 },
+            new LocationCriteria("Word Score: 2250+") { OnNumericAction = (action, score) => action == "word_score" && score >= 2250 },
+            new LocationCriteria("Word Score: 2500+") { OnNumericAction = (action, score) => action == "word_score" && score >= 2500 },
+
+            // Tile Types
+            new LocationCriteria("Use a Blank Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsBlank() },
+            new LocationCriteria("Use a Blue Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() == TileType.Blue },
+            new LocationCriteria("Use a Chess Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsChessPiece() },
+            new LocationCriteria("Use a Colourless Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Normal },
+            new LocationCriteria("Use a Currency Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetGlyphType() is GlyphType.Currency },
+            new LocationCriteria("Use a Fraction Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetGlyphType() is GlyphType.Fraction },
+            new LocationCriteria("Use a Normal Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Normal },
+            new LocationCriteria("Use a Letter Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetGlyphType() is GlyphType.Letter },
+            new LocationCriteria("Use a Number Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsNumber() },
+            new LocationCriteria("Use a Red Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Red },
+            new LocationCriteria("Use a Shiny Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Shiny },
+            new LocationCriteria("Use a Suited Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsSuitedCard() },
+            new LocationCriteria("Use a Void Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Void },
 
             #endregion
         };
@@ -484,14 +554,22 @@ namespace Mod.Mappings
             SaveManager.AddCharacterToUnlockedCharacters(characterType);
             yield break;
         }
+
+        static IEnumerator UnlockItem(Type itemType)
+        {
+            Logger.LogInfo($"Unlocking item '{itemType.Name}");
+            ItemPools.AddItemsToPools(new List<Type> { itemType });
+            yield break;
+        }
     }
 
     public class LocationCriteria
     {
         public Action Action { get; set; }
         public Func<string, bool> OnGenericAction { get; set; }
-        public Func<Character, int, NodeType, bool> OnEncounterAction { get; set; }
+        public Func<Character, int, NodeType, List<BossModifier>, bool> OnEncounterAction { get; set; }
         public Func<string, long, bool> OnNumericAction { get; set; }
+        public Func<string, Tile, bool> OnTileAction { get; set; }
         public string LocationName { get; set; }
 
         public LocationCriteria(string locationName)

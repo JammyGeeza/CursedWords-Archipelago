@@ -141,6 +141,12 @@ namespace Mod.Patches
 
             // Attempt to check word length locations
             CursedWordsArchipelago.Instance.TryCheckNumericLocations("word_length", tiles.Count);
+
+            // Attempt to check tile type locations
+            foreach (TileSelection tile in tiles)
+            {
+                CursedWordsArchipelago.Instance.TryCheckTileLocations("use_tile", tile.SelectedTile);
+            }
         }
     }
 }
