@@ -45,7 +45,7 @@ namespace Mod.Patches
         /// <summary>
         /// If build-biased sticker doesn't generate, generate a random sticker instead to fill the gap.
         /// </summary>
-        [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedSticker), typeof(List<Type>))]
+        [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedSticker), typeof(List<Type>), typeof(bool))]
         [HarmonyPostfix]
         private static void OnGetRandomBuildBiasedSticker_Postfix(List<Type> unavailableItemTypes, ref Item __result)
         {
@@ -61,7 +61,7 @@ namespace Mod.Patches
         /// <summary>
         /// If build-biased sticker doesn't generate, generate a random sticker instead to fill the gap.
         /// </summary>
-        [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedSticker), typeof(ItemRarity), typeof(List<Type>))]
+        [HarmonyPatch(nameof(ItemPools.GetRandomBuildBiasedSticker), typeof(ItemRarity), typeof(List<Type>), typeof(bool))]
         [HarmonyPostfix]
         private static void OnGetRandomBuildBiasedSticker_Overload_Postfix(ItemRarity rarity, List<Type> unavailableItemTypes, ref Item __result)
         {

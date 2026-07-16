@@ -47,6 +47,21 @@ namespace Mod.Extensions
         }
 
         /// <summary>
+        /// Call the private 'PopulateStampInStock' method.
+        /// </summary>
+        /// <param name="controller">The controller to call the method on.</param>
+        /// <param name="itemInStock">The stamp item in stock.</param>
+        /// <param name="index">The shop index of the item in stock.</param>
+        /// <param name="isFirstShop">Is this the first shop.</param>
+        /// <param name="freeItem">Is this item free.</param>
+        public static void CallPopulateStampInStock(this ShopController controller, ItemInStock itemInStock, int index, bool isFirstShop = false, bool freeItem = false)
+        {
+            Traverse.Create(controller)
+                .Method("PopulateStampInStock", itemInStock, index, isFirstShop, freeItem)
+                .GetValue();
+        }
+
+        /// <summary>
         /// Get the current re-roll price.
         /// </summary>
         /// <param name="controller">The controller to get the re-roll price from.</param>
