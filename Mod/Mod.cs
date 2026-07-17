@@ -22,7 +22,7 @@ using UnityEngine.Windows;
 
 namespace Modd
 {
-    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.3.0")]
+    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.3.1")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
         #region Private Properties
@@ -33,7 +33,7 @@ namespace Modd
 
         private Dictionary<Type, string> _characterTypeCache;
 
-        private Dictionary<Type, string> _itemTypeCache;
+        private Dictionary<Type, (string name, ItemRarity rarity)> _itemTypeCache;
 
         #endregion
 
@@ -61,11 +61,11 @@ namespace Modd
         /// <summary>
         /// Cache item names to types to prevent needing to do this multiple times.
         /// </summary>
-        public Dictionary<Type, string> ItemTypeCache =>
+        public Dictionary<Type, (string name, ItemRarity rarity)> ItemTypeCache =>
             _itemTypeCache ??= Assembly.GetAssembly(typeof(Item))
                 .GetTypes()
                 .Where(t => t.IsClass && t.IsSubclassOf(typeof(Item)))
-                .ToDictionary(t => t, t => (Activator.CreateInstance(t) as Item).Name);
+                .ToDictionary(t => t, t => { Item item = Activator.CreateInstance(t) as Item; return (item.Name, item.Rarity); });
 
         public ManualLogSource LogSource
         {

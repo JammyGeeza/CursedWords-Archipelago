@@ -1,14 +1,10 @@
-﻿using BepInEx.Logging;
-using HarmonyLib;
-using Mod.Classes;
+﻿using HarmonyLib;
 using Mod.Helpers;
 using Mod.Mappings;
 using Modd;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using UnityEngine.SceneManagement;
 
 namespace Mod.Patches
@@ -43,7 +39,27 @@ namespace Mod.Patches
             Logger.LogInfo($"{nameof(SaveManager)}.{nameof(SaveManager.GetUnlockedItems)} prefix!");
 
             __result = CursedWordsArchipelago.Instance.ItemTypeCache
-                .Where(kvp => ArchipelagoHelper.HasReceivedItem(kvp.Value))
+                .Where(kvp => ArchipelagoHelper.HasReceivedItem(kvp.Value.name))
+                .Where(kvp =>
+                {
+                    // If item rarities shuffled, exclude items of rarities not yet available
+                    if (ArchipelagoHelper.SlotData.ShuffleItemRarities)
+                    {
+                        switch (kvp.Value.rarity)
+                        {
+                            case ItemRarity.Rare:
+                                return ArchipelagoHelper.HasReceivedItem("Progressive Item Rarity", 1);
+
+                            case ItemRarity.Legendary:
+                                return ArchipelagoHelper.HasReceivedItem("Progressive Item Rarity", 2);
+
+                            default:
+                                return true;
+                        }
+                    }
+
+                    return true;
+                })
                 .Select(kvp => kvp.Key)
                 .ToList();
 

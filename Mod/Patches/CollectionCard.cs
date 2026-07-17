@@ -99,8 +99,9 @@ namespace Mod.Patches
                     lockedTitleTMP.SetText(item.Name);
                     lockedConditionsTMP.SetText($"Receive the '{characterName}' archipelago item to unlock.");
                 }
-
             }
+
+            // TODO: Set text if received but item rarity is enabled
         }
     }
 }

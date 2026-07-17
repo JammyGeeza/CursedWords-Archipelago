@@ -37,6 +37,11 @@ namespace Mod.Helpers
         public bool ShuffleInventorySlots { get; private set; } = false;
 
         /// <summary>
+        /// Gets or sets whether shuffle item rarities is enabled.
+        /// </summary>
+        public bool ShuffleItemRarities { get; private set; } = false;
+
+        /// <summary>
         /// Gets or sets whether shuffle locked tile positions is enabled.
         /// </summary>
         public bool ShuffleLockedTilePositions { get; private set; } = false;
@@ -134,6 +139,20 @@ namespace Mod.Helpers
 
             Logger.LogInfo($"\tShuffle Inventory Slots: {ShuffleInventorySlots}");
 
+            if (slotData.TryGetValue("shuffle_item_rarities", out object shuffleItemRarities))
+            {
+                try
+                {
+                    ShuffleItemRarities = Convert.ToBoolean(shuffleItemRarities);
+                }
+                catch
+                {
+                    Logger.LogWarning("Shuffle Item Rarities slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\tShuffle Item Rarities: {ShuffleItemRarities}");
+
             if (slotData.TryGetValue("shuffle_locked_tile_positions", out object shuffleLockedTilePositions))
             {
                 try
@@ -146,7 +165,7 @@ namespace Mod.Helpers
                 }
             }
 
-            Logger.LogInfo($"\tShuffle Locked Tile Positions: {ShuffleGridSize}");
+            Logger.LogInfo($"\tShuffle Locked Tile Positions: {ShuffleLockedTilePositions}");
 
             if (slotData.TryGetValue("shuffle_locked_tile_positions_coords", out object shuffleLockedTilePositionsCoords))
             {
@@ -173,10 +192,13 @@ namespace Mod.Helpers
                 }
             }
 
-            Logger.LogInfo("\tShuffle Locked Tile Positions coordinates:");
-            foreach ((int x, int y) position in ShuffleLockedTilePositionsCoords)
+            if (ShuffleLockedTilePositionsCoords.Any())
             {
-                Logger.LogInfo($"\t\t{position.x},{position.y}");
+                Logger.LogInfo("\t\tCoordinates:");
+                foreach ((int x, int y) position in ShuffleLockedTilePositionsCoords)
+                {
+                    Logger.LogInfo($"\t\t\t{position.x},{position.y}");
+                }
             }
 
             if (slotData.TryGetValue("shopsanity", out object shopsanity))
