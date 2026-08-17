@@ -22,7 +22,7 @@ using UnityEngine.Windows;
 
 namespace Modd
 {
-    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.3.0")]
+    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.3.1")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
         #region Private Properties
