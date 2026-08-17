@@ -306,7 +306,7 @@ namespace Modd
             Logger.LogMessage("Connected to archipelago");
 
             // Get un-checked shop checks
-            List<long> uncheckedShopChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Shop Item");
+            List<long> uncheckedShopChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Shopsanity Item");
             if (uncheckedShopChecks.Count == 0)
             {
                 return;

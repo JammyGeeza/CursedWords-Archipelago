@@ -187,7 +187,7 @@ namespace Mod.Patches
             }
 
             // Ignore if first shop, is not the item at Index 0 or random chance fails (33%)
-            if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 100) < ShopCheckChance)
+            if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 100) > ShopCheckChance)
             {
                 return true;
             }
@@ -242,7 +242,7 @@ namespace Mod.Patches
             }
 
             // Ignore if first shop, is not the item at Index 0 or random chance fails (33%)
-            if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 100) < ShopCheckChance)
+            if (isFirstShop || index > 0 || UnityEngine.Random.Range(0, 100) > ShopCheckChance)
             {
                 return true;
             }
