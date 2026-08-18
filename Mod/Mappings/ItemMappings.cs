@@ -261,7 +261,7 @@ namespace Mod.Mappings
 
             new LocationCriteria("Buy a Stamp") { OnGenericAction = (action) => action == "buy_stamp" },
             new LocationCriteria("Buy a Sticker") { OnGenericAction = (action) => action == "buy_sticker" },
-            new LocationCriteria("Buy a Consumable Tile") { OnGenericAction = (action) => action == "buy_tile" },
+            //new LocationCriteria("Buy a Consumable Tile") { OnGenericAction = (action) => action == "buy_tile" },
             new LocationCriteria("Freeze a Stamp") { OnGenericAction = (action) => action == "freeze_stamp" },
             new LocationCriteria("Freeze a Sticker") { OnGenericAction = (action) => action == "freeze_sticker" },
             new LocationCriteria("Restock the Shop") { OnGenericAction = (action) => action == "restock_shop" },
@@ -319,20 +319,38 @@ namespace Mod.Mappings
             new LocationCriteria("Word Score: 2250+") { OnNumericAction = (action, score) => action == "word_score" && score >= 2250 },
             new LocationCriteria("Word Score: 2500+") { OnNumericAction = (action, score) => action == "word_score" && score >= 2500 },
 
-            // Tile Types
-            new LocationCriteria("Use a Blank Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsBlank() },
-            new LocationCriteria("Use a Blue Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() == TileType.Blue },
-            new LocationCriteria("Use a Chess Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsChessPiece() },
-            new LocationCriteria("Use a Colourless Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Normal },
-            new LocationCriteria("Use a Currency Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetGlyphType() is GlyphType.Currency },
-            new LocationCriteria("Use a Fraction Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetGlyphType() is GlyphType.Fraction },
-            new LocationCriteria("Use a Normal Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Normal },
-            new LocationCriteria("Use a Letter Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetGlyphType() is GlyphType.Letter },
-            new LocationCriteria("Use a Number Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsNumber() },
-            new LocationCriteria("Use a Red Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Red },
-            new LocationCriteria("Use a Shiny Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Shiny },
-            new LocationCriteria("Use a Suited Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsSuitedCard() },
-            new LocationCriteria("Use a Void Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Void },
+            // Buy Tiles
+            new LocationCriteria("Buy a Colourless Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetTileType() is TileType.Normal },
+            new LocationCriteria("Buy a Blue Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetTileType() == TileType.Blue },
+            new LocationCriteria("Buy a Red Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetTileType() is TileType.Red },
+            new LocationCriteria("Buy a Shiny Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetTileType() is TileType.Shiny },
+            new LocationCriteria("Buy a Void Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetTileType() is TileType.Void },
+
+            new LocationCriteria("Buy a ? Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.IsBlank() },
+            new LocationCriteria("Buy a Card Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.IsSuitedCard() },
+            new LocationCriteria("Buy a Chess Piece Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.IsChessPiece() },
+            new LocationCriteria("Buy a Currency Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetGlyphType() is GlyphType.Currency },
+            new LocationCriteria("Buy a Fraction Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetGlyphType() is GlyphType.Fraction },
+            new LocationCriteria("Buy a Joker Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetSuit() is Suit.Joker },
+            new LocationCriteria("Buy a Letter Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetGlyphType() is GlyphType.Letter },
+            new LocationCriteria("Buy a Number Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.IsNumber() },
+
+
+            // Submit Tiles
+            new LocationCriteria("Submit a Colourless Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Normal },
+            new LocationCriteria("Submit a Blue Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() == TileType.Blue },
+            new LocationCriteria("Submit a Red Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Red },
+            new LocationCriteria("Submit a Shiny Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Shiny },
+            new LocationCriteria("Submit a Void Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetTileType() is TileType.Void },
+            
+            new LocationCriteria("Submit a ? Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsBlank() },
+            new LocationCriteria("Submit a Card Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsSuitedCard() },
+            new LocationCriteria("Submit a Chess Piece Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsChessPiece() },
+            new LocationCriteria("Submit a Currency Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetGlyphType() is GlyphType.Currency },
+            new LocationCriteria("Submit a Fraction Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetGlyphType() is GlyphType.Fraction },
+            new LocationCriteria("Submit a Joker Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetSuit() is Suit.Joker },
+            new LocationCriteria("Submit a Letter Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.GetGlyphType() is GlyphType.Letter },
+            new LocationCriteria("Submit a Number Tile") { OnTileAction = (action, tile) => action == "use_tile" && tile.IsNumber() },
 
             #endregion
         };
