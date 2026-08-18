@@ -21,8 +21,8 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(ShopTile)}.{nameof(ShopTile.OnBuyButtonClickedCallback)} Postfix!");
 
-            // Attempt to check shop locations
-            CursedWordsArchipelago.Instance.TryCheckGenericLocations("buy_tile");
+            // Attempt to check tile locations
+            CursedWordsArchipelago.Instance.TryCheckTileLocations("buy_tile", __instance.MyTile);
         }
     }
 }

@@ -22,7 +22,7 @@ using UnityEngine.Windows;
 
 namespace Modd
 {
-    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.3.1")]
+    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.4.0")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
         #region Private Properties
@@ -33,7 +33,7 @@ namespace Modd
 
         private Dictionary<Type, string> _characterTypeCache;
 
-        private Dictionary<Type, string> _itemTypeCache;
+        private Dictionary<Type, (string name, ItemRarity rarity)> _itemTypeCache;
 
         #endregion
 
@@ -61,11 +61,11 @@ namespace Modd
         /// <summary>
         /// Cache item names to types to prevent needing to do this multiple times.
         /// </summary>
-        public Dictionary<Type, string> ItemTypeCache =>
+        public Dictionary<Type, (string name, ItemRarity rarity)> ItemTypeCache =>
             _itemTypeCache ??= Assembly.GetAssembly(typeof(Item))
                 .GetTypes()
                 .Where(t => t.IsClass && t.IsSubclassOf(typeof(Item)))
-                .ToDictionary(t => t, t => (Activator.CreateInstance(t) as Item).Name);
+                .ToDictionary(t => t, t => { Item item = Activator.CreateInstance(t) as Item; return (item.Name, item.Rarity); });
 
         public ManualLogSource LogSource
         {
@@ -193,9 +193,9 @@ namespace Modd
         /// <param name="character">The character to check against.</param>
         /// <param name="stage">The stage to check against.</param>
         /// <param name="nodeType">The encounter node type to check against.</param>
-        public void TryCheckEncounterLocations(Character character, int stage, NodeType nodeType, List<BossModifier> bossModifiers)
+        public void TryCheckEncounterLocations(string action, Player player, List<BossModifier>? bossModifiers = null)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(character, stage, nodeType, bossModifiers) == true))
+            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers) == true))
             {
                 Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 TryCheckLocation(criteria.LocationName);
@@ -225,6 +225,20 @@ namespace Modd
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnNumericAction?.Invoke(action, amount) == true))
             {
                 Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
+                TryCheckLocation(criteria.LocationName);
+            }
+        }
+
+        /// <summary>
+        /// Attempt to check Shop Action locations.
+        /// </summary>
+        /// <param name="action">The shop action name.</param>
+        /// <param name="item">The shop item.</param>
+        public void TryCheckShopActionLocations(string action, Item item)
+        {
+            foreach(LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnShopAction?.Invoke(action, item) == true))
+            {
+                Logger.LogWarning($"Criteria met for shop action check: '{criteria.LocationName}'.");
                 TryCheckLocation(criteria.LocationName);
             }
         }
@@ -306,7 +320,7 @@ namespace Modd
             Logger.LogMessage("Connected to archipelago");
 
             // Get un-checked shop checks
-            List<long> uncheckedShopChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Shopsanity Item");
+            List<long> uncheckedShopChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Buy Shopsanity Item");
             if (uncheckedShopChecks.Count == 0)
             {
                 return;

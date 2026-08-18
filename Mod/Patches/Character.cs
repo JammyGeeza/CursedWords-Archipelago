@@ -24,10 +24,10 @@ namespace Mod.Patches
                 Type type = __result[i - 1];
 
                 // Get name from item type cache
-                if (CursedWordsArchipelago.Instance.ItemTypeCache.TryGetValue(type, out string itemName) && !string.IsNullOrEmpty(itemName))
+                if (CursedWordsArchipelago.Instance.ItemTypeCache.TryGetValue(type, out (string name, ItemRarity rarity) item) && !string.IsNullOrEmpty(item.name))
                 {
                     // If not yet received, remove from types
-                    if (!ArchipelagoHelper.HasReceivedItem(itemName))
+                    if (!ArchipelagoHelper.HasReceivedItem(item.name))
                     {
                         __result.Remove(type);
                     }

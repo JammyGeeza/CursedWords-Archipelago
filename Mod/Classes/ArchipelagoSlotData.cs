@@ -1,4 +1,5 @@
 ﻿using BepInEx.Logging;
+using Mod.Enums;
 using Modd;
 using System;
 using System.Collections;
@@ -17,14 +18,24 @@ namespace Mod.Helpers
         }
 
         /// <summary>
+        /// Gets a value indicating the highest crown requirement
+        /// </summary>
+        public int CrownRequirement { get; private set; }
+
+        /// <summary>
         /// Gets a value indicating whether Deathlink is enabled.
         /// </summary>
         public bool Deathlink { get; private set; }
 
         /// <summary>
-        /// Gets or sets the goal requirements.
+        /// Gets a value indicating the goal type.
         /// </summary>
-        public string[] GoalRequirements { get; private set; } = Array.Empty<string>();
+        public GoalType GoalType { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating the goal character requirements
+        /// </summary>
+        public string[] GoalRequirements { get; private set; }
 
         /// <summary>
         /// Gets or sets whether shuffle grid size is enabled.
@@ -35,6 +46,11 @@ namespace Mod.Helpers
         /// Gets or sets whether shuffle inventory slots is enabled.
         /// </summary>
         public bool ShuffleInventorySlots { get; private set; } = false;
+
+        /// <summary>
+        /// Gets or sets whether shuffle item rarities is enabled.
+        /// </summary>
+        public bool ShuffleItemRarities { get; private set; } = false;
 
         /// <summary>
         /// Gets or sets whether shuffle locked tile positions is enabled.
@@ -61,6 +77,53 @@ namespace Mod.Helpers
         {
             Logger.LogInfo("Slot data:");
 
+            // Parse the goal type first because if it fails, everything fails
+            if (slotData.TryGetValue("goal", out object goal))
+            {
+                try
+                {
+                    GoalType = (GoalType)Convert.ToInt32(goal);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"Goal slot data was in an unexpected format and cannot be defaulted.");
+                    throw ex;
+                }
+            }
+            else
+            {
+                throw new MissingMemberException("Goal slot data was missing and cannot be defaulted.");
+            }
+
+            Logger.LogInfo($"\tGoal Type: {GoalType}");
+
+            // Parse the goal characters second for the same reason
+            if (slotData.TryGetValue("goal_characters", out object goalCharacters))
+            {
+                if (goalCharacters is IEnumerable enumerable)
+                {
+                    GoalRequirements = enumerable
+                        .Cast<object>()
+                        .Select(x => x.ToString())
+                        .Where(x => !string.IsNullOrEmpty(x))
+                        .ToArray();
+                }
+                else
+                {
+                    throw new FormatException("Goal Requirements slot data was in an unexpected format and cannot be defaulted.");
+                }
+            }
+            else
+            {
+                throw new MissingMemberException("Goal Requirements slot data was missing and cannot be defaulted.");
+            }
+
+            Logger.LogInfo("\tGoal Requirements:");
+            foreach (string character in GoalRequirements)
+            {
+                Logger.LogInfo($"\t\t{character}");
+            }
+
             if (slotData.TryGetValue("deathlink", out object deathlink))
             {
                 try
@@ -75,36 +138,26 @@ namespace Mod.Helpers
 
             Logger.LogInfo($"\tDeathlink: {Deathlink}");
 
-            if (slotData.TryGetValue("goal", out object goalRequirements))
+            
+
+            if (slotData.TryGetValue("crowns", out object crowns))
             {
                 try
                 {
-                    if (goalRequirements is IEnumerable enumerable)
-                    {
-                        GoalRequirements = enumerable
-                            .Cast<object>()
-                            .Select(x => x.ToString())
-                            .Where(x => !string.IsNullOrEmpty(x))
-                            .ToArray();
-                    }
-                    else
-                    {
-                        throw new FormatException();
-                    }
+                    CrownRequirement = Convert.ToInt32(crowns);
 
+                    // Verify, just in case
+                    if (CrownRequirement < 0 || CrownRequirement > 7)
+                        throw new IndexOutOfRangeException($"Crowns slot data was out of range.");
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError("Goal requirements in invalid format, can't default.");
+                    Logger.LogError($"Crowns slot data was in an unexpected format and cannot be defaulted.");
                     throw ex;
                 }
             }
 
-            Logger.LogInfo("\tGoal Requirements:");
-            foreach (string goalRequirement in GoalRequirements)
-            {
-                Logger.LogInfo($"\t\t{goalRequirement}");
-            }
+            Logger.LogInfo($"\tHighest Crown: {GoalType}");
 
             if (slotData.TryGetValue("shuffle_grid_size", out object shuffleGridSize))
             {
@@ -134,6 +187,20 @@ namespace Mod.Helpers
 
             Logger.LogInfo($"\tShuffle Inventory Slots: {ShuffleInventorySlots}");
 
+            if (slotData.TryGetValue("shuffle_item_rarities", out object shuffleItemRarities))
+            {
+                try
+                {
+                    ShuffleItemRarities = Convert.ToBoolean(shuffleItemRarities);
+                }
+                catch
+                {
+                    Logger.LogWarning("Shuffle Item Rarities slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\tShuffle Item Rarities: {ShuffleItemRarities}");
+
             if (slotData.TryGetValue("shuffle_locked_tile_positions", out object shuffleLockedTilePositions))
             {
                 try
@@ -146,7 +213,7 @@ namespace Mod.Helpers
                 }
             }
 
-            Logger.LogInfo($"\tShuffle Locked Tile Positions: {ShuffleGridSize}");
+            Logger.LogInfo($"\tShuffle Locked Tile Positions: {ShuffleLockedTilePositions}");
 
             if (slotData.TryGetValue("shuffle_locked_tile_positions_coords", out object shuffleLockedTilePositionsCoords))
             {
@@ -173,10 +240,13 @@ namespace Mod.Helpers
                 }
             }
 
-            Logger.LogInfo("\tShuffle Locked Tile Positions coordinates:");
-            foreach ((int x, int y) position in ShuffleLockedTilePositionsCoords)
+            if (ShuffleLockedTilePositionsCoords.Any())
             {
-                Logger.LogInfo($"\t\t{position.x},{position.y}");
+                Logger.LogInfo("\t\tCoordinates:");
+                foreach ((int x, int y) position in ShuffleLockedTilePositionsCoords)
+                {
+                    Logger.LogInfo($"\t\t\t{position.x},{position.y}");
+                }
             }
 
             if (slotData.TryGetValue("shopsanity", out object shopsanity))
