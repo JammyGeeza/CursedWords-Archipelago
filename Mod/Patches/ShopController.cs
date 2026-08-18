@@ -87,7 +87,7 @@ namespace Mod.Patches
 
         [HarmonyPatch("BuyStamp")]
         [HarmonyPostfix]
-        private static void OnBuySticker_Postfix(ShopController __instance, ShopItemSlot itemSlot)
+        private static void OnBuyStamp_Postfix(ShopController __instance, ShopItemSlot itemSlot)
         {
             Logger.LogInfo($"{nameof(ShopController)}.BuyStamp postfix!");
 

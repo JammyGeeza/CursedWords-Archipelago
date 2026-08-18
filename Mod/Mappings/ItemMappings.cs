@@ -1000,6 +1000,8 @@ namespace Mod.Mappings
             new LocationCriteria("Restock the Shop") { OnShopAction = (action, item) => action == "restock" },
             new LocationCriteria("Sell a Stamp") { OnShopAction = (action, item) => action == "sell_item" && item.IsStamp() },
             new LocationCriteria("Sell a Sticker") { OnShopAction = (action, item) => action == "sell_item" && item.IsSticker() },
+            new LocationCriteria("Upgrade a Sticker to Level 2") { OnShopAction = (action, item) => action == "upgrade_item" && item.IsSticker() && item.TimesUpgraded == 0 },
+            new LocationCriteria("Upgrade a Sticker to Level 3") { OnShopAction = (action, item) => action == "upgrade_item" && item.IsSticker() && item.TimesUpgraded == 1 },
 
             // Tilesanity
             new LocationCriteria("Buy a Colourless Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetTileType() is TileType.Normal },
