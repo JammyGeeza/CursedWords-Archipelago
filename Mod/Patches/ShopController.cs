@@ -99,8 +99,8 @@ namespace Mod.Patches
             }
             else
             {
-                // Attempt to check 'buy stamp' location
-                CursedWordsArchipelago.Instance.TryCheckGenericLocations("buy_stamp");
+                // Attempt to check shop action location
+                CursedWordsArchipelago.Instance.TryCheckShopActionLocations("buy_item", itemSlot.MyItemInStock.MyItem);
             }
         }
 
@@ -116,8 +116,8 @@ namespace Mod.Patches
             }
             else
             {
-                // Attempt to check 'buy sticker' location
-                CursedWordsArchipelago.Instance.TryCheckGenericLocations("buy_sticker");
+                // Attempt to check shop action locations
+                CursedWordsArchipelago.Instance.TryCheckShopActionLocations("buy_item", itemSlot.MyItemInStock.MyItem);
             }
         }
 
@@ -130,17 +130,17 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(ShopController)}.{nameof(ShopController.OnLeaveShopButtonClickedCallback)} prefix!");
 
-            // Check if any stickers have been frozen
-            if (__instance.GetStickersInStock().Any(s => s != null && s.MyItem.GetType() != typeof(ArchipelagoShopitem) && s.IsFrozen))
+            // Check if any stamps have been frozen
+            if (__instance.GetStampsInStock().FirstOrDefault(s => s != null && s.MyItem.GetType() != typeof(ArchipelagoShopitem) && s.IsFrozen) is ItemInStock stampInStock)
             {
-                CursedWordsArchipelago.Instance.TryCheckGenericLocations("freeze_sticker");
+                CursedWordsArchipelago.Instance.TryCheckShopActionLocations("freeze_item", stampInStock.MyItem);
             }
 
-            // Check if any stamps have been frozen
-            if (__instance.GetStampsInStock().Any(s => s != null && s.MyItem.GetType() != typeof(ArchipelagoShopitem) && s.IsFrozen))
+            // Check if any stickers have been frozen
+            if (__instance.GetStickersInStock().FirstOrDefault(s => s != null && s.MyItem.GetType() != typeof(ArchipelagoShopitem) && s.IsFrozen) is ItemInStock stickerInStock)
             {
-                CursedWordsArchipelago.Instance.TryCheckGenericLocations("freeze_stamp");
-            }
+                CursedWordsArchipelago.Instance.TryCheckShopActionLocations("freeze_item", stickerInStock.MyItem);
+            }            
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace Mod.Patches
             // If this is a re-roll, attempt to send the check
             if (isReroll)
             {
-                CursedWordsArchipelago.Instance.TryCheckGenericLocations("restock_shop");
+                CursedWordsArchipelago.Instance.TryCheckShopActionLocations("restock", null);
             }
 
             // Re-populate item pools

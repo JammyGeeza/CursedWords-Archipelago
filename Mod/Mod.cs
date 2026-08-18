@@ -193,9 +193,9 @@ namespace Modd
         /// <param name="character">The character to check against.</param>
         /// <param name="stage">The stage to check against.</param>
         /// <param name="nodeType">The encounter node type to check against.</param>
-        public void TryCheckEncounterLocations(Character character, int stage, NodeType nodeType, List<BossModifier> bossModifiers)
+        public void TryCheckEncounterLocations(string action, Player player, List<BossModifier>? bossModifiers = null)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(character, stage, nodeType, bossModifiers) == true))
+            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers) == true))
             {
                 Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 TryCheckLocation(criteria.LocationName);
@@ -225,6 +225,20 @@ namespace Modd
             foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnNumericAction?.Invoke(action, amount) == true))
             {
                 Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
+                TryCheckLocation(criteria.LocationName);
+            }
+        }
+
+        /// <summary>
+        /// Attempt to check Shop Action locations.
+        /// </summary>
+        /// <param name="action">The shop action name.</param>
+        /// <param name="item">The shop item.</param>
+        public void TryCheckShopActionLocations(string action, Item item)
+        {
+            foreach(LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnShopAction?.Invoke(action, item) == true))
+            {
+                Logger.LogWarning($"Criteria met for shop action check: '{criteria.LocationName}'.");
                 TryCheckLocation(criteria.LocationName);
             }
         }

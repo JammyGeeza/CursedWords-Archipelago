@@ -74,7 +74,7 @@ namespace Mod.Patches
             Logger.LogInfo($"Sold item: {item.Name}");
 
             // Attempt to check shop locations
-            CursedWordsArchipelago.Instance.TryCheckGenericLocations($"sell_{(item.IsStamp() ? "stamp" : "sticker")}");
+            CursedWordsArchipelago.Instance.TryCheckShopActionLocations($"sell_item", item);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Mod.Patches
             // Attempt to check tile type locations
             foreach (TileSelection tile in tiles)
             {
-                CursedWordsArchipelago.Instance.TryCheckTileLocations("use_tile", tile.SelectedTile);
+                CursedWordsArchipelago.Instance.TryCheckTileLocations("submit_tile", tile.SelectedTile);
             }
         }
     }

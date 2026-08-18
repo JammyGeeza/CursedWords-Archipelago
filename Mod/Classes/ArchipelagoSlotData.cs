@@ -1,4 +1,5 @@
 ﻿using BepInEx.Logging;
+using Mod.Enums;
 using Modd;
 using System;
 using System.Collections;
@@ -17,14 +18,24 @@ namespace Mod.Helpers
         }
 
         /// <summary>
+        /// Gets a value indicating the applicable characters for the seed.
+        /// </summary>
+        public string[] Characters { get; private set; }
+
+        /// <summary>
         /// Gets a value indicating whether Deathlink is enabled.
         /// </summary>
         public bool Deathlink { get; private set; }
 
         /// <summary>
-        /// Gets or sets the goal requirements.
+        /// Gets a value indicating the goal type.
         /// </summary>
-        public string[] GoalRequirements { get; private set; } = Array.Empty<string>();
+        public GoalType GoalType { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating the highest crown tier for the seed.
+        /// </summary>
+        public int HighestCrown { get; private set; }
 
         /// <summary>
         /// Gets or sets whether shuffle grid size is enabled.
@@ -66,6 +77,32 @@ namespace Mod.Helpers
         {
             Logger.LogInfo("Slot data:");
 
+            if (slotData.TryGetValue("characters", out object characters))
+            {
+                if (characters is IEnumerable enumerable)
+                {
+                    Characters = enumerable
+                        .Cast<object>()
+                        .Select(x => x.ToString())
+                        .Where(x => !string.IsNullOrEmpty(x))
+                        .ToArray();
+                }
+                else
+                {
+                    throw new FormatException("Characters slot data was in an unexpected format and cannot be defaulted.");
+                }
+            }
+            else
+            {
+                throw new MissingMemberException("Characters slot data was missing and cannot be defaulted.");
+            }
+
+            Logger.LogInfo("\tCharacters:");
+            foreach (string character in Characters)
+            {
+                Logger.LogInfo($"\t\t{character}");
+            }
+
             if (slotData.TryGetValue("deathlink", out object deathlink))
             {
                 try
@@ -80,36 +117,43 @@ namespace Mod.Helpers
 
             Logger.LogInfo($"\tDeathlink: {Deathlink}");
 
-            if (slotData.TryGetValue("goal", out object goalRequirements))
+            if (slotData.TryGetValue("goal", out object goal))
             {
                 try
                 {
-                    if (goalRequirements is IEnumerable enumerable)
-                    {
-                        GoalRequirements = enumerable
-                            .Cast<object>()
-                            .Select(x => x.ToString())
-                            .Where(x => !string.IsNullOrEmpty(x))
-                            .ToArray();
-                    }
-                    else
-                    {
-                        throw new FormatException();
-                    }
-
+                    GoalType = (GoalType)Convert.ToInt32(goal);
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError("Goal requirements in invalid format, can't default.");
+                    Logger.LogError($"Goal slot data was in an unexpected format and cannot be defaulted.");
+                    throw ex;
+                }
+            }
+            else
+            {
+                throw new MissingMemberException("Goal slot data was missing and cannot be defaulted.");
+            }
+
+            Logger.LogInfo($"\tGoal Type: {GoalType}");
+
+            if (slotData.TryGetValue("crowns", out object crowns))
+            {
+                try
+                {
+                    HighestCrown = Convert.ToInt32(crowns);
+
+                    // Verify, just in case
+                    if (HighestCrown < 0 || HighestCrown > 7)
+                        throw new IndexOutOfRangeException($"Crowns slot data was out of range.");
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"Crowns slot data was in an unexpected format and cannot be defaulted.");
                     throw ex;
                 }
             }
 
-            Logger.LogInfo("\tGoal Requirements:");
-            foreach (string goalRequirement in GoalRequirements)
-            {
-                Logger.LogInfo($"\t\t{goalRequirement}");
-            }
+            Logger.LogInfo($"\tHighest Crown: {GoalType}");
 
             if (slotData.TryGetValue("shuffle_grid_size", out object shuffleGridSize))
             {

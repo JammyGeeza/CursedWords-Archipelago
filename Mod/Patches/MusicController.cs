@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Mod.Enums;
 using Mod.Extensions;
 using Mod.Helpers;
 using Modd;
@@ -30,11 +31,7 @@ namespace Mod.Patches
                 if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
                 {
                     // Try and check encounter location(s)
-                    CursedWordsArchipelago.Instance.TryCheckEncounterLocations(
-                        player.MyCharacter,
-                        player.CurrentRunProgress.CurrentStage,
-                        player.CurrentRunProgress.CurrentNodeType,
-                        controller.GetBossModifiers());
+                    CursedWordsArchipelago.Instance.TryCheckEncounterLocations("win_encounter", player, controller.GetBossModifiers());
                 }
                 else
                 {
@@ -57,49 +54,78 @@ namespace Mod.Patches
         /// <summary>
         /// Check location when an encounter is won.
         /// </summary>
+        [HarmonyPatch(nameof(MusicController.OnWinMichaelEncounter))]
+        [HarmonyPostfix]
+        private static void OnWinMichaelEncounter_Postfix()
+        {
+            Logger.LogInfo($"{nameof(MusicController)}.{nameof(MusicController.OnWinMichaelEncounter)} postfix!");
+
+            // Attempt to send run win check (Stage 5-3)
+            Player player = GameStatics.GetPlayer();
+
+            // Attempt to send run win check (Stage 6-3)
+            CursedWordsArchipelago.Instance.TryCheckEncounterLocations("win_encounter", player);
+
+            // Is goal type michael?
+            if (ArchipelagoHelper.SlotData.GoalType is GoalType.Michael)
+            {
+                // Check if all characters have beaten michael
+                int beatenMichaelCount = SaveManager.GetCharacterHasBeatenFinalBossAmount();
+                if (beatenMichaelCount == ArchipelagoHelper.SlotData.Characters.Length)
+                {
+                    Logger.LogInfo("Goal condition has been reached!");
+                    ArchipelagoHelper.TryGoal();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Check location when an encounter is won.
+        /// </summary>
         [HarmonyPatch(nameof(MusicController.OnWinRun))]
         [HarmonyPostfix]
         private static void OnWinRun_Postfix()
         {
             Logger.LogInfo($"{nameof(MusicController)}.{nameof(MusicController.OnWinRun)} postfix!");
 
-            // Attempt to send run win check (Stage 5-3)
             Player player = GameStatics.GetPlayer();
 
             if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
             {
-                CursedWordsArchipelago.Instance.TryCheckEncounterLocations(
-                    player.MyCharacter,
-                    player.CurrentRunProgress.CurrentStage,
-                    player.CurrentRunProgress.CurrentNodeType,
-                    controller.GetBossModifiers());
+                // Try and check encounter location check (needs encounter controller for boss checks)
+                CursedWordsArchipelago.Instance.TryCheckEncounterLocations("win_encounter", player, controller.GetBossModifiers());
+            }
+            else
+            {
+                Logger.LogError("Run has been won, but no encounter controller was found.");
+                return;
+            }
 
-                List<string> runsCompleted = SaveManager.GetCharactersWithAscensionsUnlocked()
-                    .Select(c => (Activator.CreateInstance(c) as Character).GetName())
-                    .ToList();
-
-                // If current win isn't there, add it to the list
-                if (!runsCompleted.Contains(player.GetCharacter().GetName()))
-                {
-                    runsCompleted.Add(player.GetCharacter().GetName());
-                }
-
-                Logger.LogInfo("Characters currently won with:");
-                foreach (string characterRunCompleted in runsCompleted)
-                {
-                    Logger.LogInfo($"\t{characterRunCompleted}");
-                }
-
-                // Check goal condition
-                if (ArchipelagoHelper.SlotData.GoalRequirements.All(runsCompleted.Contains))
+            // Is the goal 'Runs'?
+            if (ArchipelagoHelper.SlotData.GoalType is GoalType.Runs)
+            {
+                // Check if all characters have beaten at least one run
+                int beatenRunCount = SaveManager.GetCharactersWonWith().Count;
+                if (beatenRunCount >= ArchipelagoHelper.SlotData.Characters.Length)
                 {
                     Logger.LogInfo("Goal condition has been reached!");
                     ArchipelagoHelper.TryGoal();
                 }
             }
-            else
+            // Is the goal 'Crowns'?
+            else if (ArchipelagoHelper.SlotData.GoalType is GoalType.Crowns)
             {
-                Logger.LogWarning("Run has been won, but no encounter controller was found.");
+                // Check if all characters have beaten the goal crown
+                int beatenCrownCount = SaveManager.GetHighestCompletedAscensions()
+                    .Select((key, val) => val)
+                    .Where(v => v >= ArchipelagoHelper.SlotData.HighestCrown)
+                    .Count();
+                if (beatenCrownCount >= ArchipelagoHelper.SlotData.Characters.Length)
+                {
+                    Logger.LogInfo("Crowns goal condition has been reached!");
+                    ArchipelagoHelper.TryGoal();
+                }
+
             }
         }
     }
