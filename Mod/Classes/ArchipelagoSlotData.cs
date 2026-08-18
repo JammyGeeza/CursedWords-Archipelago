@@ -18,9 +18,9 @@ namespace Mod.Helpers
         }
 
         /// <summary>
-        /// Gets a value indicating the applicable characters for the seed.
+        /// Gets a value indicating the highest crown requirement
         /// </summary>
-        public string[] Characters { get; private set; }
+        public int CrownRequirement { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether Deathlink is enabled.
@@ -33,9 +33,9 @@ namespace Mod.Helpers
         public GoalType GoalType { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating the highest crown tier for the seed.
+        /// Gets a value indicating the goal character requirements
         /// </summary>
-        public int HighestCrown { get; private set; }
+        public string[] GoalRequirements { get; private set; }
 
         /// <summary>
         /// Gets or sets whether shuffle grid size is enabled.
@@ -77,46 +77,7 @@ namespace Mod.Helpers
         {
             Logger.LogInfo("Slot data:");
 
-            if (slotData.TryGetValue("characters", out object characters))
-            {
-                if (characters is IEnumerable enumerable)
-                {
-                    Characters = enumerable
-                        .Cast<object>()
-                        .Select(x => x.ToString())
-                        .Where(x => !string.IsNullOrEmpty(x))
-                        .ToArray();
-                }
-                else
-                {
-                    throw new FormatException("Characters slot data was in an unexpected format and cannot be defaulted.");
-                }
-            }
-            else
-            {
-                throw new MissingMemberException("Characters slot data was missing and cannot be defaulted.");
-            }
-
-            Logger.LogInfo("\tCharacters:");
-            foreach (string character in Characters)
-            {
-                Logger.LogInfo($"\t\t{character}");
-            }
-
-            if (slotData.TryGetValue("deathlink", out object deathlink))
-            {
-                try
-                {
-                    Deathlink = Convert.ToBoolean(deathlink);
-                }
-                catch
-                {
-                    Logger.LogWarning("Deathlink slot data in unexpected format, defaulting to 'false'");
-                }
-            }
-
-            Logger.LogInfo($"\tDeathlink: {Deathlink}");
-
+            // Parse the goal type first because if it fails, everything fails
             if (slotData.TryGetValue("goal", out object goal))
             {
                 try
@@ -136,14 +97,57 @@ namespace Mod.Helpers
 
             Logger.LogInfo($"\tGoal Type: {GoalType}");
 
+            // Parse the goal characters second for the same reason
+            if (slotData.TryGetValue("goal_characters", out object goalCharacters))
+            {
+                if (goalCharacters is IEnumerable enumerable)
+                {
+                    GoalRequirements = enumerable
+                        .Cast<object>()
+                        .Select(x => x.ToString())
+                        .Where(x => !string.IsNullOrEmpty(x))
+                        .ToArray();
+                }
+                else
+                {
+                    throw new FormatException("Goal Requirements slot data was in an unexpected format and cannot be defaulted.");
+                }
+            }
+            else
+            {
+                throw new MissingMemberException("Goal Requirements slot data was missing and cannot be defaulted.");
+            }
+
+            Logger.LogInfo("\tGoal Requirements:");
+            foreach (string character in GoalRequirements)
+            {
+                Logger.LogInfo($"\t\t{character}");
+            }
+
+            if (slotData.TryGetValue("deathlink", out object deathlink))
+            {
+                try
+                {
+                    Deathlink = Convert.ToBoolean(deathlink);
+                }
+                catch
+                {
+                    Logger.LogWarning("Deathlink slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\tDeathlink: {Deathlink}");
+
+            
+
             if (slotData.TryGetValue("crowns", out object crowns))
             {
                 try
                 {
-                    HighestCrown = Convert.ToInt32(crowns);
+                    CrownRequirement = Convert.ToInt32(crowns);
 
                     // Verify, just in case
-                    if (HighestCrown < 0 || HighestCrown > 7)
+                    if (CrownRequirement < 0 || CrownRequirement > 7)
                         throw new IndexOutOfRangeException($"Crowns slot data was out of range.");
                 }
                 catch (Exception ex)

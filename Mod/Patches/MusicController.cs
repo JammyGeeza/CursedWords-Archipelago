@@ -69,9 +69,19 @@ namespace Mod.Patches
             // Is goal type michael?
             if (ArchipelagoHelper.SlotData.GoalType is GoalType.Michael)
             {
-                // Check if all characters have beaten michael
-                int beatenMichaelCount = SaveManager.GetCharacterHasBeatenFinalBossAmount();
-                if (beatenMichaelCount == ArchipelagoHelper.SlotData.Characters.Length)
+                // Check if all required characters have beaten Michael
+                bool goalConditionMet = ArchipelagoHelper.SlotData.GoalRequirements
+                    .All(gr =>
+                    {
+                        Type characterType = CursedWordsArchipelago.Instance.CharacterTypeCache
+                            .FirstOrDefault((kvp) => kvp.Value == gr)
+                            .Key;
+
+                        return SaveManager.HasBeatenFinalBoss(characterType);
+                    });
+
+                // If goal condition met, try to send goal
+                if (goalConditionMet)
                 {
                     Logger.LogInfo("Goal condition has been reached!");
                     ArchipelagoHelper.TryGoal();
@@ -101,31 +111,25 @@ namespace Mod.Patches
                 return;
             }
 
-            // Is the goal 'Runs'?
-            if (ArchipelagoHelper.SlotData.GoalType is GoalType.Runs)
+            if (ArchipelagoHelper.SlotData.GoalType != GoalType.Michael)
             {
-                // Check if all characters have beaten at least one run
-                int beatenRunCount = SaveManager.GetCharactersWonWith().Count;
-                if (beatenRunCount >= ArchipelagoHelper.SlotData.Characters.Length)
+                // Check if all required characters have beaten the appropriate crown tier (if any)
+                bool goalConditionMet = ArchipelagoHelper.SlotData.GoalRequirements
+                    .All(gr =>
+                    {
+                        Type characterType = CursedWordsArchipelago.Instance.CharacterTypeCache
+                            .FirstOrDefault((kvp) => kvp.Value == gr)
+                            .Key;
+
+                        return SaveManager.GetHighestCompletedAscension(characterType) >= ArchipelagoHelper.SlotData.CrownRequirement;
+                    });
+
+                // If goal condition met, try to send goal
+                if (goalConditionMet)
                 {
                     Logger.LogInfo("Goal condition has been reached!");
                     ArchipelagoHelper.TryGoal();
                 }
-            }
-            // Is the goal 'Crowns'?
-            else if (ArchipelagoHelper.SlotData.GoalType is GoalType.Crowns)
-            {
-                // Check if all characters have beaten the goal crown
-                int beatenCrownCount = SaveManager.GetHighestCompletedAscensions()
-                    .Select((key, val) => val)
-                    .Where(v => v >= ArchipelagoHelper.SlotData.HighestCrown)
-                    .Count();
-                if (beatenCrownCount >= ArchipelagoHelper.SlotData.Characters.Length)
-                {
-                    Logger.LogInfo("Crowns goal condition has been reached!");
-                    ArchipelagoHelper.TryGoal();
-                }
-
             }
         }
     }

@@ -18,7 +18,7 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(SaveManager)}.{nameof(SaveManager.AreAscensionsUnlocked)} prefix!");
 
-            __result = ArchipelagoHelper.SlotData.HighestCrown > 0;
+            __result = ArchipelagoHelper.SlotData.CrownRequirement > 0;
 
             return false;
         }
