@@ -1,0 +1,44 @@
+name: Report an Issue
+description: Log a bug, unexpected behaviour or error that you have encountered
+title: "DOC: "
+labels: [ "documentation" ]
+body:
+- type: markdown
+  attributes: 
+    value: |
+      Thanks for taking the time to report an issue - if you need any further assistance, please reach out in the [Discord Thread](https://discord.com/channels/731205301247803413/1499176806962692196)
+- type: dropdown
+  id: area
+  attributes:
+    label: Affected Area
+    description: Please select the part of the project where you encountered the issue
+    options:
+      - APWorld
+      - Mod Client
+      - Other
+  validations:
+    required: true
+- type: markdown
+  attributes: 
+    value: |
+      When providing your issue description, please try to answer as many of the following questions as possible:
+        - What were you doing when the issue occurred?
+        - What did you expect to happen?
+        - What actually happened?
+        - Is there a pattern to the unexpected behaviour?
+      The more detail you can provide, the easier it will be to track down the issue
+- type: textarea
+  id: description
+  attributes:
+    label: Description of the Issue
+    description: Provide a description of the issue you have experienced, including as much detail as possible
+    placeholder: 
+  validations:
+    required: true
+- type: upload
+  id: evidence
+  attributes:
+    label: Upload Evidence
+    description: If possible, please provide any relevant screenshots and/or log files to help further understand the issue
+  validations:
+    required: false
