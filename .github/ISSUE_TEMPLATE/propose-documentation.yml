@@ -2,7 +2,6 @@ name: Propose Documentation Changes
 description: Propose the addition, updating or removal of documentation
 title: "DOC: "
 labels: [ "documentation" ]
-type: doc
 body:
   - type: markdown
     attributes: 
