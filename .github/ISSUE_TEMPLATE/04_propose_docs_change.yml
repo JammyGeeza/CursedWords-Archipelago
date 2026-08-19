@@ -1,0 +1,56 @@
+name: Propose a Documentation Change
+description: Propose the addition, updating or removal of documentation
+title: "DOC: "
+labels: [ "documentation" ]
+body:
+- type: markdown
+  attributes: 
+    value: |
+      Thanks for taking the time to propose a change - if you need any further assistance with the randomiser, please visit the [Cursed Words Thread](https://discord.com/channels/731205301247803413/1499176806962692196) in the Archipelago Discord Server.
+- type: dropdown
+  id: change
+  attributes:
+    label: Change
+    description: What type of documentation change are you proposing?
+    options:
+      - New
+      - Update
+      - Remove
+  validations:
+    required: true
+- type: dropdown
+  id: area
+  attributes:
+    label: Affected Area
+    description: What part of the project does the documentation relate to?
+    options:
+      - APWorld
+      - Mod Client
+      - Other
+  validations:
+    required: true
+- type: markdown
+  attributes: 
+    value: |
+      ---
+      
+      When proposing the documentation change, please try to answer as many of the following questions as possible, where applicable:
+      * What piece of documentation should be added / modified / removed?
+      * What benefit does the documentation change bring and/or what ambiguities does it solve?
+      
+      The more detail you can provide, the easier it is to understand, visualise and implement the change.
+- type: textarea
+  id: description
+  attributes:
+    label: Describe the Change
+    description: Provide a description of the change, including as much detail as possible
+    placeholder: Enter documentation change
+  validations:
+    required: true
+- type: upload
+  id: materials
+  attributes:
+    label: Upload Supporting Materials
+    description: If you have any screenshots, drawings, diagrams etc. to be included in the documentation change, please provide them here
+  validations:
+    required: false
