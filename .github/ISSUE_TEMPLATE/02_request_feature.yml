@@ -1,0 +1,46 @@
+name: Request a New Feature
+description: Share an idea for a new feature or functionality
+title: "FTR: "
+labels: [ "feature" ]
+body:
+- type: markdown
+  attributes: 
+    value: |
+      Thanks for taking the time to request a new feature - if you need any further assistance with the randomiser, please visit the [Cursed Words Thread](https://discord.com/channels/731205301247803413/1499176806962692196) in the Archipelago Discord Server.
+- type: dropdown
+  id: area
+  attributes:
+    label: Affected Area
+    description: Please select the part of the project your idea relates to
+    options:
+      - APWorld
+      - Mod Client
+      - Other
+  validations:
+    required: true
+- type: markdown
+  attributes: 
+    value: |
+      ---
+      
+      When sharing your idea, please try to answer as many of the following questions as possible, where applicable:
+      * What does your idea do?
+      * How does your idea work?
+      * What benefit does it bring and/or what problem does it solve?
+      
+      The more detail you can provide, the easier it will be to track down the issue
+- type: textarea
+  id: description
+  attributes:
+    label: Share your idea
+    description: Provide a description of your idea, including as much explanation as possible
+    placeholder: Enter your idea
+  validations:
+    required: true
+- type: upload
+  id: materials
+  attributes:
+    label: Upload Supporting Materials
+    description: If you have any screenshots, drawings, diagrams etc. to help further explain your idea, please provide them here
+  validations:
+    required: false
