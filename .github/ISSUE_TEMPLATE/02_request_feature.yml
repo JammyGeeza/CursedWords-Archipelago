@@ -32,8 +32,8 @@ body:
 - type: textarea
   id: description
   attributes:
-    label: Share your idea
-    description: Provide a description of your idea, including as much explanation as possible
+    label: Describe Your Idea
+    description: Provide a detailed description of your idea, including as much information as possible
     placeholder: Enter your idea
   validations:
     required: true
