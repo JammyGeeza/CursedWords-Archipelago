@@ -28,7 +28,7 @@ body:
       * How does your idea work?
       * What benefit does it bring and/or what problem does it solve?
       
-      The more detail you can provide, the easier it will be to track down the issue
+      The more detail you can provide, the easier it will be understand, visualise and implement your idea.
 - type: textarea
   id: description
   attributes:
