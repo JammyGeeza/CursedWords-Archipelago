@@ -35,7 +35,7 @@ body:
   attributes:
     label: Description of the Issue
     description: Provide a description of the issue you have experienced, including as much detail as possible
-    placeholder: 
+    placeholder: Enter description
   validations:
     required: true
 - type: upload
