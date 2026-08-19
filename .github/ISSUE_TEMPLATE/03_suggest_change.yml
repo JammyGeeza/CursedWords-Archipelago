@@ -1,12 +1,12 @@
 name: Suggest an Enhancement
-description: Propose a change to an existing feature or functionality
+description: Share an idea for a change to an existing feature or functionality
 title: "CHN: "
 labels: [ "change" ]
 body:
 - type: markdown
   attributes: 
     value: |
-      Thanks for taking the time to propose a change - if you need any further assistance with the randomiser, please visit the [Cursed Words Thread](https://discord.com/channels/731205301247803413/1499176806962692196) in the Archipelago Discord Server.
+      Thanks for taking the time to share an idea - if you need any further assistance with the randomiser, please visit the [Cursed Words Thread](https://discord.com/channels/731205301247803413/1499176806962692196) in the Archipelago Discord Server.
 - type: dropdown
   id: area
   attributes:
@@ -32,8 +32,8 @@ body:
 - type: textarea
   id: description
   attributes:
-    label: Describe the change
-    description: Provide a description of the change, including as much detail as possible
+    label: Describe the Change
+    description: Provide a description of your idea, including as much detail as possible
     placeholder: Enter your idea
   validations:
     required: true
@@ -41,6 +41,6 @@ body:
   id: materials
   attributes:
     label: Upload Supporting Materials
-    description: If you have any screenshots, drawings, diagrams etc. to help further explain the change, please provide them here
+    description: If you have any screenshots, drawings, diagrams etc. to help further explain your idea, please provide them here
   validations:
     required: false
