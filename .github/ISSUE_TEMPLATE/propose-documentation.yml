@@ -9,7 +9,7 @@ body:
       value: |
         Thank you for taking the time to propose documentation changes!
   - type: dropdown
-    id: type
+    id: area
     attributes:
       label: Area
       description: What part of the project does the documentation relate to?
@@ -20,7 +20,7 @@ body:
       validations:
         required: true
   - type: dropdown
-    id: type
+    id: change
     attributes:
       label: Type
       description: What type of documentation change are you proposing?
