@@ -3,44 +3,44 @@ description: Propose the addition, updating or removal of documentation
 title: "DOC: "
 labels: [ "documentation" ]
 body:
-  - type: markdown
-    attributes: 
-      value: |
-        Thank you for taking the time to propose documentation changes!
-  - type: dropdown
-    id: change
-    attributes:
-      label: Change
-      description: What type of documentation change are you proposing?
-      options:
-        - New
-        - Update
-        - Remove
-    validations:
-      required: true
-  - type: dropdown
-    id: area
-    attributes:
-      label: Relevance
-      description: What part of the project does the documentation relate to?
-      options:
-        - APWorld
-        - Mod Client
-        - Other
-    validations:
-      required: true
-  - type: textarea
-    id: description
-    attributes:
-      label: Description of Change
-      description: Provide a description of your proposed documentation change, including as much detail as possible and any reference links where appropriate
-      placeholder: Enter description here
-    validations:
-      required: true
-  - type: upload
-    id: screenshots
-    attributes:
-      label: Upload Screenshots
-      description: If applicable, please provide any relevant screenshots
-    validations:
-      required: false
+- type: markdown
+  attributes: 
+    value: |
+      Thank you for taking the time to propose documentation changes!
+- type: dropdown
+  id: change
+  attributes:
+    label: Change
+    description: What type of documentation change are you proposing?
+    options:
+      - New
+      - Update
+      - Remove
+  validations:
+    required: true
+- type: dropdown
+  id: area
+  attributes:
+    label: Relevance
+    description: What part of the project does the documentation relate to?
+    options:
+      - APWorld
+      - Mod Client
+      - Other
+  validations:
+    required: true
+- type: textarea
+  id: description
+  attributes:
+    label: Description of Change
+    description: Provide a description of your proposed documentation change, including as much detail as possible and any reference links where appropriate
+    placeholder: Enter description here
+  validations:
+    required: true
+- type: upload
+  id: screenshots
+  attributes:
+    label: Upload Screenshots
+    description: If applicable, please provide any relevant screenshots
+  validations:
+    required: false
