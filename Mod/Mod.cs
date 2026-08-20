@@ -216,6 +216,20 @@ namespace Modd
         }
 
         /// <summary>
+        /// Attempt to check Item Action locations.
+        /// </summary>
+        /// <param name="action">The item action name.</param>
+        /// <param name="item">The item.</param>
+        public void TryCheckItemActionLocations(string action, Item item)
+        {
+            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnItemAction?.Invoke(action, item) == true))
+            {
+                Logger.LogWarning($"Criteria met for shop action check: '{criteria.LocationName}'.");
+                TryCheckLocation(criteria.LocationName);
+            }
+        }
+
+        /// <summary>
         /// Attempt to check a numeric location.
         /// </summary>
         /// <param name="action">The action to check against.</param>
@@ -229,19 +243,19 @@ namespace Modd
             }
         }
 
-        /// <summary>
-        /// Attempt to check Shop Action locations.
-        /// </summary>
-        /// <param name="action">The shop action name.</param>
-        /// <param name="item">The shop item.</param>
-        public void TryCheckShopActionLocations(string action, Item item)
-        {
-            foreach(LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnShopAction?.Invoke(action, item) == true))
-            {
-                Logger.LogWarning($"Criteria met for shop action check: '{criteria.LocationName}'.");
-                TryCheckLocation(criteria.LocationName);
-            }
-        }
+        ///// <summary>
+        ///// Attempt to check Shop Action locations.
+        ///// </summary>
+        ///// <param name="action">The shop action name.</param>
+        ///// <param name="item">The shop item.</param>
+        //public void TryCheckShopActionLocations(string action, Item item)
+        //{
+        //    foreach(LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnShopAction?.Invoke(action, item) == true))
+        //    {
+        //        Logger.LogWarning($"Criteria met for shop action check: '{criteria.LocationName}'.");
+        //        TryCheckLocation(criteria.LocationName);
+        //    }
+        //}
 
         /// <summary>
         /// Attempt to check a numeric location.

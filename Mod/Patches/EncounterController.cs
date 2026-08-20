@@ -74,7 +74,7 @@ namespace Mod.Patches
             Logger.LogInfo($"Sold item: {item.Name}");
 
             // Attempt to check shop locations
-            CursedWordsArchipelago.Instance.TryCheckShopActionLocations($"sell_item", item);
+            CursedWordsArchipelago.Instance.TryCheckItemActionLocations($"sell", item);
         }
 
         /// <summary>

@@ -954,8 +954,73 @@ namespace Mod.Mappings
             #region Other Actions
 
             new LocationCriteria("Destroy a Consumable Tile") { OnGenericAction = (action) => action == "destroy_tile" },
-            new LocationCriteria("Skip a Grid") { OnGenericAction = (action) => action == "skip_grid" },
             new LocationCriteria("Place a Consumable Tile") { OnGenericAction = (action) => action == "place_tile" },
+            new LocationCriteria("Skip a Grid") { OnGenericAction = (action) => action == "skip_grid" },
+            new LocationCriteria("Upgrade a Pin") { OnItemAction = (action, item) => action == "upgrade" && item.IsPin() && item.IsLevelOrHigher(1) },
+
+            #endregion
+
+            #region Pinsanity
+
+            new LocationCriteria("Rodman: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Rodman: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Rodman: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Rodman: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Rodman: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Rodman: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Rodman: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Rodman: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 5) },
+
+            new LocationCriteria("Nina Nix: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Nina Nix: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Nina Nix: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Nina Nix: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Nina Nix: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Nina Nix: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Nina Nix: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Nina Nix: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 5) },
+
+            new LocationCriteria("Hayley Bayles: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Hayley Bayles: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Hayley Bayles: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Hayley Bayles: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Hayley Bayles: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Hayley Bayles: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Hayley Bayles: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Hayley Bayles: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 5) },
+
+            new LocationCriteria("Sam Gambit: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Sam Gambit: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Sam Gambit: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Sam Gambit: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Sam Gambit: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Sam Gambit: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Sam Gambit: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Sam Gambit: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 5) },
+
+            new LocationCriteria("Bones the Dog: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Bones the Dog: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Bones the Dog: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Bones the Dog: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Bones the Dog: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Bones the Dog: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Bones the Dog: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Bones the Dog: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 5) },
+
+            new LocationCriteria("Octacles: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Octacles: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Octacles: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Octacles: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Octacles: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Octacles: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Octacles: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Octacles: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 5) },
 
             #endregion
 
@@ -992,18 +1057,21 @@ namespace Mod.Mappings
             #region Shop
 
             // 'Generic' shop actions
-            new LocationCriteria("Buy a Stamp") { OnShopAction = (action, item) => action == "buy_item" && item.IsStamp() },
-            new LocationCriteria("Buy a Sticker") { OnShopAction = (action, item) => action == "buy_item" && item.IsSticker() },
-            new LocationCriteria("Buy a Foil Sticker") { OnShopAction = (action, item) => action == "buy_item" && item.IsSticker() && item.IsFoil },
-            new LocationCriteria("Freeze a Stamp") { OnShopAction = (action, item) => action == "freeze_item" && item.IsStamp() },
-            new LocationCriteria("Freeze a Sticker") { OnShopAction = (action, item) => action == "freeze_item" && item.IsSticker() },
-            new LocationCriteria("Restock the Shop") { OnShopAction = (action, item) => action == "restock" },
-            new LocationCriteria("Sell a Stamp") { OnShopAction = (action, item) => action == "sell_item" && item.IsStamp() },
-            new LocationCriteria("Sell a Sticker") { OnShopAction = (action, item) => action == "sell_item" && item.IsSticker() },
-            new LocationCriteria("Upgrade a Sticker to Level 2") { OnShopAction = (action, item) => action == "upgrade_item" && item.IsSticker() && item.TimesUpgraded == 0 },
-            new LocationCriteria("Upgrade a Sticker to Level 3") { OnShopAction = (action, item) => action == "upgrade_item" && item.IsSticker() && item.TimesUpgraded == 1 },
+            new LocationCriteria("Buy a Stamp") { OnItemAction = (action, item) => action == "buy" && item.IsStamp() },
+            new LocationCriteria("Buy a Sticker") { OnItemAction = (action, item) => action == "buy" && item.IsSticker() },
+            new LocationCriteria("Buy a Foil Sticker") { OnItemAction = (action, item) => action == "buy" && item.IsSticker() && item.IsFoil },
+            new LocationCriteria("Freeze a Stamp") { OnItemAction = (action, item) => action == "freeze" && item.IsStamp() },
+            new LocationCriteria("Freeze a Sticker") { OnItemAction = (action, item) => action == "freeze" && item.IsSticker() },
+            new LocationCriteria("Restock the Shop") { OnGenericAction = (action) => action == "restock_shop" },
+            new LocationCriteria("Sell a Stamp") { OnItemAction = (action, item) => action == "sell" && item.IsStamp() },
+            new LocationCriteria("Sell a Sticker") { OnItemAction = (action, item) => action == "sell" && item.IsSticker() },
+            new LocationCriteria("Upgrade a Sticker to Level 2") { OnItemAction = (action, item) => action == "upgrade" && item.IsSticker() && item.IsLevelOrHigher(2) },
+            new LocationCriteria("Upgrade a Sticker to Level 3") { OnItemAction = (action, item) => action == "upgrade" && item.IsSticker() && item.IsLevelOrHigher(3) },
 
-            // Tilesanity
+            #endregion
+
+            #region Tilesanity
+
             new LocationCriteria("Buy a Colourless Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetTileType() is TileType.Normal },
             new LocationCriteria("Buy a Blue Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetTileType() == TileType.Blue },
             new LocationCriteria("Buy a Red Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetTileType() is TileType.Red },
@@ -1019,14 +1087,6 @@ namespace Mod.Mappings
             new LocationCriteria("Buy a Letter Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.GetGlyphType() is GlyphType.Letter },
             new LocationCriteria("Buy a Number Tile") { OnTileAction = (action, tile) => action == "buy_tile" && tile.IsNumber() },
 
-            #endregion
-
-            #region Words
-
-            // 
-            new LocationCriteria("Submit a Consumable Tile") { OnTileAction = (action, tile) => action == "submit_tile" && tile.WasConsumable },
-
-            // Tilesanity
             new LocationCriteria("Submit a Colourless Tile") { OnTileAction = (action, tile) => action == "submit_tile" && tile.GetTileType() is TileType.Normal },
             new LocationCriteria("Submit a Blue Tile") { OnTileAction = (action, tile) => action == "submit_tile" && tile.GetTileType() == TileType.Blue },
             new LocationCriteria("Submit a Red Tile") { OnTileAction = (action, tile) => action == "submit_tile" && tile.GetTileType() is TileType.Red },
@@ -1041,6 +1101,12 @@ namespace Mod.Mappings
             new LocationCriteria("Submit a Joker Tile") { OnTileAction = (action, tile) => action == "submit_tile" && tile.GetSuit() is Suit.Joker },
             new LocationCriteria("Submit a Letter Tile") { OnTileAction = (action, tile) => action == "submit_tile" && tile.GetGlyphType() is GlyphType.Letter },
             new LocationCriteria("Submit a Number Tile") { OnTileAction = (action, tile) => action == "submit_tile" && tile.IsNumber() },
+
+            #endregion
+
+            #region Words
+
+            new LocationCriteria("Submit a Consumable Tile") { OnTileAction = (action, tile) => action == "submit_tile" && tile.WasConsumable },
 
             // Word Lengths
             new LocationCriteria("Word Length: 1 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 1 },
@@ -1323,8 +1389,8 @@ namespace Mod.Mappings
         public Action Action { get; set; }
         public Func<string, bool> OnGenericAction { get; set; }
         public Func<string, Player, List<BossModifier>, bool> OnEncounterAction { get; set; }
+        public Func<string, Item, bool> OnItemAction { get; set; }
         public Func<string, long, bool> OnNumericAction { get; set; }
-        public Func<string, Item, bool> OnShopAction { get; set; }
         public Func<string, Tile, bool> OnTileAction { get; set; }
         public string LocationName { get; set; }
 

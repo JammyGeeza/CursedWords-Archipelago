@@ -17,7 +17,7 @@ namespace Mod.Patches
 
             // Send check for selling item
             Item inspectedItem = __instance.GetInspectedItem();
-            CursedWordsArchipelago.Instance.TryCheckShopActionLocations($"sell_item", inspectedItem);
+            CursedWordsArchipelago.Instance.TryCheckItemActionLocations($"sell", inspectedItem);
         }
 
         /// <summary>

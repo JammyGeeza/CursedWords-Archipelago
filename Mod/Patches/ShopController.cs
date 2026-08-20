@@ -100,7 +100,7 @@ namespace Mod.Patches
             else
             {
                 // Attempt to check shop action location
-                CursedWordsArchipelago.Instance.TryCheckShopActionLocations("buy_item", itemSlot.MyItemInStock.MyItem);
+                CursedWordsArchipelago.Instance.TryCheckItemActionLocations("buy", itemSlot.MyItemInStock.MyItem);
             }
         }
 
@@ -117,7 +117,7 @@ namespace Mod.Patches
             else
             {
                 // Attempt to check shop action locations
-                CursedWordsArchipelago.Instance.TryCheckShopActionLocations("buy_item", itemSlot.MyItemInStock.MyItem);
+                CursedWordsArchipelago.Instance.TryCheckItemActionLocations("buy", itemSlot.MyItemInStock.MyItem);
             }
         }
 
@@ -133,13 +133,13 @@ namespace Mod.Patches
             // Check if any stamps have been frozen
             if (__instance.GetStampsInStock().FirstOrDefault(s => s != null && s.MyItem.GetType() != typeof(ArchipelagoShopitem) && s.IsFrozen) is ItemInStock stampInStock)
             {
-                CursedWordsArchipelago.Instance.TryCheckShopActionLocations("freeze_item", stampInStock.MyItem);
+                CursedWordsArchipelago.Instance.TryCheckItemActionLocations("freeze", stampInStock.MyItem);
             }
 
             // Check if any stickers have been frozen
             if (__instance.GetStickersInStock().FirstOrDefault(s => s != null && s.MyItem.GetType() != typeof(ArchipelagoShopitem) && s.IsFrozen) is ItemInStock stickerInStock)
             {
-                CursedWordsArchipelago.Instance.TryCheckShopActionLocations("freeze_item", stickerInStock.MyItem);
+                CursedWordsArchipelago.Instance.TryCheckItemActionLocations("freeze", stickerInStock.MyItem);
             }            
         }
 
@@ -158,7 +158,7 @@ namespace Mod.Patches
             // If this is a re-roll, attempt to send the check
             if (isReroll)
             {
-                CursedWordsArchipelago.Instance.TryCheckShopActionLocations("restock", null);
+                CursedWordsArchipelago.Instance.TryCheckGenericLocations("restock_shop");
             }
 
             // Re-populate item pools
