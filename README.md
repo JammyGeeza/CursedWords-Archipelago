@@ -8,16 +8,24 @@ If you are unsure, please speak to whomever is hosting your multiworld first.
 
 ## Goal
 The current selectable goal(s) are as follows:
-- Select a set of characters and complete a run with each character.
+- Beat at least one run with each specified character
+- Beat Michael at least once with each specified character
+- Beat a specific Crown run with each specified character
 
 _More goals will be added in future development_
 
 ## Locations
 The currently available locations are as follows:
-- Completing each encounter with each selected character. _(E.g. Rodman Stage 1-1, 1-2, 1-3, 2-1 ... etc.)_
-- Shop Actions _(E.g. Buy a Sticker, Re-stock the Shop etc.)_
+- Completing each encounter with each selected character. _(E.g. Rodman: Stage 1-1, 1-2, 1-3, 2-1 ... etc.)_
+- Completing each encounter on each Crown with each selected character. _(E.g. Nina Nix: Purple Crown - Stage 1-1, 1-2, 1-3, 2-1 ... etc)_
+- Encounter Actions _(E.g. 'Destroy a Consumable Tile', 'Re-roll a Grid' etc.)_
+- Shop Actions _(E.g. 'Buy a Sticker', 'Re-stock the Shop' etc.)_
 - Word Lengths _(E.g. submitted word has exactly 5 tiles)_
 - Word Scores _(E.g. word score is greater than 100)_
+### Optional Locations
+- Boss-sanity _(E.g. 'Defeat Axolotl', 'Defeat Robo-Eel', 'Defeat Toothed Whale' etc.)_
+- Shopsanity _(E.g. purchase custom items in the shop)_
+- Tilesanity _(E.g. 'Submit a Blue Tile', 'Submit a Letter Tile', 'Submit a Chess Tile' etc.)_
 
 _More locations will be added in future development_
 
@@ -25,14 +33,20 @@ _More locations will be added in future development_
 The currently available items are as follows:
 ### Progression
 - Playable Characters
-- Sticker Bundles
-- Stamp Bundles
-- Tile Colours _(E.g. Blue, Shiny, Void etc.)_
-- Tile Glyphs _(E.g. Chess, Currency, Fraction etc.)_
+- Stickers
+- Stamps
 ### Useful
 - Progressive Grid Re-rolls
 ### Filler
-- Money
+- Consumable Tile _(Adds a random consumable tile to your inventory)_
+- Extra Re-Roll _(An additional re-roll for the current grid)_
+- Money _(E.g. $1, $2, $3)_
+- Random Tile Boost _(Increase the tile score for a random tile on the current grid)_
+### Optional Items
+- Progressive Crowns
+- Progressive Grid Size
+- Progressive Sticker / Stamp Slots
+- Progressive Tile Positions
 
 _More items will be added in future development_
 

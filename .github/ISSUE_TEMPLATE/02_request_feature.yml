@@ -28,12 +28,12 @@ body:
       * How does your idea work?
       * What benefit does it bring and/or what problem does it solve?
       
-      The more detail you can provide, the easier it will be to track down the issue
+      The more detail you can provide, the easier it will be understand, visualise and implement your idea.
 - type: textarea
   id: description
   attributes:
-    label: Share your idea
-    description: Provide a description of your idea, including as much explanation as possible
+    label: Describe Your Idea
+    description: Provide a detailed description of your idea, including as much information as possible
     placeholder: Enter your idea
   validations:
     required: true

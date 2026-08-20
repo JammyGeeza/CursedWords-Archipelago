@@ -1,20 +1,20 @@
-name: Propose a Documentation Change
-description: Propose the addition, updating or removal of documentation
+name: Submit a Documentation Change
+description: Propose an addition, revision or removal of documentation content
 title: "DOC: "
 labels: [ "documentation" ]
 body:
 - type: markdown
   attributes: 
     value: |
-      Thanks for taking the time to propose a change - if you need any further assistance with the randomiser, please visit the [Cursed Words Thread](https://discord.com/channels/731205301247803413/1499176806962692196) in the Archipelago Discord Server.
+      Thanks for taking the time to propose a documentation change - if you need any further assistance with the randomiser, please visit the [Cursed Words Thread](https://discord.com/channels/731205301247803413/1499176806962692196) in the Archipelago Discord Server.
 - type: dropdown
   id: change
   attributes:
     label: Change
-    description: What type of documentation change are you proposing?
+    description: What type of documentation change are you submitting?
     options:
-      - New
-      - Update
+      - Add
+      - Revise
       - Remove
   validations:
     required: true
@@ -22,7 +22,7 @@ body:
   id: area
   attributes:
     label: Affected Area
-    description: What part of the project does the documentation relate to?
+    description: What part of the project does the documentation change relate to?
     options:
       - APWorld
       - Mod Client
@@ -34,17 +34,17 @@ body:
     value: |
       ---
       
-      When proposing the documentation change, please try to answer as many of the following questions as possible, where applicable:
+      When describing the documentation change, please try to answer as many of the following questions as possible, where applicable:
       * What piece of documentation should be added / modified / removed?
       * What benefit does the documentation change bring and/or what ambiguities does it solve?
       
-      The more detail you can provide, the easier it is to understand, visualise and implement the change.
+      The more detail you can provide, the easier it is to understand and implement the documentation change.
 - type: textarea
   id: description
   attributes:
     label: Describe the Change
-    description: Provide a description of the change, including as much detail as possible
-    placeholder: Enter documentation change
+    description: Provide a detailed description of the documentation change, including as much information as possible
+    placeholder: Enter your documentation change description
   validations:
     required: true
 - type: upload
