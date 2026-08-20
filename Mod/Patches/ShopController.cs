@@ -65,8 +65,8 @@ namespace Mod.Patches
                         // Re-populate shop items
                         shopVisualController.RepopulateShopItems(__instance.GetRerollPrice());
 
-                        // Send shop check
-                        CursedWordsArchipelago.Instance.TryCheckLocation(archipelagoShopItem.ItemInfo.LocationDisplayName);
+                        // Play purchase sound
+                        PersistentSound.SingletonSoundController.BuyItem(itemSlot.MyItemInStock.MyItem, false);
                     }
                     else
                     {
@@ -83,42 +83,6 @@ namespace Mod.Patches
             }
 
             return true;
-        }
-
-        [HarmonyPatch("BuyStamp")]
-        [HarmonyPostfix]
-        private static void OnBuyStamp_Postfix(ShopController __instance, ShopItemSlot itemSlot)
-        {
-            Logger.LogInfo($"{nameof(ShopController)}.BuyStamp postfix!");
-
-            // Ignore if archipelago shop item
-            if (itemSlot.MyItemInStock.MyItem is ArchipelagoShopitem archipelagoShopItem)
-            {
-                // Attempt to check shop item location
-                CursedWordsArchipelago.Instance.TryCheckLocation(archipelagoShopItem.ItemInfo.LocationDisplayName);
-            }
-            else
-            {
-                // Attempt to check shop action location
-                CursedWordsArchipelago.Instance.TryCheckItemActionLocations("buy", itemSlot.MyItemInStock.MyItem);
-            }
-        }
-
-        [HarmonyPatch("BuySticker")]
-        [HarmonyPostfix]
-        private static void OnBuySticker_Postfix(ShopController __instance, ShopItemSlot itemSlot, bool isHippoUpgrade, Item replacementItem)
-        {
-            // Ignore if archipelago shop item
-            if (itemSlot.MyItemInStock.MyItem is ArchipelagoShopitem archipelagoShopItem)
-            {
-                // Attempt to check shop item location
-                CursedWordsArchipelago.Instance.TryCheckLocation(archipelagoShopItem.ItemInfo.LocationDisplayName);
-            }
-            else
-            {
-                // Attempt to check shop action locations
-                CursedWordsArchipelago.Instance.TryCheckItemActionLocations("buy", itemSlot.MyItemInStock.MyItem);
-            }
         }
 
         /// <summary>

@@ -20,6 +20,13 @@ namespace Mod.Extensions
             get => CursedWordsArchipelago.Instance.LogSource;
         }
 
+        public static string GetBuyButtonText(this ShopItemSlot shopItemSlot)
+        {
+            return Traverse.Create(shopItemSlot)
+                .Field("_buyButtonTMP")
+                .GetValue<TextMeshProUGUI>().GetParsedText();
+        }
+
         public static void SetBuyButton(this ShopItemSlot shopItemSlot, string text, Color32 topColor, Color32 backgroundColor, bool interactable)
         {
             // Traverse to find private fields

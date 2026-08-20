@@ -145,7 +145,7 @@ namespace Mod.Patches
             // Attempt to check tile type locations
             foreach (TileSelection tile in tiles)
             {
-                CursedWordsArchipelago.Instance.TryCheckTileLocations("submit_tile", tile.SelectedTile);
+                CursedWordsArchipelago.Instance.TryCheckTileLocations("submit", tile.SelectedTile);
             }
         }
     }
