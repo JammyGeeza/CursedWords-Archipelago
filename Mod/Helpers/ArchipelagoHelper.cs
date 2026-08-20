@@ -391,6 +391,8 @@ namespace Mod.Helpers
         /// <param name="gameName">The game that the check belongs to.</param>
         public static void TryCheckLocation(string locationName, string gameName = "Cursed Words")
         {
+            Logger.LogInfo($"Attempting to check location: '{locationName}'...");
+
             if (!IsConnected)
                 return;
 
@@ -399,6 +401,10 @@ namespace Mod.Helpers
             {
                 Logger.LogWarning($"Checking location: {locationName}");
                 Session.Locations.CompleteLocationChecks(new long[] { locationId });
+            }
+            else
+            {
+                Logger.LogError($"No location found with name '{locationName}'");
             }
         }
 

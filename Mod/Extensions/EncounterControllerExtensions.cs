@@ -21,6 +21,18 @@ namespace Mod.Extensions
         }
 
         /// <summary>
+        /// Get the current remaining grids.
+        /// </summary>
+        /// <param name="controller">The controller to get the remaining grids for</param>
+        /// <returns>The current remaining grids.</returns>
+        public static int GetRemainingGrids(this EncounterController controller)
+        {
+            return Traverse.Create(controller)
+                .Field("_remainingGrids")
+                .GetValue<int>();
+        }
+
+        /// <summary>
         /// Get the current encounter re-roll amount.
         /// </summary>
         /// <param name="controller">The controller to get the amount for</param>

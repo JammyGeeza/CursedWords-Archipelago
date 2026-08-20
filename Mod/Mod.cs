@@ -190,12 +190,13 @@ namespace Modd
         /// <summary>
         /// Attempt to check an encounter location.
         /// </summary>
-        /// <param name="character">The character to check against.</param>
-        /// <param name="stage">The stage to check against.</param>
-        /// <param name="nodeType">The encounter node type to check against.</param>
-        public void TryCheckEncounterLocations(string action, Player player, List<BossModifier>? bossModifiers = null)
+        /// <param name="action">The event action name.</param>
+        /// <param name="player">The current player object.</param>
+        /// <param name="bossModifiers">The boss modifiers applied to the encounter.</param>
+        /// <param name="args">Any additional arguments.</param>
+        public void TryCheckEncounterLocations(string action, Player player, List<BossModifier>? bossModifiers = null, object args = null)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers) == true))
+            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers, args) == true))
             {
                 Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 TryCheckLocation(criteria.LocationName);
