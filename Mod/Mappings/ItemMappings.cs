@@ -953,6 +953,8 @@ namespace Mod.Mappings
 
             #region Other Actions
 
+            new LocationCriteria("Buy a Consumable Tile") { OnTileAction = (action, tile) => action == "buy" },
+
             new LocationCriteria("Clear an Encounter with 0 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 0 },
             new LocationCriteria("Clear an Encounter with 1 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 1 },
             new LocationCriteria("Clear an Encounter with 2 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 2 },
