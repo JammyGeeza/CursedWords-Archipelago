@@ -77,6 +77,11 @@ namespace Modd
         /// </summary>
         public Dictionary<long, ScoutedItemInfo> RemainingShopChecks { get; set; } = new Dictionary<long, ScoutedItemInfo>();
 
+        /// <summary>
+        /// Gets or sets the current save slot.
+        /// </summary>
+        public static int SaveSlot { get; set; }
+
         #endregion
 
         #region Unity Methods
@@ -325,6 +330,15 @@ namespace Modd
                 // Attempt to remove from unchecked shop items
                 RemainingShopChecks.Remove(checkedLocation);
             }
+
+            // Update location counts in AP Data
+            ArchipelagoData apData = ArchipelagoData.GetDataForSaveSlot(SaveSlot);
+            int checkedLocations = ArchipelagoHelper.GetCheckedLocationsCount();
+            apData.LocationsCheckedTotal = checkedLocations;
+            apData.LocationsTotal = ArchipelagoHelper.GetUncheckedLocationsCount() + checkedLocations;
+
+            // Save it
+            ArchipelagoData.SaveDataForSaveSlot(SaveSlot, apData);
         }
 
         /// <summary>

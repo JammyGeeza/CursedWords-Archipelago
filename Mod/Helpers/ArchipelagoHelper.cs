@@ -92,7 +92,7 @@ namespace Mod.Helpers
 
         static ArchipelagoHelper()
         {
-
+            
         }
 
         /// <summary>
@@ -281,6 +281,22 @@ namespace Mod.Helpers
             return AmountOfItemReceived(itemName) - AmountOfItemHandled(itemName);
         }
 
+        public static int GetCheckedLocationsCount()
+        {
+            if (!IsConnected)
+                return 0;
+
+            return Session.Locations.AllLocationsChecked.Count;
+        }
+
+        public static int GetUncheckedLocationsCount()
+        {
+            if (!IsConnected)
+                return 0;
+
+            return Session.Locations.AllMissingLocations.Count;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -404,7 +420,7 @@ namespace Mod.Helpers
             }
             else
             {
-                Logger.LogError($"No location found with name '{locationName}'");
+                Logger.LogError($"No un-checked location found with name '{locationName}'");
             }
         }
 

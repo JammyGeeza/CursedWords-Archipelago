@@ -40,6 +40,18 @@ namespace Mod.Patches
         //    return false;
         //}
 
+        //[HarmonyPatch(nameof(SaveManager.GetPercentageCompletion))]
+        //[HarmonyPrefix]
+        //public static bool OnGetPercentageCompletion_Prefix(SaveFile saveFile, ref string __result)
+        //{
+        //    Logger.LogInfo($"{nameof(SaveManager)}.{nameof(SaveManager.GetPercentageCompletion)} prefix!");
+
+        //    __result = "TEST";
+
+        //    // Override existing method
+        //    return false;
+        //}
+
         /// <summary>
         /// Override unlocked items list with only those that have been received from the multiworld.
         /// </summary>

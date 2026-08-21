@@ -26,6 +26,16 @@ namespace Mod.Helpers
         /// </summary>
         public string Password { get; set; }
 
+        /// <summary>
+        /// Gets or sets the total amount of checked locations.
+        /// </summary>
+        public int LocationsCheckedTotal { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total amount of locations. 
+        /// </summary>
+        public int LocationsTotal { get; set; }
+
         public ArchipelagoData() { }
 
         /// <summary>
