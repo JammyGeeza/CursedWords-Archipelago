@@ -65,7 +65,9 @@ namespace Modd
             _itemTypeCache ??= Assembly.GetAssembly(typeof(Item))
                 .GetTypes()
                 .Where(t => t.IsClass && t.IsSubclassOf(typeof(Item)))
-                .ToDictionary(t => t, t => { Item item = Activator.CreateInstance(t) as Item; return (item.Name, item.Rarity); });
+                .Select(t => Activator.CreateInstance(t) as Item)
+                .Where(t => t.UpgradeableComponents.Count < 2)
+                .ToDictionary(x => x.GetType(), x => (x.Name, x.Rarity));
 
         public ManualLogSource LogSource
         {
@@ -81,6 +83,11 @@ namespace Modd
         /// Gets or sets the current save slot.
         /// </summary>
         public static int SaveSlot { get; set; }
+
+        /// <summary>
+        /// Gets or sets the currently unlocked items.
+        /// </summary>
+        public List<Type> UnlockedItemTypeCache = new List<Type>();
 
         #endregion
 
@@ -113,6 +120,7 @@ namespace Modd
             // Register event handlers
             ArchipelagoHelper.OnConnected += ArchipelagoHelper_OnConnected;
             ArchipelagoHelper.OnDeathlink += ArchipelagoHelper_OnDeathlink;
+            ArchipelagoHelper.OnDisconnected += ArchipelagoHelper_OnDisconnected;
             ArchipelagoHelper.OnCheckedLocationsUpdated += ArchipelagoHelper_OnCheckedLocationsUpdated;
             ArchipelagoHelper.OnItemsReceived += ArchipelagoHelper_OnItemsReceived;
 
@@ -249,20 +257,6 @@ namespace Modd
             }
         }
 
-        ///// <summary>
-        ///// Attempt to check Shop Action locations.
-        ///// </summary>
-        ///// <param name="action">The shop action name.</param>
-        ///// <param name="item">The shop item.</param>
-        //public void TryCheckShopActionLocations(string action, Item item)
-        //{
-        //    foreach(LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnShopAction?.Invoke(action, item) == true))
-        //    {
-        //        Logger.LogWarning($"Criteria met for shop action check: '{criteria.LocationName}'.");
-        //        TryCheckLocation(criteria.LocationName);
-        //    }
-        //}
-
         /// <summary>
         /// Attempt to check a numeric location.
         /// </summary>
@@ -360,6 +354,12 @@ namespace Modd
             RemainingShopChecks = RemainingShopChecks.OrderBy((kvp) => kvp.Value.LocationName).ToDictionary(x => x.Key, x => x.Value);
         }
 
+        private void ArchipelagoHelper_OnDisconnected(string reason)
+        {
+            // Clear unlocked items cache
+            UnlockedItemTypeCache.Clear();
+        }
+
         /// <summary>
         /// Event handler for items received from archipelago session
         /// </summary>
@@ -376,6 +376,52 @@ namespace Modd
                 {
                     Logger.LogWarning($"Queueing item received action for '{itemInfo.ItemName}'...");
                     QueueAction(cuedAction.Action);
+                }
+
+                if (itemInfo.ItemName.Equals("Progressive Item Rarity", StringComparison.OrdinalIgnoreCase))
+                {
+                    RefreshUnlockedItemTypesCache();
+                }
+                else
+                {
+                    KeyValuePair<Type, (string name, ItemRarity rarity)> itemType = ItemTypeCache.FirstOrDefault(kvp => kvp.Value.name.Equals(itemInfo.ItemName, StringComparison.OrdinalIgnoreCase));
+                    if (itemType.Key != null && !UnlockedItemTypeCache.Contains(itemType.Key))
+                    {
+                        Logger.LogInfo($"Adding item type: {itemType.Key} to unlocked item cache");
+                        UnlockedItemTypeCache.Add(itemType.Key);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Check if an item rarity has been unlocked via progressive item rarity, if enabled.
+        /// </summary>
+        /// <param name="rarity">The item rarity to check.</param>
+        /// <returns>True if unlocked, False if not.</returns>
+        private bool IsRarityUnlocked(ItemRarity rarity)
+        {
+            return !ArchipelagoHelper.SlotData.ShuffleItemRarities ||
+                rarity switch
+                {
+                    ItemRarity.Rare | ItemRarity.Legendary => ArchipelagoHelper.HasReceivedItem("Progressive Item Rarity", (int)rarity),
+                    _ => true
+                };
+        }
+
+        /// <summary>
+        /// Re-evaluate the unlocked item types cache.
+        /// </summary>
+        private void RefreshUnlockedItemTypesCache()
+        {
+            // Cycle each item type not already in the unlocked cache
+            foreach (KeyValuePair<Type, (string name, ItemRarity rarity)> itemType in ItemTypeCache.Where(kvp => !UnlockedItemTypeCache.Contains(kvp.Key)))
+            {
+                // If item has been received and the rarity is unlocked, add to the cache
+                if (ArchipelagoHelper.HasReceivedItem(itemType.Value.name) && IsRarityUnlocked(itemType.Value.rarity))
+                {
+                    Logger.LogInfo($"Adding item type: {itemType.Key} to unlocked item cache");
+                    UnlockedItemTypeCache.Add(itemType.Key);
                 }
             }
         }
