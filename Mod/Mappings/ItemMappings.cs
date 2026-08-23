@@ -1100,7 +1100,7 @@ namespace Mod.Mappings
             new LocationCriteria("Buy a Fraction Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetGlyphType() is GlyphType.Fraction },
             new LocationCriteria("Buy a Joker Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetSuit() is Suit.Joker },
             new LocationCriteria("Buy a Letter Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetGlyphType() is GlyphType.Letter },
-            new LocationCriteria("Buy a Number Tile") { OnTileAction = (action, tile) => action == "buy" && tile.IsNumber() },
+            new LocationCriteria("Buy a Number Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetGlyphType() is GlyphType.Number },
 
             new LocationCriteria("Submit a Colourless Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() is TileType.Normal },
             new LocationCriteria("Submit a Blue Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() == TileType.Blue },

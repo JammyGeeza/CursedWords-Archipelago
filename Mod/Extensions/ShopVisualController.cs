@@ -21,6 +21,19 @@ namespace Mod.Extensions
         }
 
         /// <summary>
+        /// Call the private 'PopulateTileInStock' method.
+        /// </summary>
+        /// <param name="controller">The controller instance to call the method on.</param>
+        /// <param name="tileInStock">The tile in stock to populate.</param>
+        /// <param name="index">The index of the tile in stock.</param>
+        public static void CallPopulateTileInStock(this ShopVisualController controller, TileInStock tileInStock, int index)
+        {
+            Traverse.Create(controller)
+                .Method("PopulateTileInStock", tileInStock, index)
+                .GetValue();
+        }
+
+        /// <summary>
         /// Hide the 'Freeze' button of a specified shop item.
         /// </summary>
         /// <param name="controller">The controller to hide the freeze button for.</param>
