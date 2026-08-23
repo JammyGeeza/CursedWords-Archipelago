@@ -1,15 +1,11 @@
 ﻿using HarmonyLib;
-using Mod.Helpers;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 using BepInEx.Logging;
 using Modd;
+using System.Collections;
 
 namespace Mod.Extensions
 {
@@ -19,6 +15,20 @@ namespace Mod.Extensions
         {
             get => CursedWordsArchipelago.Instance.LogSource;
         }
+
+        /// <summary>
+        /// Call the private 'GenerateGrid' method.
+        /// </summary>
+        /// <param name="isReroll">Whether this should be treated as a re-roll.</param>
+        /// <returns></returns>
+        public static List<BoardGenVizInfo> CallGenerateGrid(this EncounterController controller, bool isReroll)
+        {
+            return Traverse.Create(controller)
+                .Method("GenerateGrid", isReroll)
+                .GetValue<List<BoardGenVizInfo>>();
+        }
+
+        
 
         /// <summary>
         /// Get the current remaining grids.
@@ -42,6 +52,31 @@ namespace Mod.Extensions
             return Traverse.Create(controller)
                 .Field("_rerollsForEncounter")
                 .GetValue<int>();
+        }
+
+        /// <summary>
+        /// Get the private 'TransitionGridOutAndIn' coroutine.
+        /// </summary>
+        /// <param name="controller">The controller to get the coroutine from.</param>
+        /// <param name="isReroll">Whether this transition is for a re-roll.</param>
+        /// <returns>The coroutine.</returns>
+        public static IEnumerator GetTransitionGridOutAndIn(this EncounterController controller, bool isReroll)
+        {
+            return Traverse.Create(controller)
+                .Method("TransitionGridOutAndIn", isReroll)
+                .GetValue<IEnumerator>();
+        }
+
+        /// <summary>
+        /// Get the tile selection manager.
+        /// </summary>
+        /// <param name="controller">The controller to get the tile selection manager from.</param>
+        /// <returns>The tile selection manager.</returns>
+        public static TileSelectionManager GetTileSelectionManager(this EncounterController controller)
+        {
+            return Traverse.Create(controller)
+                .Field("_tileSelectionManager")
+                .GetValue<TileSelectionManager>();
         }
 
         /// <summary>

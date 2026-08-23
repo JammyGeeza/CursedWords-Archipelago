@@ -93,10 +93,15 @@ namespace Mod.Patches
                 // Get item mappings where the cue is the start of an encounter
                 foreach (KeyValuePair<string, CuedAction> encounterItem in ItemMappings.Map.Where(kvp => kvp.Value.Cue == ActionCue.Encounter))
                 {
-                    // Perform action if not handled the amount of times received.
-                    for (int i = 0; i < ArchipelagoHelper.GetItemCountDifference(encounterItem.Key); i++)
+                    // Add to queue if outstanding unhandles amount is not already in pending queue
+                    int received = ArchipelagoHelper.AmountOfItemReceived(encounterItem.Key);
+                    int handled = ArchipelagoHelper.AmountOfItemHandled(encounterItem.Key);
+                    int pending = CursedWordsArchipelago.Instance.GetPendingCount(encounterItem.Key);
+                    int diff = received - handled - pending;
+
+                    for (int i = 0; i < diff; i++)
                     {
-                        CursedWordsArchipelago.Instance.QueueAction(encounterItem.Value.Action);
+                        CursedWordsArchipelago.Instance.QueueAction(encounterItem.Value.Action, encounterItem.Key);
                     }
                 }
             }

@@ -29,7 +29,11 @@ namespace Modd
 
         private static Harmony Harmony { get; set; }
 
-        private ConcurrentQueue<Func<IEnumerator>> ActionQueue { get; set; } = new ConcurrentQueue<Func<IEnumerator>>();
+        private ConcurrentQueue<(Func<IEnumerator> Action, string ItemName)> ActionQueue { get; set; } = new ConcurrentQueue<(Func<IEnumerator>, string)>();
+
+        private Dictionary<string, int> PendingItems { get; } = new Dictionary<string, int>();
+
+        private Coroutine _currentAction;
 
         private Dictionary<Type, string> _characterTypeCache;
 
@@ -146,10 +150,9 @@ namespace Modd
                 return;
             }
 
-            // De-queue action and perform it
-            if (Instance.ActionQueue.TryDequeue(out Func<IEnumerator> action))
+            if (_currentAction == null && Instance.ActionQueue.TryDequeue(out (Func<IEnumerator> Action, string ItemName) queued))
             {
-                StartCoroutine(action());
+                _currentAction = StartCoroutine(RunAction(queued.Action, queued.ItemName));
             }
 
             // Development short-cuts
@@ -183,12 +186,27 @@ namespace Modd
         #region Public Methods
 
         /// <summary>
+        /// Get the current pending count for an item.
+        /// </summary>
+        /// <param name="itemName">The item name to check.</param>
+        public int GetPendingCount(string itemName)
+        {
+            return PendingItems.GetValueOrDefault(itemName, 0);
+        }
+
+        /// <summary>
         /// Add an action to the action queue.
         /// </summary>
         /// <param name="action">The action to queue.</param>
-        public void QueueAction(Func<IEnumerator> action)
+        /// <param name="itemName">The optional item name to track pending actions.</param>
+        public void QueueAction(Func<IEnumerator> action, string itemName = null)
         {
-            Instance.ActionQueue.Enqueue(action);
+            if (itemName != null)
+            {
+                PendingItems[itemName] = PendingItems.GetValueOrDefault(itemName, 0) + 1;
+            }
+
+            Instance.ActionQueue.Enqueue((action, itemName));
         }
 
         /// <summary>
@@ -308,6 +326,18 @@ namespace Modd
             yield break;
         }
 
+        private IEnumerator RunAction(Func<IEnumerator> action, string itemName)
+        {
+            yield return action();
+
+            if (itemName != null)
+            {
+                PendingItems[itemName] = Math.Max(0, PendingItems.GetValueOrDefault(itemName, 0) - 1);
+            }
+
+            _currentAction = null;
+        }
+
         #endregion
 
         #region Event Handlers
@@ -375,7 +405,7 @@ namespace Modd
                 if (ItemMappings.Map.TryGetValue(itemInfo.ItemName, out CuedAction cuedAction))
                 {
                     Logger.LogWarning($"Queueing item received action for '{itemInfo.ItemName}'...");
-                    QueueAction(cuedAction.Action);
+                    QueueAction(cuedAction.Action, itemInfo.ItemName);
                 }
 
                 if (itemInfo.ItemName.Equals("Progressive Item Rarity", StringComparison.OrdinalIgnoreCase))

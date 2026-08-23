@@ -82,6 +82,10 @@ namespace Mod.Mappings
             //{ "Shiny Stickers", new CuedAction(() => UnlockBulkUnlock(new ShinyBuildStickersUnlock())) },
             //{ "Void Stickers", new CuedAction(() => UnlockBulkUnlock(new VoidBuildStickersUnlock())) },
 
+            // Traps
+            { "Force Grid Re-roll", new CuedAction(() => ForceReroll(), ActionCue.Encounter) },
+            { "Lose Money", new CuedAction(() => DecrementMoney(3), ActionCue.Encounter) },
+
             // Filler
             { "$1", new CuedAction(() => IncrementMoney(1), ActionCue.Encounter) },
             { "$2", new CuedAction(() => IncrementMoney(2), ActionCue.Encounter) },
@@ -1202,6 +1206,66 @@ namespace Mod.Mappings
             yield break;
         }
 
+        static IEnumerator DecrementMoney(int amount)
+        {
+            Logger.LogInfo("Attempting to decrement money...");
+
+            if (CharacterInfoPanel.SingletonInventoryVisualController != null)
+            {
+                Logger.LogInfo($"Decrementing money by -{amount}...");
+
+                Player player = GameStatics.GetPlayer();
+                player.ChangeMoney(-amount);
+
+                CharacterInfoPanel.SingletonInventoryVisualController.PopulateCash();
+
+                // Increment handled item count
+                ArchipelagoHelper.IncrementHandledItem($"Lose Money", 1);
+            }
+            else
+            {
+                Logger.LogInfo("No inventory found - aborted.");
+            }
+
+            yield break;
+        }
+
+        static IEnumerator ForceReroll()
+        {
+            Logger.LogInfo("Attempting force grid re-roll...");
+
+            if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController encounterController && encounterController != null)
+            {
+                // If waiting for user submission, activate re-roll
+                if (encounterController.GetCurrentEncounterThreadStage() == EncounterThreadStage.WaitingForWordSubmission)
+                {
+                    // Get tile selection manager
+                    TileSelectionManager tsManager = encounterController.GetTileSelectionManager();
+
+                    // Clear player-selected tiles and block player input before the re-roll 
+                    tsManager.SelectionCancelledCallback();
+                    tsManager.SetIsInputBlocked(true);
+
+                    yield return encounterController.GetTransitionGridOutAndIn(true);
+
+                    // Allow player selection again
+                    tsManager.SetIsInputBlocked(false);
+
+                    ArchipelagoHelper.IncrementHandledItem("Force Grid Re-roll", 1);
+                }
+                else
+                {
+                    Logger.LogInfo($"Not in correct encounter state - aborted");
+                }
+            }
+            else
+            {
+                Logger.LogInfo("Not currently in an encounter - aborted.");
+            }
+
+            yield break;
+        }
+
         static IEnumerator FreeStampSlot()
         {
             Logger.LogInfo("Attempting to free a stamp slot in inventory...");
@@ -1308,7 +1372,6 @@ namespace Mod.Mappings
             
             if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController encounterController && encounterController != null)
             {
-                Logger.LogInfo("Attempting to increment re-roll count...");
                 encounterController.IncrementEncounterRerollAmount(1);
 
                 // Increment handled count
@@ -1368,6 +1431,31 @@ namespace Mod.Mappings
                 {
                     Logger.LogInfo("Not currently in correct encounter state - aborted.");
                 }
+            }
+            else
+            {
+                Logger.LogInfo("Not currently in an encounter - aborted.");
+            }
+
+            yield break;
+        }
+
+        static IEnumerator TriggerTrap<T>() where T : BossModifier, new()
+        {
+            Logger.LogInfo($"Triggering '{typeof(T)}' boss modifier...");
+
+            if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController encounterController && encounterController != null)
+            {
+                //BossModifier modifier = new T();
+                //GridUtility.Singleton.MakeStartOfGridBossAdjustments(
+                //    encounterController.GetGridData(),
+                //    new List<BossModifier>() { modifier },
+                //    null,
+                //    new List<BoardGenVizInfo>(),
+                    
+
+                //);
+
             }
             else
             {
