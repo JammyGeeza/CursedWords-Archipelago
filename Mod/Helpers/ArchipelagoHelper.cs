@@ -92,7 +92,7 @@ namespace Mod.Helpers
 
         static ArchipelagoHelper()
         {
-
+            
         }
 
         /// <summary>
@@ -282,6 +282,44 @@ namespace Mod.Helpers
         }
 
         /// <summary>
+        /// Get the amount of locations that have been checked.
+        /// </summary>
+        /// <returns>The amount of currently checked locations.</returns>
+        public static int GetCheckedLocationsCount()
+        {
+            if (!IsConnected)
+                return 0;
+
+            return Session.Locations.AllLocationsChecked.Count;
+        }
+
+        /// <summary>
+        /// Get the names of all locations for the current connection.
+        /// </summary>
+        /// <returns>A list of all locations for the currently connected slot.</returns>
+        public static List<string> GetAllLocationNames()
+        {
+            if (!IsConnected)
+                return new List<string>();
+
+            return Session.Locations.AllLocations
+                .Select(l => GetLocationName(l))
+                .ToList();
+        }
+
+        /// <summary>
+        /// Get the amount of locations that have not been checked.
+        /// </summary>
+        /// <returns>The amount of currently un-checked locations.</returns>
+        public static int GetUncheckedLocationsCount()
+        {
+            if (!IsConnected)
+                return 0;
+
+            return Session.Locations.AllMissingLocations.Count;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="searchTerm"></param>
@@ -391,6 +429,8 @@ namespace Mod.Helpers
         /// <param name="gameName">The game that the check belongs to.</param>
         public static void TryCheckLocation(string locationName, string gameName = "Cursed Words")
         {
+            Logger.LogWarning($"Attempting to check location: '{locationName}'...");
+
             if (!IsConnected)
                 return;
 

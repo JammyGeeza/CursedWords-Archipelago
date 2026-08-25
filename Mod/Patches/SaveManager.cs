@@ -49,32 +49,32 @@ namespace Mod.Patches
         {
             Logger.LogInfo($"{nameof(SaveManager)}.{nameof(SaveManager.GetUnlockedItems)} prefix!");
 
-            __result = CursedWordsArchipelago.Instance.ItemTypeCache
-                .Where(kvp => ArchipelagoHelper.HasReceivedItem(kvp.Value.name))
-                .Where(kvp =>
-                {
-                    // If item rarities shuffled, exclude items of rarities not yet available
-                    if (ArchipelagoHelper.SlotData.ShuffleItemRarities)
-                    {
-                        switch (kvp.Value.rarity)
-                        {
-                            case ItemRarity.Rare:
-                                return ArchipelagoHelper.HasReceivedItem("Progressive Item Rarity", 1);
-
-                            case ItemRarity.Legendary:
-                                return ArchipelagoHelper.HasReceivedItem("Progressive Item Rarity", 2);
-
-                            default:
-                                return true;
-                        }
-                    }
-
-                    return true;
-                })
-                .Select(kvp => kvp.Key)
-                .ToList();
+            // Return with cached, unlocked item types
+            __result = CursedWordsArchipelago.Instance.UnlockedItemTypeCache.ToList();
 
             return false;
+        }
+
+        [HarmonyPatch(nameof(SaveManager.IsItemUnlocked), typeof(Type))]
+        [HarmonyPrefix]
+        public static bool IsItemUnlocked_Prefix(Type itemType, ref bool __result)
+        {
+            Logger.LogInfo($"{nameof(SaveManager)}.{nameof(SaveManager.IsItemUnlocked)}");
+
+            if (CursedWordsArchipelago.Instance.ItemTypeCache.ContainsKey(itemType))
+            {
+                __result = CursedWordsArchipelago.Instance.UnlockedItemTypeCache.Contains(itemType);
+                return false;
+            }
+
+            return true;
+        }
+
+        [HarmonyPatch(nameof(SaveManager.IsItemUnlocked), typeof(SaveFile), typeof(Type))]
+        [HarmonyPrefix]
+        public static bool IsItemUnlockedOverload_Prefix(Type itemType, ref bool __result)
+        {
+            return IsItemUnlockedOverload_Prefix(itemType, ref __result);
         }
 
         /// <summary>

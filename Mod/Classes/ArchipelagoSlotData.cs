@@ -18,6 +18,11 @@ namespace Mod.Helpers
         }
 
         /// <summary>
+        /// Gets or sets whether Boss-sanity is enabled.
+        /// </summary>
+        public bool Bosssanity { get; private set; } = false;
+
+        /// <summary>
         /// Gets a value indicating the highest crown requirement
         /// </summary>
         public int CrownRequirement { get; private set; }
@@ -36,6 +41,16 @@ namespace Mod.Helpers
         /// Gets a value indicating the goal character requirements
         /// </summary>
         public string[] GoalRequirements { get; private set; }
+
+        /// <summary>
+        /// Gets or sets whether Michael is enabled.
+        /// </summary>
+        public bool Michael { get; private set; } = false;
+
+        /// <summary>
+        /// Gets or sets whether Pinsanity is enabled.
+        /// </summary>
+        public bool Pinsanity { get; private set; } = false;
 
         /// <summary>
         /// Gets or sets whether shuffle grid size is enabled.
@@ -72,10 +87,17 @@ namespace Mod.Helpers
         /// </summary>
         public int ShopsanityCost { get; private set; } = 12;
 
+        /// <summary>
+        /// Gets or sets whether Tilesanity is enabled.
+        /// </summary>
+        public bool Tilesanity { get; private set; } = false;
+
 
         private ArchipelagoSlotData(Dictionary<string, object> slotData)
         {
             Logger.LogInfo("Slot data:");
+
+            #region Goal
 
             // Parse the goal type first because if it fails, everything fails
             if (slotData.TryGetValue("goal", out object goal))
@@ -124,21 +146,9 @@ namespace Mod.Helpers
                 Logger.LogInfo($"\t\t{character}");
             }
 
-            if (slotData.TryGetValue("deathlink", out object deathlink))
-            {
-                try
-                {
-                    Deathlink = Convert.ToBoolean(deathlink);
-                }
-                catch
-                {
-                    Logger.LogWarning("Deathlink slot data in unexpected format, defaulting to 'false'");
-                }
-            }
+            #endregion
 
-            Logger.LogInfo($"\tDeathlink: {Deathlink}");
-
-            
+            #region Run Options
 
             if (slotData.TryGetValue("crowns", out object crowns))
             {
@@ -157,7 +167,21 @@ namespace Mod.Helpers
                 }
             }
 
-            Logger.LogInfo($"\tHighest Crown: {GoalType}");
+            Logger.LogInfo($"\tHighest Crown: {CrownRequirement}");
+
+            if (slotData.TryGetValue("michael", out object michael))
+            {
+                try
+                {
+                    Michael = Convert.ToBoolean(michael);
+                }
+                catch
+                {
+                    Logger.LogWarning("Michael slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\tMichael: {Michael}");
 
             if (slotData.TryGetValue("shuffle_grid_size", out object shuffleGridSize))
             {
@@ -249,6 +273,52 @@ namespace Mod.Helpers
                 }
             }
 
+            if (slotData.TryGetValue("deathlink", out object deathlink))
+            {
+                try
+                {
+                    Deathlink = Convert.ToBoolean(deathlink);
+                }
+                catch
+                {
+                    Logger.LogWarning("Deathlink slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\tDeathlink: {Deathlink}");
+
+            #endregion
+
+            #region Extra Locations
+
+            if (slotData.TryGetValue("bosssanity", out object bosssanity))
+            {
+                try
+                {
+                    Bosssanity = Convert.ToBoolean(bosssanity);
+                }
+                catch
+                {
+                    Logger.LogWarning("Boss-sanity slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\nBoss-sanity: {Bosssanity}");
+
+            if (slotData.TryGetValue("Pinsanity", out object pinsanity))
+            {
+                try
+                {
+                    Pinsanity = Convert.ToBoolean(pinsanity);
+                }
+                catch
+                {
+                    Logger.LogWarning("Pinsanity slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\nPinsanity: {Pinsanity}");
+
             if (slotData.TryGetValue("shopsanity", out object shopsanity))
             {
                 try
@@ -276,6 +346,22 @@ namespace Mod.Helpers
             }
 
             Logger.LogInfo($"\tShopsanity Cost: {ShopsanityCost}");
+
+            if (slotData.TryGetValue("tilesanity", out object tilesanity))
+            {
+                try
+                {
+                    Tilesanity = Convert.ToBoolean(tilesanity);
+                }
+                catch
+                {
+                    Logger.LogWarning("Tilesanity slot data in unexpected format, defaulting to 'false'");
+                }
+            }
+
+            Logger.LogInfo($"\nTilesanity: {Tilesanity}");
+
+            #endregion
         }
 
         public static ArchipelagoSlotData Parse(Dictionary<string, object> slotData)

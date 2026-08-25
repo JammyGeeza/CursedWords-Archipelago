@@ -31,7 +31,11 @@ namespace Mod.Patches
                 if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
                 {
                     // Try and check encounter location(s)
-                    CursedWordsArchipelago.Instance.TryCheckEncounterLocations("win_encounter", player, controller.GetBossModifiers());
+                    CursedWordsArchipelago.Instance.TryCheckEncounterLocations(
+                        "win_encounter",
+                        player,
+                        controller.GetBossModifiers(),
+                        controller.GetRemainingGrids());
                 }
                 else
                 {

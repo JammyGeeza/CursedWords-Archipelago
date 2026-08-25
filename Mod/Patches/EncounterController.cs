@@ -74,7 +74,7 @@ namespace Mod.Patches
             Logger.LogInfo($"Sold item: {item.Name}");
 
             // Attempt to check shop locations
-            CursedWordsArchipelago.Instance.TryCheckShopActionLocations($"sell_item", item);
+            CursedWordsArchipelago.Instance.TryCheckItemActionLocations($"sell", item);
         }
 
         /// <summary>
@@ -93,10 +93,15 @@ namespace Mod.Patches
                 // Get item mappings where the cue is the start of an encounter
                 foreach (KeyValuePair<string, CuedAction> encounterItem in ItemMappings.Map.Where(kvp => kvp.Value.Cue == ActionCue.Encounter))
                 {
-                    // Perform action if not handled the amount of times received.
-                    for (int i = 0; i < ArchipelagoHelper.GetItemCountDifference(encounterItem.Key); i++)
+                    // Add to queue if outstanding unhandles amount is not already in pending queue
+                    int received = ArchipelagoHelper.AmountOfItemReceived(encounterItem.Key);
+                    int handled = ArchipelagoHelper.AmountOfItemHandled(encounterItem.Key);
+                    int pending = CursedWordsArchipelago.Instance.GetPendingCount(encounterItem.Key);
+                    int diff = received - handled - pending;
+
+                    for (int i = 0; i < diff; i++)
                     {
-                        CursedWordsArchipelago.Instance.QueueAction(encounterItem.Value.Action);
+                        CursedWordsArchipelago.Instance.QueueAction(encounterItem.Value.Action, encounterItem.Key);
                     }
                 }
             }
@@ -139,13 +144,13 @@ namespace Mod.Patches
             Logger.LogInfo($"{nameof(EncounterController)}.{nameof(EncounterController.SubmitWord)} Postfix!");
             Logger.LogInfo($"Word length: {tiles.Count}");
 
-            // Attempt to check word length locations
+            // Attempt to check Word Length locations
             CursedWordsArchipelago.Instance.TryCheckNumericLocations("word_length", tiles.Count);
 
             // Attempt to check tile type locations
             foreach (TileSelection tile in tiles)
             {
-                CursedWordsArchipelago.Instance.TryCheckTileLocations("submit_tile", tile.SelectedTile);
+                CursedWordsArchipelago.Instance.TryCheckTileLocations("submit", tile.SelectedTile);
             }
         }
     }

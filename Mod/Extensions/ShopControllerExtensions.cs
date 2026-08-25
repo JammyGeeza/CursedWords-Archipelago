@@ -119,6 +119,21 @@ namespace Mod.Extensions
         }
 
         /// <summary>
+        /// Get the cost of a specified tile type.
+        /// </summary>
+        /// <param name="controller">The controller to get the cost from.</param>
+        /// <param name="tileType">The tile type to get the cost for.</param>
+        /// <returns>The tile type cost or -1 if not found.</returns>
+        public static int GetTileTypeCost(this ShopController controller, TileType tileType)
+        {
+            Dictionary<TileType, int> tileTypeCosts = Traverse.Create(controller)
+                .Field("_tileTypeCosts")
+                .GetValue<Dictionary<TileType, int>>();
+
+            return tileTypeCosts.GetValueOrDefault(tileType, -1);
+        }
+
+        /// <summary>
         /// Remove a stamp in stock by its index.
         /// </summary>
         /// <param name="controller">The controller to remove the stamp from.</param>
@@ -140,6 +155,19 @@ namespace Mod.Extensions
             Traverse.Create(controller)
                 .Field("_stickersInStock")
                 .GetValue<ItemInStock[]>()[index] = null;
+        }
+
+        /// <summary>
+        /// Set a specified tile in stock.
+        /// </summary>
+        /// <param name="controller">The controller to set the tile in stock for.</param>
+        /// <param name="tileInStock">The tile in stock to set.</param>
+        /// <param name="index">The index for the tile in stock.</param>
+        public static void SetTileInStock(this ShopController controller, TileInStock tileInStock, int index)
+        {
+            Traverse.Create(controller)
+                .Field("_tilesInStock")
+                .GetValue<TileInStock[]>()[index] = tileInStock;
         }
     }
 }

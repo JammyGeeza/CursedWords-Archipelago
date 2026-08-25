@@ -22,18 +22,27 @@ using UnityEngine.Windows;
 
 namespace Modd
 {
-    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.4.1")]
+    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.0")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
         #region Private Properties
 
         private static Harmony Harmony { get; set; }
 
-        private ConcurrentQueue<Func<IEnumerator>> ActionQueue { get; set; } = new ConcurrentQueue<Func<IEnumerator>>();
+        private ConcurrentQueue<(Func<IEnumerator> Action, string ItemName)> ActionQueue { get; set; } = new ConcurrentQueue<(Func<IEnumerator>, string)>();
+
+        private Dictionary<string, int> PendingItems { get; } = new Dictionary<string, int>();
+
+        private Coroutine _currentAction;
 
         private Dictionary<Type, string> _characterTypeCache;
 
         private Dictionary<Type, (string name, ItemRarity rarity)> _itemTypeCache;
+
+        /// <summary>
+        /// Gets or sets all locations relevant to the connected slot.
+        /// </summary>
+        private List<LocationCriteria> RelevantLocations { get; set; } = new List<LocationCriteria>();
 
         #endregion
 
@@ -65,7 +74,9 @@ namespace Modd
             _itemTypeCache ??= Assembly.GetAssembly(typeof(Item))
                 .GetTypes()
                 .Where(t => t.IsClass && t.IsSubclassOf(typeof(Item)))
-                .ToDictionary(t => t, t => { Item item = Activator.CreateInstance(t) as Item; return (item.Name, item.Rarity); });
+                .Select(t => Activator.CreateInstance(t) as Item)
+                .Where(t => t.UpgradeableComponents.Count < 2)
+                .ToDictionary(x => x.GetType(), x => (x.Name, x.Rarity));
 
         public ManualLogSource LogSource
         {
@@ -76,6 +87,16 @@ namespace Modd
         /// All un-checked shop stamp checks
         /// </summary>
         public Dictionary<long, ScoutedItemInfo> RemainingShopChecks { get; set; } = new Dictionary<long, ScoutedItemInfo>();
+
+        /// <summary>
+        /// Gets or sets the current save slot.
+        /// </summary>
+        public static int SaveSlot { get; set; }
+
+        /// <summary>
+        /// Gets or sets the currently unlocked items.
+        /// </summary>
+        public List<Type> UnlockedItemTypeCache = new List<Type>();
 
         #endregion
 
@@ -108,6 +129,7 @@ namespace Modd
             // Register event handlers
             ArchipelagoHelper.OnConnected += ArchipelagoHelper_OnConnected;
             ArchipelagoHelper.OnDeathlink += ArchipelagoHelper_OnDeathlink;
+            ArchipelagoHelper.OnDisconnected += ArchipelagoHelper_OnDisconnected;
             ArchipelagoHelper.OnCheckedLocationsUpdated += ArchipelagoHelper_OnCheckedLocationsUpdated;
             ArchipelagoHelper.OnItemsReceived += ArchipelagoHelper_OnItemsReceived;
 
@@ -133,10 +155,9 @@ namespace Modd
                 return;
             }
 
-            // De-queue action and perform it
-            if (Instance.ActionQueue.TryDequeue(out Func<IEnumerator> action))
+            if (_currentAction == null && Instance.ActionQueue.TryDequeue(out (Func<IEnumerator> Action, string ItemName) queued))
             {
-                StartCoroutine(action());
+                _currentAction = StartCoroutine(RunAction(queued.Action, queued.ItemName));
             }
 
             // Development short-cuts
@@ -170,12 +191,27 @@ namespace Modd
         #region Public Methods
 
         /// <summary>
+        /// Get the current pending count for an item.
+        /// </summary>
+        /// <param name="itemName">The item name to check.</param>
+        public int GetPendingCount(string itemName)
+        {
+            return PendingItems.GetValueOrDefault(itemName, 0);
+        }
+
+        /// <summary>
         /// Add an action to the action queue.
         /// </summary>
         /// <param name="action">The action to queue.</param>
-        public void QueueAction(Func<IEnumerator> action)
+        /// <param name="itemName">The optional item name to track pending actions.</param>
+        public void QueueAction(Func<IEnumerator> action, string itemName = null)
         {
-            Instance.ActionQueue.Enqueue(action);
+            if (itemName != null)
+            {
+                PendingItems[itemName] = PendingItems.GetValueOrDefault(itemName, 0) + 1;
+            }
+
+            Instance.ActionQueue.Enqueue((action, itemName));
         }
 
         /// <summary>
@@ -190,14 +226,14 @@ namespace Modd
         /// <summary>
         /// Attempt to check an encounter location.
         /// </summary>
-        /// <param name="character">The character to check against.</param>
-        /// <param name="stage">The stage to check against.</param>
-        /// <param name="nodeType">The encounter node type to check against.</param>
-        public void TryCheckEncounterLocations(string action, Player player, List<BossModifier>? bossModifiers = null)
+        /// <param name="action">The event action name.</param>
+        /// <param name="player">The current player object.</param>
+        /// <param name="bossModifiers">The boss modifiers applied to the encounter.</param>
+        /// <param name="args">Any additional arguments.</param>
+        public void TryCheckEncounterLocations(string action, Player player, List<BossModifier>? bossModifiers = null, object args = null)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers) == true))
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers, args) == true))
             {
-                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 TryCheckLocation(criteria.LocationName);
             }
         }
@@ -208,9 +244,21 @@ namespace Modd
         /// <param name="action">The action to check against.</param>
         public void TryCheckGenericLocations(string action)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnGenericAction?.Invoke(action) == true))
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnGenericAction?.Invoke(action) == true))
             {
-                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
+                TryCheckLocation(criteria.LocationName);
+            }
+        }
+
+        /// <summary>
+        /// Attempt to check Item Action locations.
+        /// </summary>
+        /// <param name="action">The item action name.</param>
+        /// <param name="item">The item.</param>
+        public void TryCheckItemActionLocations(string action, Item item)
+        {
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnItemAction?.Invoke(action, item) == true))
+            {
                 TryCheckLocation(criteria.LocationName);
             }
         }
@@ -222,23 +270,8 @@ namespace Modd
         /// <param name="amount">The amount to check against.</param>
         public void TryCheckNumericLocations(string action, long amount)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnNumericAction?.Invoke(action, amount) == true))
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnNumericAction?.Invoke(action, amount) == true))
             {
-                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
-                TryCheckLocation(criteria.LocationName);
-            }
-        }
-
-        /// <summary>
-        /// Attempt to check Shop Action locations.
-        /// </summary>
-        /// <param name="action">The shop action name.</param>
-        /// <param name="item">The shop item.</param>
-        public void TryCheckShopActionLocations(string action, Item item)
-        {
-            foreach(LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnShopAction?.Invoke(action, item) == true))
-            {
-                Logger.LogWarning($"Criteria met for shop action check: '{criteria.LocationName}'.");
                 TryCheckLocation(criteria.LocationName);
             }
         }
@@ -250,9 +283,8 @@ namespace Modd
         /// <param name="amount">The amount to check against.</param>
         public void TryCheckTileLocations(string action, Tile tile)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnTileAction?.Invoke(action, tile) == true))
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnTileAction?.Invoke(action, tile) == true))
             {
-                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 TryCheckLocation(criteria.LocationName);
             }
         }
@@ -294,6 +326,18 @@ namespace Modd
             yield break;
         }
 
+        private IEnumerator RunAction(Func<IEnumerator> action, string itemName)
+        {
+            yield return action();
+
+            if (itemName != null)
+            {
+                PendingItems[itemName] = Math.Max(0, PendingItems.GetValueOrDefault(itemName, 0) - 1);
+            }
+
+            _currentAction = null;
+        }
+
         #endregion
 
         #region Event Handlers
@@ -310,6 +354,15 @@ namespace Modd
                 // Attempt to remove from unchecked shop items
                 RemainingShopChecks.Remove(checkedLocation);
             }
+
+            // Update location counts in AP Data
+            ArchipelagoData apData = ArchipelagoData.GetDataForSaveSlot(SaveSlot);
+            int checkedLocations = ArchipelagoHelper.GetCheckedLocationsCount();
+            apData.LocationsCheckedTotal = checkedLocations;
+            apData.LocationsTotal = ArchipelagoHelper.GetUncheckedLocationsCount() + checkedLocations;
+
+            // Save it
+            ArchipelagoData.SaveDataForSaveSlot(SaveSlot, apData);
         }
 
         /// <summary>
@@ -319,8 +372,15 @@ namespace Modd
         {
             Logger.LogMessage("Connected to archipelago");
 
+            // Store relevant locations for the connected session so that smaller seeds
+            // aren't checking against irrelevant location criteria
+            List<string> locationNames = ArchipelagoHelper.GetAllLocationNames();
+            RelevantLocations = ItemMappings.Locations
+                .Where(lc => locationNames.Contains(lc.LocationName))
+                .ToList();
+
             // Get un-checked shop checks
-            List<long> uncheckedShopChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Buy Shopsanity Item");
+            List<long> uncheckedShopChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Shopsanity: Item");
             if (uncheckedShopChecks.Count == 0)
             {
                 return;
@@ -329,6 +389,12 @@ namespace Modd
             // Scout and store un-checked shop checks
             RemainingShopChecks = await ArchipelagoHelper.ScoutLocationsByIdAsync(uncheckedShopChecks.ToArray());
             RemainingShopChecks = RemainingShopChecks.OrderBy((kvp) => kvp.Value.LocationName).ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        private void ArchipelagoHelper_OnDisconnected(string reason)
+        {
+            // Clear unlocked items cache
+            UnlockedItemTypeCache.Clear();
         }
 
         /// <summary>
@@ -346,7 +412,53 @@ namespace Modd
                 if (ItemMappings.Map.TryGetValue(itemInfo.ItemName, out CuedAction cuedAction))
                 {
                     Logger.LogWarning($"Queueing item received action for '{itemInfo.ItemName}'...");
-                    QueueAction(cuedAction.Action);
+                    QueueAction(cuedAction.Action, itemInfo.ItemName);
+                }
+
+                if (itemInfo.ItemName.Equals("Progressive Item Rarity", StringComparison.OrdinalIgnoreCase))
+                {
+                    RefreshUnlockedItemTypesCache();
+                }
+                else
+                {
+                    KeyValuePair<Type, (string name, ItemRarity rarity)> itemType = ItemTypeCache.FirstOrDefault(kvp => kvp.Value.name.Equals(itemInfo.ItemName, StringComparison.OrdinalIgnoreCase));
+                    if (itemType.Key != null && !UnlockedItemTypeCache.Contains(itemType.Key))
+                    {
+                        Logger.LogInfo($"Adding item type: {itemType.Key} to unlocked item cache");
+                        UnlockedItemTypeCache.Add(itemType.Key);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Check if an item rarity has been unlocked via progressive item rarity, if enabled.
+        /// </summary>
+        /// <param name="rarity">The item rarity to check.</param>
+        /// <returns>True if unlocked, False if not.</returns>
+        private bool IsRarityUnlocked(ItemRarity rarity)
+        {
+            return !ArchipelagoHelper.SlotData.ShuffleItemRarities ||
+                rarity switch
+                {
+                    ItemRarity.Rare | ItemRarity.Legendary => ArchipelagoHelper.HasReceivedItem("Progressive Item Rarity", (int)rarity),
+                    _ => true
+                };
+        }
+
+        /// <summary>
+        /// Re-evaluate the unlocked item types cache.
+        /// </summary>
+        private void RefreshUnlockedItemTypesCache()
+        {
+            // Cycle each item type not already in the unlocked cache
+            foreach (KeyValuePair<Type, (string name, ItemRarity rarity)> itemType in ItemTypeCache.Where(kvp => !UnlockedItemTypeCache.Contains(kvp.Key)))
+            {
+                // If item has been received and the rarity is unlocked, add to the cache
+                if (ArchipelagoHelper.HasReceivedItem(itemType.Value.name) && IsRarityUnlocked(itemType.Value.rarity))
+                {
+                    Logger.LogInfo($"Adding item type: {itemType.Key} to unlocked item cache");
+                    UnlockedItemTypeCache.Add(itemType.Key);
                 }
             }
         }
