@@ -281,6 +281,10 @@ namespace Mod.Helpers
             return AmountOfItemReceived(itemName) - AmountOfItemHandled(itemName);
         }
 
+        /// <summary>
+        /// Get the amount of locations that have been checked.
+        /// </summary>
+        /// <returns>The amount of currently checked locations.</returns>
         public static int GetCheckedLocationsCount()
         {
             if (!IsConnected)
@@ -289,6 +293,24 @@ namespace Mod.Helpers
             return Session.Locations.AllLocationsChecked.Count;
         }
 
+        /// <summary>
+        /// Get the names of all locations for the current connection.
+        /// </summary>
+        /// <returns>A list of all locations for the currently connected slot.</returns>
+        public static List<string> GetAllLocationNames()
+        {
+            if (!IsConnected)
+                return new List<string>();
+
+            return Session.Locations.AllLocations
+                .Select(l => GetLocationName(l))
+                .ToList();
+        }
+
+        /// <summary>
+        /// Get the amount of locations that have not been checked.
+        /// </summary>
+        /// <returns>The amount of currently un-checked locations.</returns>
         public static int GetUncheckedLocationsCount()
         {
             if (!IsConnected)
@@ -407,7 +429,7 @@ namespace Mod.Helpers
         /// <param name="gameName">The game that the check belongs to.</param>
         public static void TryCheckLocation(string locationName, string gameName = "Cursed Words")
         {
-            Logger.LogInfo($"Attempting to check location: '{locationName}'...");
+            Logger.LogWarning($"Attempting to check location: '{locationName}'...");
 
             if (!IsConnected)
                 return;
@@ -417,10 +439,6 @@ namespace Mod.Helpers
             {
                 Logger.LogWarning($"Checking location: {locationName}");
                 Session.Locations.CompleteLocationChecks(new long[] { locationId });
-            }
-            else
-            {
-                Logger.LogError($"No un-checked location found with name '{locationName}'");
             }
         }
 

@@ -144,7 +144,7 @@ namespace Mod.Patches
             Logger.LogInfo($"{nameof(EncounterController)}.{nameof(EncounterController.SubmitWord)} Postfix!");
             Logger.LogInfo($"Word length: {tiles.Count}");
 
-            // Attempt to check word length locations
+            // Attempt to check Word Length locations
             CursedWordsArchipelago.Instance.TryCheckNumericLocations("word_length", tiles.Count);
 
             // Attempt to check tile type locations

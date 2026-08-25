@@ -39,6 +39,11 @@ namespace Modd
 
         private Dictionary<Type, (string name, ItemRarity rarity)> _itemTypeCache;
 
+        /// <summary>
+        /// Gets or sets all locations relevant to the connected slot.
+        /// </summary>
+        private List<LocationCriteria> RelevantLocations { get; set; } = new List<LocationCriteria>();
+
         #endregion
 
         #region Public Properties
@@ -227,9 +232,8 @@ namespace Modd
         /// <param name="args">Any additional arguments.</param>
         public void TryCheckEncounterLocations(string action, Player player, List<BossModifier>? bossModifiers = null, object args = null)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers, args) == true))
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers, args) == true))
             {
-                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 TryCheckLocation(criteria.LocationName);
             }
         }
@@ -240,9 +244,8 @@ namespace Modd
         /// <param name="action">The action to check against.</param>
         public void TryCheckGenericLocations(string action)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnGenericAction?.Invoke(action) == true))
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnGenericAction?.Invoke(action) == true))
             {
-                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 TryCheckLocation(criteria.LocationName);
             }
         }
@@ -254,9 +257,8 @@ namespace Modd
         /// <param name="item">The item.</param>
         public void TryCheckItemActionLocations(string action, Item item)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnItemAction?.Invoke(action, item) == true))
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnItemAction?.Invoke(action, item) == true))
             {
-                Logger.LogWarning($"Criteria met for shop action check: '{criteria.LocationName}'.");
                 TryCheckLocation(criteria.LocationName);
             }
         }
@@ -268,9 +270,8 @@ namespace Modd
         /// <param name="amount">The amount to check against.</param>
         public void TryCheckNumericLocations(string action, long amount)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnNumericAction?.Invoke(action, amount) == true))
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnNumericAction?.Invoke(action, amount) == true))
             {
-                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 TryCheckLocation(criteria.LocationName);
             }
         }
@@ -282,9 +283,8 @@ namespace Modd
         /// <param name="amount">The amount to check against.</param>
         public void TryCheckTileLocations(string action, Tile tile)
         {
-            foreach (LocationCriteria criteria in ItemMappings.Locations.Where(l => l.OnTileAction?.Invoke(action, tile) == true))
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnTileAction?.Invoke(action, tile) == true))
             {
-                Logger.LogWarning($"Criteria met for location check: '{criteria.LocationName}'");
                 TryCheckLocation(criteria.LocationName);
             }
         }
@@ -371,6 +371,13 @@ namespace Modd
         private async void ArchipelagoHelper_OnConnected()
         {
             Logger.LogMessage("Connected to archipelago");
+
+            // Store relevant locations for the connected session so that smaller seeds
+            // aren't checking against irrelevant location criteria
+            List<string> locationNames = ArchipelagoHelper.GetAllLocationNames();
+            RelevantLocations = ItemMappings.Locations
+                .Where(lc => locationNames.Contains(lc.LocationName))
+                .ToList();
 
             // Get un-checked shop checks
             List<long> uncheckedShopChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Buy Shopsanity Item");

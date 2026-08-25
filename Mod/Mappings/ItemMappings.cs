@@ -97,7 +97,38 @@ namespace Mod.Mappings
 
         public static List<LocationCriteria> Locations = new List<LocationCriteria>()
         {
-            #region Encounters
+            #region Generic
+
+            new LocationCriteria("Buy a Consumable Tile") { OnTileAction = (action, tile) => action == "buy" },
+            new LocationCriteria("Buy a Stamp") { OnItemAction = (action, item) => action == "buy" && item.IsStamp() },
+            new LocationCriteria("Buy a Sticker") { OnItemAction = (action, item) => action == "buy" && item.IsSticker() },
+            new LocationCriteria("Buy a Foil Sticker") { OnItemAction = (action, item) => action == "buy" && item.IsSticker() && item.IsFoil },
+            new LocationCriteria("Clear a Boss with 0 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && modifiers.Any() && args is 0 },
+            new LocationCriteria("Clear a Boss with 1 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && modifiers.Any() && args is 1 },
+            new LocationCriteria("Clear a Boss with 2 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && modifiers.Any() && args is 2 },
+            new LocationCriteria("Clear a Boss with 3 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && modifiers.Any() && args is 3 },
+            new LocationCriteria("Clear a Boss with 4 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && modifiers.Any() && args is 4 },
+            new LocationCriteria("Clear an Encounter with 0 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 0 },
+            new LocationCriteria("Clear an Encounter with 1 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 1 },
+            new LocationCriteria("Clear an Encounter with 2 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 2 },
+            new LocationCriteria("Clear an Encounter with 3 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 3 },
+            new LocationCriteria("Clear an Encounter with 4 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 4 },
+            new LocationCriteria("Destroy a Consumable Tile") { OnGenericAction = (action) => action == "destroy_tile" },
+            new LocationCriteria("Freeze a Stamp") { OnItemAction = (action, item) => action == "freeze" && item.IsStamp() },
+            new LocationCriteria("Freeze a Sticker") { OnItemAction = (action, item) => action == "freeze" && item.IsSticker() },
+            new LocationCriteria("Place a Consumable Tile") { OnGenericAction = (action) => action == "place_tile" },
+            new LocationCriteria("Restock the Shop") { OnGenericAction = (action) => action == "restock_shop" },
+            new LocationCriteria("Sell a Stamp") { OnItemAction = (action, item) => action == "sell" && item.IsStamp() },
+            new LocationCriteria("Sell a Sticker") { OnItemAction = (action, item) => action == "sell" && item.IsSticker() },
+            new LocationCriteria("Skip a Grid") { OnGenericAction = (action) => action == "skip_grid" },
+            new LocationCriteria("Submit a Consumable Tile") { OnTileAction = (action, tile) => action == "submit" && tile.WasConsumable },
+            new LocationCriteria("Upgrade a Pin") { OnItemAction = (action, item) => action == "upgrade" && item.IsPin() && item.IsLevelOrHigher(1) },
+            new LocationCriteria("Upgrade a Sticker to Level 2") { OnItemAction = (action, item) => action == "upgrade" && item.IsSticker() && item.IsLevelOrHigher(2) },
+            new LocationCriteria("Upgrade a Sticker to Level 3") { OnItemAction = (action, item) => action == "upgrade" && item.IsSticker() && item.IsLevelOrHigher(3) },
+
+            #endregion
+
+            #region Character / Crown / Michael
 
             // Rodman
             new LocationCriteria("Rodman: Stage 1-1 Cleared") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && player.MyCharacter is WetDennis && player.CurrentRunProgress.CurrentStage == 1 && player.CurrentRunProgress.CurrentNodeType is NodeType.EncounterFirst },
@@ -935,199 +966,37 @@ namespace Mod.Mappings
 
             #endregion
 
-            #region Boss-sanity
+            #region Money Earned
 
-            new LocationCriteria("Defeat Axolotl")          { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is ExtraQs) },
-            new LocationCriteria("Defeat Badger")           { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is FewerGrids) },
-            new LocationCriteria("Defeat Bat")              { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is SmallGrid) },
-            new LocationCriteria("Defeat Bison")            { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is AddNumbers) },
-            new LocationCriteria("Defeat Capybara")         { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is RandomiseItemOrder) },
-            new LocationCriteria("Defeat Cobra")            { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is MinWordLength) },
-            new LocationCriteria("Defeat Fox")              { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is StealsMoney) },
-            new LocationCriteria("Defeat Hyena")            { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is ForcedSell) },
-            new LocationCriteria("Defeat Mole")             { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is ExtraVoids) },
-            new LocationCriteria("Defeat Robo-Eel")         { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is DestroyGrid) },
-            new LocationCriteria("Defeat Robo-Monkey")      { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is NegativeMoney) },
-            new LocationCriteria("Defeat Salamander")       { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is ReducedLetterValue) },
-            new LocationCriteria("Defeat Toothed Whale")    { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is BigBoss) },
-            new LocationCriteria("Defeat Wolf")             { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is MaxWordLength) },
-            new LocationCriteria("Defeat Yeti Crab")        { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is DiscolourTiles) },
-
-            #endregion
-
-            #region Other Actions
-
-            new LocationCriteria("Buy a Consumable Tile") { OnTileAction = (action, tile) => action == "buy" },
-
-            new LocationCriteria("Clear an Encounter with 0 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 0 },
-            new LocationCriteria("Clear an Encounter with 1 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 1 },
-            new LocationCriteria("Clear an Encounter with 2 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 2 },
-            new LocationCriteria("Clear an Encounter with 3 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 3 },
-            new LocationCriteria("Clear an Encounter with 4 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && args is 4 },
-
-            new LocationCriteria("Clear a Boss with 0 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && modifiers.Any() && args is 0 },
-            new LocationCriteria("Clear a Boss with 1 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && modifiers.Any() && args is 1 },
-            new LocationCriteria("Clear a Boss with 2 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && modifiers.Any() && args is 2 },
-            new LocationCriteria("Clear a Boss with 3 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && modifiers.Any() && args is 3 },
-            new LocationCriteria("Clear a Boss with 4 Grids Unused") { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" && modifiers.Any() && args is 4 },
-
-
-            new LocationCriteria("Destroy a Consumable Tile") { OnGenericAction = (action) => action == "destroy_tile" },
-            new LocationCriteria("Place a Consumable Tile") { OnGenericAction = (action) => action == "place_tile" },
-            new LocationCriteria("Skip a Grid") { OnGenericAction = (action) => action == "skip_grid" },
-            new LocationCriteria("Upgrade a Pin") { OnItemAction = (action, item) => action == "upgrade" && item.IsPin() && item.IsLevelOrHigher(1) },
+            new LocationCriteria("Money Earned: $10+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 10 },
+            new LocationCriteria("Money Earned: $15+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 15 },
+            new LocationCriteria("Money Earned: $20+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 20 },
+            new LocationCriteria("Money Earned: $25+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 25 },
+            new LocationCriteria("Money Earned: $30+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 30 },
+            new LocationCriteria("Money Earned: $40+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 40 },
+            new LocationCriteria("Money Earned: $50+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 50 },
+            new LocationCriteria("Money Earned: $60+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 60 },
+            new LocationCriteria("Money Earned: $70+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 70 },
+            new LocationCriteria("Money Earned: $80+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 80 },
+            new LocationCriteria("Money Earned: $90+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 90 },
+            new LocationCriteria("Money Earned: $100+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 100 },
+            new LocationCriteria("Money Earned: $125+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 125 },
+            new LocationCriteria("Money Earned: $150+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 150 },
+            new LocationCriteria("Money Earned: $175+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 175 },
+            new LocationCriteria("Money Earned: $200+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 200 },
+            new LocationCriteria("Money Earned: $225+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 225 },
+            new LocationCriteria("Money Earned: $250+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 250 },
+            new LocationCriteria("Money Earned: $275+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 275 },
+            new LocationCriteria("Money Earned: $300+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 300 },
+            new LocationCriteria("Money Earned: $350+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 350 },
+            new LocationCriteria("Money Earned: $400+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 400 },
+            new LocationCriteria("Money Earned: $450+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 450 },
+            new LocationCriteria("Money Earned: $500+") { OnNumericAction = (action, total) => action == "earn_money" && total >= 500 },
 
             #endregion
 
-            #region Pinsanity
+            #region Word Lengths
 
-            new LocationCriteria("Rodman: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 2) },
-            new LocationCriteria("Rodman: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 3) },
-            new LocationCriteria("Rodman: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 4) },
-            new LocationCriteria("Rodman: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 5) },
-
-            new LocationCriteria("Rodman: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 2) },
-            new LocationCriteria("Rodman: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 3) },
-            new LocationCriteria("Rodman: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 4) },
-            new LocationCriteria("Rodman: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 5) },
-
-            new LocationCriteria("Nina Nix: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 2) },
-            new LocationCriteria("Nina Nix: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 3) },
-            new LocationCriteria("Nina Nix: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 4) },
-            new LocationCriteria("Nina Nix: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 5) },
-
-            new LocationCriteria("Nina Nix: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 2) },
-            new LocationCriteria("Nina Nix: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 3) },
-            new LocationCriteria("Nina Nix: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 4) },
-            new LocationCriteria("Nina Nix: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 5) },
-
-            new LocationCriteria("Hayley Bayles: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 2) },
-            new LocationCriteria("Hayley Bayles: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 3) },
-            new LocationCriteria("Hayley Bayles: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 4) },
-            new LocationCriteria("Hayley Bayles: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 5) },
-
-            new LocationCriteria("Hayley Bayles: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 2) },
-            new LocationCriteria("Hayley Bayles: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 3) },
-            new LocationCriteria("Hayley Bayles: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 4) },
-            new LocationCriteria("Hayley Bayles: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 5) },
-
-            new LocationCriteria("Sam Gambit: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 2) },
-            new LocationCriteria("Sam Gambit: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 3) },
-            new LocationCriteria("Sam Gambit: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 4) },
-            new LocationCriteria("Sam Gambit: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 5) },
-
-            new LocationCriteria("Sam Gambit: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 2) },
-            new LocationCriteria("Sam Gambit: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 3) },
-            new LocationCriteria("Sam Gambit: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 4) },
-            new LocationCriteria("Sam Gambit: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 5) },
-
-            new LocationCriteria("Bones the Dog: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 2) },
-            new LocationCriteria("Bones the Dog: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 3) },
-            new LocationCriteria("Bones the Dog: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 4) },
-            new LocationCriteria("Bones the Dog: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 5) },
-
-            new LocationCriteria("Bones the Dog: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 2) },
-            new LocationCriteria("Bones the Dog: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 3) },
-            new LocationCriteria("Bones the Dog: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 4) },
-            new LocationCriteria("Bones the Dog: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 5) },
-
-            new LocationCriteria("Octacles: Upgrade Pin - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 2) },
-            new LocationCriteria("Octacles: Upgrade Pin - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 3) },
-            new LocationCriteria("Octacles: Upgrade Pin - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 4) },
-            new LocationCriteria("Octacles: Upgrade Pin - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 5) },
-
-            new LocationCriteria("Octacles: Upgrade Pin - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 2) },
-            new LocationCriteria("Octacles: Upgrade Pin - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 3) },
-            new LocationCriteria("Octacles: Upgrade Pin - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 4) },
-            new LocationCriteria("Octacles: Upgrade Pin - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 5) },
-
-            #endregion
-
-            #region Money
-
-            new LocationCriteria("Earn $5 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 5 },
-            new LocationCriteria("Earn $10 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 10 },
-            new LocationCriteria("Earn $15 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 15 },
-            new LocationCriteria("Earn $20 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 20 },
-            new LocationCriteria("Earn $30 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 30 },
-            new LocationCriteria("Earn $40 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 40 },
-            new LocationCriteria("Earn $50 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 50 },
-            new LocationCriteria("Earn $70 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 75 },
-            new LocationCriteria("Earn $100 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 100 },
-            new LocationCriteria("Earn $125 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 125 },
-            new LocationCriteria("Earn $150 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 150 },
-            new LocationCriteria("Earn $175 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 175 },
-            new LocationCriteria("Earn $200 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 200 },
-            new LocationCriteria("Earn $225 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 225 },
-            new LocationCriteria("Earn $250 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 250 },
-            new LocationCriteria("Earn $300 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 300 },
-            new LocationCriteria("Earn $350 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 350 },
-            new LocationCriteria("Earn $400 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 400 },
-            new LocationCriteria("Earn $450 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 450 },
-            new LocationCriteria("Earn $500 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 500 },
-            new LocationCriteria("Earn $600 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 600 },
-            new LocationCriteria("Earn $700 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 700 },
-            new LocationCriteria("Earn $800 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 800 },
-            new LocationCriteria("Earn $900 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 900 },
-            new LocationCriteria("Earn $1000 in a Run") { OnNumericAction = (action, total) => action == "earn_money" && total >= 1000 },
-
-            #endregion
-
-            #region Shop
-
-            // 'Generic' shop actions
-            new LocationCriteria("Buy a Stamp") { OnItemAction = (action, item) => action == "buy" && item.IsStamp() },
-            new LocationCriteria("Buy a Sticker") { OnItemAction = (action, item) => action == "buy" && item.IsSticker() },
-            new LocationCriteria("Buy a Foil Sticker") { OnItemAction = (action, item) => action == "buy" && item.IsSticker() && item.IsFoil },
-            new LocationCriteria("Freeze a Stamp") { OnItemAction = (action, item) => action == "freeze" && item.IsStamp() },
-            new LocationCriteria("Freeze a Sticker") { OnItemAction = (action, item) => action == "freeze" && item.IsSticker() },
-            new LocationCriteria("Restock the Shop") { OnGenericAction = (action) => action == "restock_shop" },
-            new LocationCriteria("Sell a Stamp") { OnItemAction = (action, item) => action == "sell" && item.IsStamp() },
-            new LocationCriteria("Sell a Sticker") { OnItemAction = (action, item) => action == "sell" && item.IsSticker() },
-            new LocationCriteria("Upgrade a Sticker to Level 2") { OnItemAction = (action, item) => action == "upgrade" && item.IsSticker() && item.IsLevelOrHigher(2) },
-            new LocationCriteria("Upgrade a Sticker to Level 3") { OnItemAction = (action, item) => action == "upgrade" && item.IsSticker() && item.IsLevelOrHigher(3) },
-
-            #endregion
-
-            #region Tilesanity
-
-            new LocationCriteria("Buy a Colourless Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetTileType() is TileType.Normal },
-            new LocationCriteria("Buy a Blue Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetTileType() == TileType.Blue },
-            new LocationCriteria("Buy a Red Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetTileType() is TileType.Red },
-            new LocationCriteria("Buy a Shiny Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetTileType() is TileType.Shiny },
-            new LocationCriteria("Buy a Void Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetTileType() is TileType.Void },
-
-            new LocationCriteria("Buy a ? Tile") { OnTileAction = (action, tile) => action == "buy" && tile.IsBlank() },
-            new LocationCriteria("Buy a Card Tile") { OnTileAction = (action, tile) => action == "buy" && tile.IsSuitedCard() },
-            new LocationCriteria("Buy a Chess Piece Tile") { OnTileAction = (action, tile) => action == "buy" && tile.IsChessPiece() },
-            new LocationCriteria("Buy a Currency Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetGlyphType() is GlyphType.Currency },
-            new LocationCriteria("Buy a Fraction Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetGlyphType() is GlyphType.Fraction },
-            new LocationCriteria("Buy a Joker Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetSuit() is Suit.Joker },
-            new LocationCriteria("Buy a Letter Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetGlyphType() is GlyphType.Letter },
-            new LocationCriteria("Buy a Number Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetGlyphType() is GlyphType.Number },
-
-            new LocationCriteria("Submit a Colourless Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() is TileType.Normal },
-            new LocationCriteria("Submit a Blue Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() == TileType.Blue },
-            new LocationCriteria("Submit a Red Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() is TileType.Red },
-            new LocationCriteria("Submit a Shiny Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() is TileType.Shiny },
-            new LocationCriteria("Submit a Void Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() is TileType.Void },
-
-            new LocationCriteria("Submit a ? Tile") { OnTileAction = (action, tile) => action == "submit" && tile.IsBlank() },
-            new LocationCriteria("Submit a Card Tile") { OnTileAction = (action, tile) => action == "submit" && tile.IsSuitedCard() },
-            new LocationCriteria("Submit a Chess Piece Tile") { OnTileAction = (action, tile) => action == "submit" && tile.IsChessPiece() },
-            new LocationCriteria("Submit a Currency Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetGlyphType() is GlyphType.Currency },
-            new LocationCriteria("Submit a Fraction Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetGlyphType() is GlyphType.Fraction },
-            new LocationCriteria("Submit a Joker Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetSuit() is Suit.Joker },
-            new LocationCriteria("Submit a Letter Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetGlyphType() is GlyphType.Letter },
-            new LocationCriteria("Submit a Number Tile") { OnTileAction = (action, tile) => action == "submit" && tile.IsNumber() },
-
-            #endregion
-
-            #region Words
-
-            new LocationCriteria("Submit a Consumable Tile") { OnTileAction = (action, tile) => action == "submit" && tile.WasConsumable },
-
-            // Word Lengths
             new LocationCriteria("Word Length: 1 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 1 },
             new LocationCriteria("Word Length: 2 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 2 },
             new LocationCriteria("Word Length: 3 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 3 },
@@ -1140,22 +1009,29 @@ namespace Mod.Mappings
             new LocationCriteria("Word Length: 10 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 10 },
             new LocationCriteria("Word Length: 11 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 11 },
             new LocationCriteria("Word Length: 12 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 12 },
+            new LocationCriteria("Word Length: 13 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 13 },
+            new LocationCriteria("Word Length: 14 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 14 },
+            new LocationCriteria("Word Length: 15 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 15 },
+            new LocationCriteria("Word Length: 16 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 16 },
+            new LocationCriteria("Word Length: 17 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 17 },
+            new LocationCriteria("Word Length: 18 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 18 },
+            new LocationCriteria("Word Length: 19 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 19 },
+            new LocationCriteria("Word Length: 20 Tiles") { OnNumericAction = (action, length) => action == "word_length" && length == 10 },
 
-            // Word Scores
+            #endregion
+
+            #region Word Scores
+
             new LocationCriteria("Word Score: 5+") { OnNumericAction = (action, score) => action == "word_score" && score >= 5 },
             new LocationCriteria("Word Score: 10+") { OnNumericAction = (action, score) => action == "word_score" && score >= 10 },
             new LocationCriteria("Word Score: 15+") { OnNumericAction = (action, score) => action == "word_score" && score >= 15 },
             new LocationCriteria("Word Score: 20+") { OnNumericAction = (action, score) => action == "word_score" && score >= 20 },
-            new LocationCriteria("Word Score: 30+") { OnNumericAction = (action, score) => action == "word_score" && score >= 30 },
-            new LocationCriteria("Word Score: 40+") { OnNumericAction = (action, score) => action == "word_score" && score >= 40 },
             new LocationCriteria("Word Score: 50+") { OnNumericAction = (action, score) => action == "word_score" && score >= 50 },
             new LocationCriteria("Word Score: 75+") { OnNumericAction = (action, score) => action == "word_score" && score >= 75 },
             new LocationCriteria("Word Score: 100+") { OnNumericAction = (action, score) => action == "word_score" && score >= 100 },
-            new LocationCriteria("Word Score: 125+") { OnNumericAction = (action, score) => action == "word_score" && score >= 125 },
             new LocationCriteria("Word Score: 150+") { OnNumericAction = (action, score) => action == "word_score" && score >= 150 },
             new LocationCriteria("Word Score: 175+") { OnNumericAction = (action, score) => action == "word_score" && score >= 175 },
             new LocationCriteria("Word Score: 200+") { OnNumericAction = (action, score) => action == "word_score" && score >= 200 },
-            new LocationCriteria("Word Score: 225+") { OnNumericAction = (action, score) => action == "word_score" && score >= 225 },
             new LocationCriteria("Word Score: 250+") { OnNumericAction = (action, score) => action == "word_score" && score >= 250 },
             new LocationCriteria("Word Score: 300+") { OnNumericAction = (action, score) => action == "word_score" && score >= 300 },
             new LocationCriteria("Word Score: 350+") { OnNumericAction = (action, score) => action == "word_score" && score >= 350 },
@@ -1173,6 +1049,134 @@ namespace Mod.Mappings
             new LocationCriteria("Word Score: 2000+") { OnNumericAction = (action, score) => action == "word_score" && score >= 2000 },
             new LocationCriteria("Word Score: 2250+") { OnNumericAction = (action, score) => action == "word_score" && score >= 2250 },
             new LocationCriteria("Word Score: 2500+") { OnNumericAction = (action, score) => action == "word_score" && score >= 2500 },
+            new LocationCriteria("Word Score: 3000+") { OnNumericAction = (action, score) => action == "word_score" && score >= 3000 },
+            new LocationCriteria("Word Score: 3500+") { OnNumericAction = (action, score) => action == "word_score" && score >= 3500 },
+            new LocationCriteria("Word Score: 4000+") { OnNumericAction = (action, score) => action == "word_score" && score >= 4000 },
+            new LocationCriteria("Word Score: 4500+") { OnNumericAction = (action, score) => action == "word_score" && score >= 4500 },
+            new LocationCriteria("Word Score: 5000+") { OnNumericAction = (action, score) => action == "word_score" && score >= 5000 },
+            new LocationCriteria("Word Score: 6000+") { OnNumericAction = (action, score) => action == "word_score" && score >= 6000 },
+            new LocationCriteria("Word Score: 7000+") { OnNumericAction = (action, score) => action == "word_score" && score >= 7000 },
+            new LocationCriteria("Word Score: 8000+") { OnNumericAction = (action, score) => action == "word_score" && score >= 8000 },
+            new LocationCriteria("Word Score: 9000+") { OnNumericAction = (action, score) => action == "word_score" && score >= 9000 },
+            new LocationCriteria("Word Score: 10000+") { OnNumericAction = (action, score) => action == "word_score" && score >= 10000 },
+
+            #endregion
+
+            #region Boss-sanity
+
+            new LocationCriteria("Boss-sanity: Defeat Axolotl")          { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is ExtraQs) },
+            new LocationCriteria("Boss-sanity: Defeat Badger")           { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is FewerGrids) },
+            new LocationCriteria("Boss-sanity: Defeat Bat")              { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is SmallGrid) },
+            new LocationCriteria("Boss-sanity: Defeat Bison")            { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is AddNumbers) },
+            new LocationCriteria("Boss-sanity: Defeat Capybara")         { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is RandomiseItemOrder) },
+            new LocationCriteria("Boss-sanity: Defeat Cobra")            { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is MinWordLength) },
+            new LocationCriteria("Boss-sanity: Defeat Fox")              { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is StealsMoney) },
+            new LocationCriteria("Boss-sanity: Defeat Hyena")            { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is ForcedSell) },
+            new LocationCriteria("Boss-sanity: Defeat Mole")             { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is ExtraVoids) },
+            new LocationCriteria("Boss-sanity: Defeat Robo-Eel")         { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is DestroyGrid) },
+            new LocationCriteria("Boss-sanity: Defeat Robo-Monkey")      { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is NegativeMoney) },
+            new LocationCriteria("Boss-sanity: Defeat Salamander")       { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is ReducedLetterValue) },
+            new LocationCriteria("Boss-sanity: Defeat Toothed Whale")    { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is BigBoss) },
+            new LocationCriteria("Boss-sanity: Defeat Wolf")             { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is MaxWordLength) },
+            new LocationCriteria("Boss-sanity: Defeat Yeti Crab")        { OnEncounterAction = (action, player, modifiers, args) => action == "win_encounter" &&  player.CurrentRunProgress.CurrentNodeType is NodeType.Boss && modifiers.Any(bm => bm is DiscolourTiles) },
+
+            #endregion
+
+            #region Pinsanity
+
+            new LocationCriteria("Pinsanity: Rodman - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Pinsanity: Rodman - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Pinsanity: Rodman - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Pinsanity: Rodman - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Pinsanity: Rodman - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Pinsanity: Rodman - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Pinsanity: Rodman - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Pinsanity: Rodman - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is CarpStreamers && item.IsComponentLevelOrHigher(1, 5) },
+
+            new LocationCriteria("Pinsanity: Nina Nix - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Pinsanity: Nina Nix - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Pinsanity: Nina Nix - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Pinsanity: Nina Nix - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Pinsanity: Nina Nix - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Pinsanity: Nina Nix - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Pinsanity: Nina Nix - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Pinsanity: Nina Nix - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is MilkyWay && item.IsComponentLevelOrHigher(1, 5) },
+
+            new LocationCriteria("Pinsanity: Hayley Bayles - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Pinsanity: Hayley Bayles - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Pinsanity: Hayley Bayles - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Pinsanity: Hayley Bayles - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Pinsanity: Hayley Bayles - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Pinsanity: Hayley Bayles - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Pinsanity: Hayley Bayles - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Pinsanity: Hayley Bayles - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is Abacus && item.IsComponentLevelOrHigher(1, 5) },
+
+            new LocationCriteria("Pinsanity: Sam Gambit - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Pinsanity: Sam Gambit - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Pinsanity: Sam Gambit - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Pinsanity: Sam Gambit - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Pinsanity: Sam Gambit - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Pinsanity: Sam Gambit - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Pinsanity: Sam Gambit - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Pinsanity: Sam Gambit - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is SuperEight && item.IsComponentLevelOrHigher(1, 5) },
+
+            new LocationCriteria("Pinsanity: Bones the Dog - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Pinsanity: Bones the Dog - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Pinsanity: Bones the Dog - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Pinsanity: Bones the Dog - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Pinsanity: Bones the Dog - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Pinsanity: Bones the Dog - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Pinsanity: Bones the Dog - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Pinsanity: Bones the Dog - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bicycle && item.IsComponentLevelOrHigher(1, 5) },
+
+            new LocationCriteria("Pinsanity: Octacles - Left 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 2) },
+            new LocationCriteria("Pinsanity: Octacles - Left 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 3) },
+            new LocationCriteria("Pinsanity: Octacles - Left 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 4) },
+            new LocationCriteria("Pinsanity: Octacles - Left 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(0, 5) },
+
+            new LocationCriteria("Pinsanity: Octacles - Right 1") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 2) },
+            new LocationCriteria("Pinsanity: Octacles - Right 2") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 3) },
+            new LocationCriteria("Pinsanity: Octacles - Right 3") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 4) },
+            new LocationCriteria("Pinsanity: Octacles - Right 4") { OnItemAction = (action, item) => action == "upgrade" && item is Bucket && item.IsComponentLevelOrHigher(1, 5) },
+
+            #endregion
+
+            #region Tilesanity
+
+            new LocationCriteria("Tilesanity: Buy a Colourless Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetTileType() is TileType.Normal },
+            new LocationCriteria("Tilesanity: Buy a Blue Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetTileType() == TileType.Blue },
+            new LocationCriteria("Tilesanity: Buy a Red Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetTileType() is TileType.Red },
+            new LocationCriteria("Tilesanity: Buy a Shiny Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetTileType() is TileType.Shiny },
+            new LocationCriteria("Tilesanity: Buy a Void Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetTileType() is TileType.Void },
+
+            new LocationCriteria("Tilesanity: Buy a ? Tile") { OnTileAction = (action, tile) => action == "buy" && tile.IsBlank() },
+            new LocationCriteria("Tilesanity: Buy a Card Tile") { OnTileAction = (action, tile) => action == "buy" && tile.IsSuitedCard() },
+            new LocationCriteria("Tilesanity: Buy a Chess Piece Tile") { OnTileAction = (action, tile) => action == "buy" && tile.IsChessPiece() },
+            new LocationCriteria("Tilesanity: Buy a Currency Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetGlyphType() is GlyphType.Currency },
+            new LocationCriteria("Tilesanity: Buy a Fraction Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetGlyphType() is GlyphType.Fraction },
+            new LocationCriteria("Tilesanity: Buy a Joker Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetSuit() is Suit.Joker },
+            new LocationCriteria("Tilesanity: Buy a Letter Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetGlyphType() is GlyphType.Letter },
+            new LocationCriteria("Tilesanity: Buy a Number Tile") { OnTileAction = (action, tile) => action == "buy" && tile.GetGlyphType() is GlyphType.Number },
+
+            new LocationCriteria("Tilesanity: Submit a Colourless Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() is TileType.Normal },
+            new LocationCriteria("Tilesanity: Submit a Blue Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() == TileType.Blue },
+            new LocationCriteria("Tilesanity: Submit a Red Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() is TileType.Red },
+            new LocationCriteria("Tilesanity: Submit a Shiny Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() is TileType.Shiny },
+            new LocationCriteria("Tilesanity: Submit a Void Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetTileType() is TileType.Void },
+
+            new LocationCriteria("Tilesanity: Submit a ? Tile") { OnTileAction = (action, tile) => action == "submit" && tile.IsBlank() },
+            new LocationCriteria("Tilesanity: Submit a Card Tile") { OnTileAction = (action, tile) => action == "submit" && tile.IsSuitedCard() },
+            new LocationCriteria("Tilesanity: Submit a Chess Piece Tile") { OnTileAction = (action, tile) => action == "submit" && tile.IsChessPiece() },
+            new LocationCriteria("Tilesanity: Submit a Currency Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetGlyphType() is GlyphType.Currency },
+            new LocationCriteria("Tilesanity: Submit a Fraction Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetGlyphType() is GlyphType.Fraction },
+            new LocationCriteria("Tilesanity: Submit a Joker Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetSuit() is Suit.Joker },
+            new LocationCriteria("Tilesanity: Submit a Letter Tile") { OnTileAction = (action, tile) => action == "submit" && tile.GetGlyphType() is GlyphType.Letter },
+            new LocationCriteria("Tilesanity: Submit a Number Tile") { OnTileAction = (action, tile) => action == "submit" && tile.IsNumber() },
 
             #endregion
         };
