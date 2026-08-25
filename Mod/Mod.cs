@@ -380,7 +380,7 @@ namespace Modd
                 .ToList();
 
             // Get un-checked shop checks
-            List<long> uncheckedShopChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Buy Shopsanity Item");
+            List<long> uncheckedShopChecks = ArchipelagoHelper.GetUncheckedLocationsByName("Shopsanity: Item");
             if (uncheckedShopChecks.Count == 0)
             {
                 return;
