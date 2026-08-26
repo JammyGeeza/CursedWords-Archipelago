@@ -27,6 +27,7 @@ namespace Mod.Patches
             { GlyphType.Fraction, 1 },
             { GlyphType.Letter, 19 },
             { GlyphType.Number, 1 },
+            { GlyphType.ScatteredItem, 1 },
         };
 
         private static List<long> CurrentlyUsedShopLocations = new List<long>();
@@ -94,6 +95,10 @@ namespace Mod.Patches
 
                 case GlyphType.Number:
                     tile.SetToRandomNumber();
+                    break;
+
+                case GlyphType.ScatteredItem:
+                    tile.SetToRandomItem();
                     break;
             }
 
