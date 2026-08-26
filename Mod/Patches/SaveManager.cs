@@ -74,7 +74,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         public static bool IsItemUnlockedOverload_Prefix(Type itemType, ref bool __result)
         {
-            return IsItemUnlockedOverload_Prefix(itemType, ref __result);
+            return IsItemUnlocked_Prefix(itemType, ref __result);
         }
 
         /// <summary>
