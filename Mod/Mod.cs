@@ -22,7 +22,7 @@ using UnityEngine.Windows;
 
 namespace Modd
 {
-    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.0")]
+    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.1")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
         #region Private Properties
@@ -232,7 +232,7 @@ namespace Modd
         /// <param name="args">Any additional arguments.</param>
         public void TryCheckEncounterLocations(string action, Player player, List<BossModifier>? bossModifiers = null, object args = null)
         {
-            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers, args) == true))
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers ?? new List<BossModifier>(), args ?? string.Empty) == true))
             {
                 TryCheckLocation(criteria.LocationName);
             }
@@ -441,7 +441,7 @@ namespace Modd
             return !ArchipelagoHelper.SlotData.ShuffleItemRarities ||
                 rarity switch
                 {
-                    ItemRarity.Rare | ItemRarity.Legendary => ArchipelagoHelper.HasReceivedItem("Progressive Item Rarity", (int)rarity),
+                    ItemRarity.Rare or ItemRarity.Legendary => ArchipelagoHelper.HasReceivedItem("Progressive Item Rarity", (int)rarity),
                     _ => true
                 };
         }
