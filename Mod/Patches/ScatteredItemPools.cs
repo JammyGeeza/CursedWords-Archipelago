@@ -18,7 +18,7 @@ namespace Mod.Patches
         /// </summary>
         [HarmonyPatch("GetRarityWeightedItem")]
         [HarmonyPostfix]
-        public static bool GetRarityWeightedItem_Postfix(ref Item __result)
+        private static void GetRarityWeightedItem_Postfix(List<Item> items, ref Item __result)
         {
             Logger.LogInfo($"{nameof(ScatteredItemPools)}.GetRarityWeightedItem postfix!");
 

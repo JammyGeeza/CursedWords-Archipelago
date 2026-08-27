@@ -17,13 +17,16 @@ _More goals will be added in future development_
 ## Locations
 The currently available locations are as follows:
 - Completing each encounter with each selected character. _(E.g. Rodman: Stage 1-1, 1-2, 1-3, 2-1 ... etc.)_
-- Completing each encounter on each Crown with each selected character. _(E.g. Nina Nix: Purple Crown - Stage 1-1, 1-2, 1-3, 2-1 ... etc)_
 - Encounter Actions _(E.g. 'Destroy a Consumable Tile', 'Re-roll a Grid' etc.)_
 - Shop Actions _(E.g. 'Buy a Sticker', 'Re-stock the Shop' etc.)_
+- Earn Money _(E.g earn X amount in a single run)_
 - Word Lengths _(E.g. submitted word has exactly 5 tiles)_
 - Word Scores _(E.g. word score is greater than 100)_
 ### Optional Locations
+- Completing each encounter on each Crown with each selected character. _(E.g. Nina Nix: Purple Crown - Stage 1-1, 1-2, 1-3, 2-1 ... etc)_
+- Completing Michael encounters with each selected character. _(E.g. 'Hayley Bayles: Stage 6-1 Cleared', 'Octacles: Stage 6-3 Cleared' etc.)_
 - Boss-sanity _(E.g. 'Defeat Axolotl', 'Defeat Robo-Eel', 'Defeat Toothed Whale' etc.)_
+- Pinsanity _(E.g. 'Upgrade Rodman's Pin - Left 1', 'Upgrade Octacle's Pin - Right 3' etc.)_
 - Shopsanity _(E.g. purchase custom items in the shop)_
 - Tilesanity _(E.g. 'Submit a Blue Tile', 'Submit a Letter Tile', 'Submit a Chess Tile' etc.)_
 
