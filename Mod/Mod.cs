@@ -441,7 +441,7 @@ namespace Modd
             return !ArchipelagoHelper.SlotData.ShuffleItemRarities ||
                 rarity switch
                 {
-                    ItemRarity.Rare | ItemRarity.Legendary => ArchipelagoHelper.HasReceivedItem("Progressive Item Rarity", (int)rarity),
+                    ItemRarity.Rare or ItemRarity.Legendary => ArchipelagoHelper.HasReceivedItem("Progressive Item Rarity", (int)rarity),
                     _ => true
                 };
         }

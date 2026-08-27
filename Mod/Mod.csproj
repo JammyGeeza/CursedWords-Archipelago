@@ -5,6 +5,7 @@
 		<AssemblyName>Mod</AssemblyName>
 		<GamePath>D:\SteamLibrary\steamapps\common\Cursed Words</GamePath>
 		<BepInExPath>$(GamePath)\BepInEx</BepInExPath>
+		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="Sprites\archipelago.png" />
