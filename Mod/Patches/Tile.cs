@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
+using Mod.Extensions;
 using Mod.Helpers;
+using Mod.Mappings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,70 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(Tile))]
     internal class Tile_Patches : PatchBase
     {
+        /// <summary>
+        /// Override random curses to ensure all supported curse types are selected from.
+        /// (Items like Amphora would only produce Blank or Currency tiles)
+        /// </summary>
+        [HarmonyPatch(nameof(Tile.RandomlyCurseTile))]
+        [HarmonyPrefix]
+        private static bool RandomlyCurseTile_Prefix(Tile __instance)
+        {
+            Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.RandomlyCurseTile)} prefix!");
+
+            // Select random supported curse type and apply it
+            GlyphType curseType = SupportedMappings.CurseTypes.GetRandom();
+            switch (curseType)
+            {
+                case GlyphType.BespokeCard:
+                    {
+                        __instance.SetGlyphType(curseType);
+
+                        if (UnityEngine.Random.Range(0, 10) == 0)
+                        {
+                            __instance.SetSuit(Suit.Joker);
+                        }
+                    }
+                    break;
+
+                case GlyphType.Blank:
+                    // Do nothing
+                    break;
+
+                case GlyphType.Chess:
+                    __instance.SetToRandomChessPiece();
+                    break;
+
+                case GlyphType.Currency:
+                    __instance.SetToRandomCurrency();
+                    break;
+
+                case GlyphType.Fraction:
+                    __instance.SetToRandomFraction();
+                    break;
+
+                case GlyphType.Number:
+                    __instance.SetToRandomNumber();
+                    break;
+
+                case GlyphType.ScatteredItem:
+                    __instance.SetToRandomItem();
+                    break;
+
+                default:
+                    Logger.LogWarning($"Random curse type: {curseType} is not currently supported, defaulting to letter.");
+                    __instance.SetToRandomLetter();
+                    break;
+            }
+
+            // if not joker, apply a random suit
+            if (__instance.GetSuit() is Suit.None)
+            {
+                __instance.SetSuit(PlayingCardUtility.GetRandomCardSuit());
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Prevent chess piece being set if tile type not yet received.
         /// </summary>
