@@ -20,59 +20,70 @@ namespace Mod.Patches
         /// </summary>
         [HarmonyPatch(nameof(Tile.RandomlyCurseTile))]
         [HarmonyPrefix]
-        private static bool RandomlyCurseTile_Prefix(Tile __instance)
+        private static bool RandomlyCurseTile_Prefix(ref Tile tile, bool isAllowingScatteredItems)
         {
             Logger.LogInfo($"{nameof(Tile)}.{nameof(Tile.RandomlyCurseTile)} prefix!");
 
+            // Get supported curse types (excluding scattered item if not allowing)
+            List<GlyphType> curseTypes = SupportedMappings.CurseTypes
+                .Where(ct => isAllowingScatteredItems || ct != GlyphType.ScatteredItem)
+                .ToList();
+
             // Select random supported curse type and apply it
-            GlyphType curseType = SupportedMappings.CurseTypes.GetRandom();
+            GlyphType curseType = curseTypes.GetRandom();
             switch (curseType)
             {
                 case GlyphType.BespokeCard:
                     {
-                        __instance.SetGlyphType(curseType);
+                        tile.SetGlyphType(curseType);
 
                         if (UnityEngine.Random.Range(0, 10) == 0)
                         {
-                            __instance.SetSuit(Suit.Joker);
+                            tile.SetSuit(Suit.Joker);
+                        }
+                        else
+                        {
+                            tile.SetToRandomLetter();
                         }
                     }
                     break;
 
                 case GlyphType.Blank:
-                    // Do nothing
+                    tile.SetGlyphType(curseType);
                     break;
 
                 case GlyphType.Chess:
-                    __instance.SetToRandomChessPiece();
+                    tile.SetChessPiece(ChessPieces.GetRandomChessPiece());
                     break;
 
                 case GlyphType.Currency:
-                    __instance.SetToRandomCurrency();
+                    tile.SetLetter(Currency.GetRandomCurrency());
+                    tile.SetGlyphType(curseType);
                     break;
 
                 case GlyphType.Fraction:
-                    __instance.SetToRandomFraction();
+                    string randomFraction = Alphabet.GetRandomFraction();
+                    tile.SetFractionNumbers(Alphabet.GetFractionNumbers(randomFraction));
                     break;
 
                 case GlyphType.Number:
-                    __instance.SetToRandomNumber();
+                    tile.SetNumber(UnityEngine.Random.Range(1, 9));
                     break;
 
                 case GlyphType.ScatteredItem:
-                    __instance.SetToRandomItem();
+                    tile.SetScatteredItem(ScatteredItemPools.GetRandomItem());
                     break;
 
                 default:
                     Logger.LogWarning($"Random curse type: {curseType} is not currently supported, defaulting to letter.");
-                    __instance.SetToRandomLetter();
+                    tile.SetToRandomLetter();
                     break;
             }
 
             // if not joker, apply a random suit
-            if (__instance.GetSuit() is Suit.None)
+            if (tile.GetSuit() is Suit.None)
             {
-                __instance.SetSuit(PlayingCardUtility.GetRandomCardSuit());
+                tile.SetSuit(PlayingCardUtility.GetRandomCardSuit());
             }
 
             return false;

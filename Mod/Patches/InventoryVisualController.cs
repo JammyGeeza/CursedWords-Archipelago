@@ -1,5 +1,8 @@
 ﻿using HarmonyLib;
+using Mod.Classes;
 using Modd;
+using System;
+using System.Reflection;
 
 namespace Mod.Patches
 {
@@ -31,6 +34,28 @@ namespace Mod.Patches
 
             // Send check for destroying tile
             CursedWordsArchipelago.Instance.TryCheckGenericLocations("destroy_tile");
+        }
+
+        /// <summary>
+        /// When selling an item, ensure the 'Unicorn' item ignores AP Padlocks.
+        /// </summary>
+        [HarmonyPatch]
+        private static class Unicorn_OnSell_Patch
+        {
+            static MethodBase TargetMethod()
+            {
+                Type displayClassType = AccessTools.Inner(typeof(InventoryVisualController), "<>c");
+                return AccessTools.Method(displayClassType, "<OnItemSellButtonClicked>b__80_7");
+            }
+
+            [HarmonyPostfix]
+            private static void Unicorn_OnSell_Postfix(Item sticker, ref bool __result)
+            {
+                if (sticker is APStampPadlock or APStickerPadlock)
+                {
+                    __result = false;
+                }
+            }
         }
     }
 }

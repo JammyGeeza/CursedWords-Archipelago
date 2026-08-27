@@ -232,7 +232,7 @@ namespace Modd
         /// <param name="args">Any additional arguments.</param>
         public void TryCheckEncounterLocations(string action, Player player, List<BossModifier>? bossModifiers = null, object args = null)
         {
-            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers, args) == true))
+            foreach (LocationCriteria criteria in RelevantLocations.Where(l => l.OnEncounterAction?.Invoke(action, player, bossModifiers ?? new List<BossModifier>(), args ?? string.Empty) == true))
             {
                 TryCheckLocation(criteria.LocationName);
             }

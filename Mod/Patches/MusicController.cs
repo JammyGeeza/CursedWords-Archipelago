@@ -67,6 +67,9 @@ namespace Mod.Patches
             // Attempt to send run win check (Stage 5-3)
             Player player = GameStatics.GetPlayer();
 
+            Logger.LogInfo($"Current run stage: {player.CurrentRunProgress.CurrentStage}");
+            Logger.LogInfo($"Current node type: {player.CurrentRunProgress.CurrentNodeType}");
+
             // Attempt to send run win check (Stage 6-3)
             CursedWordsArchipelago.Instance.TryCheckEncounterLocations("win_encounter", player);
 
