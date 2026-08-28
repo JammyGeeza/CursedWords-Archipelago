@@ -6,6 +6,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using HarmonyLib.Tools;
+using Mod.Enums;
 using Mod.Helpers;
 using Mod.Mappings;
 using Mod.Patches;
@@ -143,6 +144,48 @@ namespace Modd
             //    BulkUnlock unlock = Activator.CreateInstance(type) as BulkUnlock;
             //    BulkUnlock.AllBulkUnlocks.Add(unlock);
             //}
+
+            //Logger.LogInfo($"Stickers:");
+
+            //List<Item> stickers = Assembly.GetAssembly(typeof(Item))
+            //    .GetTypes()
+            //    .Where(t => t.IsClass && t.IsSubclassOf(typeof(Item)))
+            //    .Select(t => Activator.CreateInstance(t) as Item)
+            //    .Where(t => t.IsSticker())
+            //    .OrderBy(t => t.Name)
+            //    .ToList();
+
+            //foreach (Item item in stickers)
+            //{
+            //    Logger.LogInfo($"\tName: {item.Name}");
+            //    Logger.LogInfo($"\tRarity: {item.Rarity}");
+            //    Logger.LogInfo("\tTags:");
+            //    foreach (ItemTag tag in item.Tags)
+            //    {
+            //        Logger.LogInfo($"\t- {tag}");
+            //    }
+            //}
+
+            //Logger.LogInfo($"Stamps:");
+
+            //List<Item> stamps = Assembly.GetAssembly(typeof(Item))
+            //    .GetTypes()
+            //    .Where(t => t.IsClass && t.IsSubclassOf(typeof(Item)))
+            //    .Select(t => Activator.CreateInstance(t) as Item)
+            //    .Where(t => t.IsStamp())
+            //    .OrderBy(t => t.Name)
+            //    .ToList();
+
+            //foreach (Item item in stamps)
+            //{
+            //    Logger.LogInfo($"\tName: {item.Name}");
+            //    Logger.LogInfo($"\tRarity: {item.Rarity}");
+            //    Logger.LogInfo("\tTags:");
+            //    foreach (ItemTag tag in item.Tags)
+            //    {
+            //        Logger.LogInfo($"\t- {tag}");
+            //    }
+            //}
         }
 
         /// <summary>
@@ -189,6 +232,32 @@ namespace Modd
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// Check if a character has met the current goal criteria.
+        /// </summary>
+        /// <param name="character">The character to check.</param>
+        /// <returns>True if met, false if not met.</returns>
+        public bool HasCharacterMetGoalCriteria(Character character)
+        {
+            return HasCharacterMetGoalCriteria(character.GetType());
+        }
+
+        /// <summary>
+        /// Check if a character has met the current goal criteria.
+        /// </summary>
+        /// <param name="characterType">The type of character to check.</param>
+        /// <returns>True if met, false if not met.</returns>
+        public bool HasCharacterMetGoalCriteria(Type characterType)
+        {
+            return ArchipelagoHelper.SlotData.GoalType switch
+            {
+                GoalType.Crowns => SaveManager.GetHighestCompletedAscension(characterType) >= ArchipelagoHelper.SlotData.CrownRequirement,
+                GoalType.Michael => SaveManager.HasBeatenFinalBoss(characterType),
+                GoalType.Runs => SaveManager.GetHighestCompletedAscension(characterType) >= 0,
+                _ => false,
+            };
+        }
 
         /// <summary>
         /// Get the current pending count for an item.
