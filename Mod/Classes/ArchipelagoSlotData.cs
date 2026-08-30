@@ -303,7 +303,7 @@ namespace Mod.Helpers
                 }
             }
 
-            Logger.LogInfo($"\nBoss-sanity: {Bosssanity}");
+            Logger.LogInfo($"\tBoss-sanity: {Bosssanity}");
 
             if (slotData.TryGetValue("Pinsanity", out object pinsanity))
             {
@@ -317,7 +317,7 @@ namespace Mod.Helpers
                 }
             }
 
-            Logger.LogInfo($"\nPinsanity: {Pinsanity}");
+            Logger.LogInfo($"\tPinsanity: {Pinsanity}");
 
             if (slotData.TryGetValue("shopsanity", out object shopsanity))
             {
@@ -359,7 +359,7 @@ namespace Mod.Helpers
                 }
             }
 
-            Logger.LogInfo($"\nTilesanity: {Tilesanity}");
+            Logger.LogInfo($"\tTilesanity: {Tilesanity}");
 
             #endregion
         }
@@ -372,7 +372,7 @@ namespace Mod.Helpers
             }
             catch (Exception ex)
             {
-                Logger.LogError($"ERROR parsing Archipelago Slot Data: {ex.Message}");
+                Logger.LogError($"Failed to parse Archipelago Slot Data. Reason: {ex.Message}");
                 return null;
             }
         }

@@ -21,8 +21,8 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void OnWinOrLoseEncounter_Postfix(bool isWin)
         {
-            Logger.LogInfo($"{nameof(MusicController)}.{nameof(MusicController.OnWinOrLoseEncounter)} Postfix!");
-            Logger.LogInfo($"Encounter win: {isWin}");
+            Logger.LogDebug($"{nameof(MusicController)}.{nameof(MusicController.OnWinOrLoseEncounter)} Postfix!");
+            Logger.LogDebug($"Encounter win: {isWin}");
 
             Player player = GameStatics.GetPlayer();
 
@@ -62,7 +62,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void OnWinMichaelEncounter_Postfix()
         {
-            Logger.LogInfo($"{nameof(MusicController)}.{nameof(MusicController.OnWinMichaelEncounter)} postfix!");
+            Logger.LogDebug($"{nameof(MusicController)}.{nameof(MusicController.OnWinMichaelEncounter)} postfix!");
 
             // Attempt to send run win check (Stage 5-3)
             Player player = GameStatics.GetPlayer();
@@ -87,7 +87,7 @@ namespace Mod.Patches
                 // If goal condition met, try to send goal
                 if (goalConditionMet)
                 {
-                    Logger.LogInfo("Goal condition has been reached!");
+                    Logger.LogMessage("Goal condition has been reached!");
                     ArchipelagoHelper.TryGoal();
                 }
             }
@@ -100,7 +100,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void OnWinRun_Postfix()
         {
-            Logger.LogInfo($"{nameof(MusicController)}.{nameof(MusicController.OnWinRun)} postfix!");
+            Logger.LogDebug($"{nameof(MusicController)}.{nameof(MusicController.OnWinRun)} postfix!");
 
             Player player = GameStatics.GetPlayer();
 
@@ -111,7 +111,7 @@ namespace Mod.Patches
             }
             else
             {
-                Logger.LogError("Run has been won, but no encounter controller was found.");
+                Logger.LogError("Run has been won, but no active encounter controller was found.");
                 return;
             }
 
@@ -131,7 +131,7 @@ namespace Mod.Patches
                 // If goal condition met, try to send goal
                 if (goalConditionMet)
                 {
-                    Logger.LogInfo("Goal condition has been reached!");
+                    Logger.LogMessage("Goal condition has been reached!");
                     ArchipelagoHelper.TryGoal();
                 }
             }

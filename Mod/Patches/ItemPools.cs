@@ -17,7 +17,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void OnGetRandomBuildBiasedStamp_Postfix(List<Type> unavailableItemTypes, ref Item __result)
         {
-            Logger.LogInfo($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedStamp)} postfix!");
+            Logger.LogDebug($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedStamp)} postfix!");
 
             if (__result == null)
             {
@@ -33,7 +33,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void OnGetRandomBuildBiasedStamp_Overload_Postfix(List<Type> unavailableItemTypes, ItemRarity rarity, ref Item __result)
         {
-            Logger.LogInfo($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedStamp)}_Overload postfix!");
+            Logger.LogDebug($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedStamp)}_Overload postfix!");
 
             if (__result == null)
             {
@@ -49,7 +49,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void OnGetRandomBuildBiasedSticker_Postfix(List<Type> unavailableItemTypes, ref Item __result)
         {
-            Logger.LogInfo($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedSticker)} postfix!");
+            Logger.LogDebug($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedSticker)} postfix!");
 
             if (__result == null)
             {
@@ -65,7 +65,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void OnGetRandomBuildBiasedSticker_Overload_Postfix(ItemRarity rarity, List<Type> unavailableItemTypes, ref Item __result)
         {
-            Logger.LogInfo($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedSticker)}_Overload postfix!");
+            Logger.LogDebug($"{nameof(ItemPools)}.{nameof(ItemPools.GetRandomBuildBiasedSticker)}_Overload postfix!");
 
             if (__result == null)
             {

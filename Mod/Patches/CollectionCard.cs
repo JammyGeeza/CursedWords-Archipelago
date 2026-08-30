@@ -20,7 +20,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void OnPopulate_Postfix(ref CollectionCard __instance, Item item, bool unobserved, bool skipLoad)
         {
-            Logger.LogInfo($"{nameof(CollectionCard)}.{nameof(CollectionCard.Populate)} postfix!");
+            Logger.LogDebug($"{nameof(CollectionCard)}.{nameof(CollectionCard.Populate)} postfix!");
 
             // If item has not been received, set text
             if (!ArchipelagoHelper.HasReceivedItem(item.Name))

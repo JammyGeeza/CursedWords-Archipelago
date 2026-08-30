@@ -20,6 +20,8 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static bool Highlight_Prefix(CharacterSelectTile __instance)
         {
+            Logger.LogDebug($"{nameof(CharacterSelectTile)}.{nameof(CharacterSelectTile.Highlight)} prefix!");
+
             // Check if character is included in goal criteria
             string characterName = CursedWordsArchipelago.Instance.CharacterTypeCache[__instance.MyCharacter.GetType()];
             if (ArchipelagoHelper.SlotData.GoalRequirements.Contains(characterName))
@@ -43,6 +45,8 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static bool Deselect_Prefix(CharacterSelectTile __instance)
         {
+            Logger.LogDebug($"{nameof(CharacterSelectTile)}.{nameof(CharacterSelectTile.Deselect)} prefix!");
+
             // Check if character is included in goal criteria
             string characterName = CursedWordsArchipelago.Instance.CharacterTypeCache[__instance.MyCharacter.GetType()];
             if (ArchipelagoHelper.SlotData.GoalRequirements.Contains(characterName))

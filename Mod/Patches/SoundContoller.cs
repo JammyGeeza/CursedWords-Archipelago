@@ -13,13 +13,13 @@ namespace Mod.Patches
     internal class SoundController_Patches : PatchBase
     {
         /// <summary>
-        /// Check location(s) when an item is purchased in the shop.
+        /// Attempt to check location(s) when an item is purchased in the shop.
         /// </summary>
         [HarmonyPatch(nameof(SoundController.BuyItem))]
         [HarmonyPostfix]
         private static void OnBuyitem_Postfix(Item item, bool isUpgradingSticker)
         {
-            Logger.LogInfo($"{nameof(SoundController)}.{nameof(SoundController.BuyItem)} postfix!");
+            Logger.LogDebug($"{nameof(SoundController)}.{nameof(SoundController.BuyItem)} postfix!");
 
             if (item is ArchipelagoShopitem apShopitem)
             {
@@ -35,24 +35,27 @@ namespace Mod.Patches
             }
         }
 
+        /// <summary>
+        /// Attempt to check location(s) when a tile is purchased in the shop.
+        /// </summary>
         [HarmonyPatch(nameof(SoundController.BuyTile))]
         [HarmonyPostfix]
         private static void BuyTile(Tile tile)
         {
-            Logger.LogInfo($"{nameof(SoundController)}.{nameof(SoundController.BuyTile)} postfix!");
+            Logger.LogDebug($"{nameof(SoundController)}.{nameof(SoundController.BuyTile)} postfix!");
             
             CursedWordsArchipelago.Instance.TryCheckTileLocations("buy", tile);
         }
 
 
         /// <summary>
-        /// Check location when a fairy is received.
+        /// Attempt to check location(s) when a fairy is received.
         /// </summary>
         [HarmonyPatch(nameof(SoundController.FairyGet))]
         [HarmonyPostfix]
         private static void OnFairyGet_Postfix()
         {
-            Logger.LogInfo($"{nameof(SoundController)}.{nameof(SoundController.FairyGet)} postfix!");
+            Logger.LogDebug($"{nameof(SoundController)}.{nameof(SoundController.FairyGet)} postfix!");
 
             Player player = GameStatics.GetPlayer();
 

@@ -2,6 +2,7 @@
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
+using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using BepInEx.Logging;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -50,11 +52,6 @@ namespace Mod.Helpers
         }
 
         /// <summary>
-        /// Gets the handled items for the currently connected slot.
-        /// </summary>
-        public static Dictionary<string, int> HandledItems { get; private set; }
-
-        /// <summary>
         /// Gets the room info for the currently connected slot.
         /// </summary>
         public static RoomInfoPacket RoomInfo { get; private set; }
@@ -64,9 +61,21 @@ namespace Mod.Helpers
         /// </summary>
         public static ArchipelagoSlotData SlotData { get; private set; }
 
+        /// <summary>
+        /// Gets the slot for the current connection
+        /// </summary>
+        public static int Slot
+        {
+            get => Session != null ? Session.ConnectionInfo.Slot : -1;
+        }
+
         #endregion
 
         #region Events
+
+        // Forward events for checked locations updated
+        public delegate void CheckedLocationsUpdatedEvent(ReadOnlyCollection<long> newCheckedLocations);
+        public static event CheckedLocationsUpdatedEvent OnCheckedLocationsUpdated;
 
         // Forward events for connection established
         public delegate void ConnectedEvent();
@@ -84,9 +93,11 @@ namespace Mod.Helpers
         public delegate void ItemsReceivedEvent(ReceivedItemsHelper helper);
         public static event ItemsReceivedEvent OnItemsReceived;
 
-        // Forward events for checked locations updated
-        public delegate void CheckedLocationsUpdatedEvent(ReadOnlyCollection<long> newCheckedLocations);
-        public static event CheckedLocationsUpdatedEvent OnCheckedLocationsUpdated;
+        // Forward events for messages received
+        public delegate void MessageReceivedEvent(LogMessage logMessage);
+        public static event MessageReceivedEvent OnMessageReceived;
+
+        
 
         #endregion
 
@@ -136,7 +147,7 @@ namespace Mod.Helpers
         {
             try
             {
-                Logger.LogInfo($"Creating archipelago session...");
+                Logger.LogDebug($"Creating archipelago session...");
 
                 // Create session
                 Session = ArchipelagoSessionFactory.CreateSession(host);
@@ -147,10 +158,11 @@ namespace Mod.Helpers
 
                 // Register event handlers
                 Session.Locations.CheckedLocationsUpdated += Locations_CheckedLocationsUpdated;
+                Session.MessageLog.OnMessageReceived += MessageLog_OnMessageReceived;
                 Session.Items.ItemReceived += Items_ItemReceived;
                 Session.Socket.SocketClosed += Socket_SocketClosed;
 
-                Logger.LogInfo($"Attempting to connect to archipelago session...");
+                Logger.LogDebug($"Attempting to connect to {host}...");
 
                 // Get room info
                 RoomInfo = await Session.ConnectAsync();
@@ -159,7 +171,7 @@ namespace Mod.Helpers
                     throw new Exception("RoomInfo packet unexpectedly returned null.");
                 }
 
-                Logger.LogInfo($"Attempting to log in to archipelago session...");
+                Logger.LogDebug($"Connection established, attempting to log in as '{slotName}'...");
 
                 // Attempt to log in
                 LoginResult result = await Session.LoginAsync(
@@ -178,6 +190,8 @@ namespace Mod.Helpers
                     throw new Exception(string.Join(", ", failure.Errors));
                 }
 
+                Logger.LogDebug($"Log-in attempt successful, retrieving Slot Data...");
+
                 // Get slot data
                 SlotData = ArchipelagoSlotData.Parse(Session.DataStorage.GetSlotData());
                 if (SlotData is null)
@@ -185,11 +199,13 @@ namespace Mod.Helpers
                     throw new Exception("SlotData was unexpectedly null.");
                 }
 
+                Logger.LogDebug($"Creating Deathlink service...");
+
                 // Create deathlink service
                 DeathlinkService = Session.CreateDeathLinkService();
                 if (DeathlinkService is null)
                 {
-                    Logger.LogError("Failed to create deathlinks service - skipping...");
+                    Logger.LogWarning("Failed to create deathlinks service - skipping...");
                 }
                 else
                 {
@@ -206,11 +222,7 @@ namespace Mod.Helpers
                     }
                 }
 
-                Logger.LogInfo($"Successfully connected to archipelago session!");
-
-                // Get handled items
-                JToken? handledItems = await Session.DataStorage[Scope.Slot, "handled_items"].GetAsync();
-                HandledItems = handledItems?.ToObject<Dictionary<string, int>>() ?? new Dictionary<string, int>();
+                Logger.LogDebug($"Connection set-up complete!");
 
                 // Trigger connected event
                 OnConnected?.Invoke();
@@ -243,19 +255,6 @@ namespace Mod.Helpers
         }
 
         /// <summary>
-        /// Get the amount of times a specific item has been handled.
-        /// </summary>
-        /// <param name="itemName">The item name to check.</param>
-        /// <returns>The amount of times the item name has been handled or -1 if not connected.</returns>
-        public static int AmountOfItemHandled(string itemName)
-        {
-            if (!IsConnected)
-                return -1;
-
-            return HandledItems.GetValueOrDefault(itemName, 0);
-        }
-
-        /// <summary>
         /// Get the amount of times a specific item has been received.
         /// </summary>
         /// <param name="itemName">The item name to check.</param>
@@ -266,19 +265,6 @@ namespace Mod.Helpers
                 return -1;
 
             return Session.Items.AllItemsReceived.Count(item => item.ItemName.Equals(itemName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        /// <summary>
-        /// Get the difference between how many times an item has been handled vs how many times it has been received.
-        /// </summary>
-        /// <param name="itemName">The name of the item to check.</param>
-        /// <returns>The calculated difference or -1 if not connected.</returns>
-        public static int GetItemCountDifference(string itemName)
-        {
-            if (!IsConnected)
-                return -1;
-
-            return AmountOfItemReceived(itemName) - AmountOfItemHandled(itemName);
         }
 
         /// <summary>
@@ -308,15 +294,52 @@ namespace Mod.Helpers
         }
 
         /// <summary>
-        /// Get the amount of locations that have not been checked.
+        /// Get the slot data for the session.
         /// </summary>
-        /// <returns>The amount of currently un-checked locations.</returns>
-        public static int GetUncheckedLocationsCount()
+        /// <returns>A populated slot data dictionary or empty if not connected.</returns>
+        public static Dictionary<string, object> GetSlotData()
         {
             if (!IsConnected)
-                return 0;
+                return new Dictionary<string, object>();
 
-            return Session.Locations.AllMissingLocations.Count;
+            return Session.DataStorage.GetSlotData();
+        }
+
+        /// <summary>
+        /// Get the received items helper.
+        /// </summary>
+        /// <returns>The received items helper or null if not connected.</returns>
+        public static ReceivedItemsHelper GetItemsHelper()
+        {
+            if (!IsConnected)
+                return null;
+
+            return Session.Items as ReceivedItemsHelper;
+        }
+
+        /// <summary>
+        /// Get the location check helper.
+        /// </summary>
+        /// <returns>The location check helper or null if not connected.</returns>
+        public static LocationCheckHelper GetLocationChecksHelper()
+        {
+            if (!IsConnected)
+                return null;
+
+            return Session.Locations as LocationCheckHelper;
+        }
+
+        /// <summary>
+        /// Get the name of a location from its location ID
+        /// </summary>
+        /// <param name="locationId">The ID of the location.</param>
+        /// <param name="gameName">The name of the game the location belongs to.</param>
+        public static string GetLocationName(long locationId, string gameName = "Cursed Words")
+        {
+            if (!IsConnected)
+                return string.Empty;
+
+            return Session.Locations.GetLocationNameFromId(locationId, gameName);
         }
 
         /// <summary>
@@ -336,28 +359,40 @@ namespace Mod.Helpers
         }
 
         /// <summary>
-        /// Get the slot data for the session.
+        /// Get the amount of locations that have not been checked.
         /// </summary>
-        /// <returns>A populated slot data dictionary or empty if not connected.</returns>
-        public static Dictionary<string, object> GetSlotData()
+        /// <returns>The amount of currently un-checked locations.</returns>
+        public static int GetUncheckedLocationsCount()
         {
             if (!IsConnected)
-                return new Dictionary<string, object>();
+                return 0;
 
-            return Session.DataStorage.GetSlotData();
+            return Session.Locations.AllMissingLocations.Count;
         }
 
         /// <summary>
-        /// Get the name of a location from its location ID
+        /// Set a value in the data storage.
         /// </summary>
-        /// <param name="locationId">The ID of the location.</param>
-        /// <param name="gameName">The name of the game the location belongs to.</param>
-        public static string GetLocationName(long locationId, string gameName = "Cursed Words")
+        /// <param name="key">The key name to store under.</param>
+        /// <param name="value">The value to be stored.</param>
+        /// <param name="scope">The scope in which to store the value.</param>
+        /// <returns>True if success, False if not.</returns>
+        public static async Task<T> GetValue<T>(string key, Scope scope = Scope.Slot)
         {
             if (!IsConnected)
-                return string.Empty;
+                return default(T);
 
-            return Session.Locations.GetLocationNameFromId(locationId, gameName);
+            try
+            {
+                JToken value = await Session.DataStorage[scope, key].GetAsync();
+                return value.ToObject<T>();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Failed to retrieve {key} from data storage. Reason: {ex.Message}");
+            }
+
+            return default(T);
         }
 
         /// <summary>
@@ -385,6 +420,31 @@ namespace Mod.Helpers
                 return new Dictionary<long, ScoutedItemInfo>();
 
             return await Session.Locations.ScoutLocationsAsync(false, ids);
+        }
+
+        /// <summary>
+        /// Set a value in the data storage.
+        /// </summary>
+        /// <param name="key">The key name to store under.</param>
+        /// <param name="value">The value to be stored.</param>
+        /// <param name="scope">The scope in which to store the value.</param>
+        /// <returns>True if success, False if not.</returns>
+        public static bool SetValue<T>(string key, T value, Scope scope = Scope.Slot)
+        {
+            if (!IsConnected)
+                return false;
+
+            try
+            {
+                Session.DataStorage[scope, key] = JObject.FromObject(value);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Failed to store {key}: {value} in data storage. {ex.Message}");
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -429,7 +489,7 @@ namespace Mod.Helpers
         /// <param name="gameName">The game that the check belongs to.</param>
         public static void TryCheckLocation(string locationName, string gameName = "Cursed Words")
         {
-            Logger.LogWarning($"Attempting to check location: '{locationName}'...");
+            Logger.LogDebug($"Attempting to check location: '{locationName}'...");
 
             if (!IsConnected)
                 return;
@@ -437,26 +497,20 @@ namespace Mod.Helpers
             long locationId = Session.Locations.GetLocationIdFromName(gameName, locationName);
             if (locationId > -1 && !Session.Locations.AllLocationsChecked.Contains(locationId))
             {
-                Logger.LogWarning($"Checking location: {locationName}");
+                Logger.LogMessage($"Checking location  '{locationName}'...");
                 Session.Locations.CompleteLocationChecks(new long[] { locationId });
             }
         }
 
-        /// <summary>
-        /// Increment the handled count for a specific item.
-        /// </summary>
-        /// <param name="itemName">The name of the item.</param>
-        /// <param name="amount">The amount to increment by.</param>
-        public static void IncrementHandledItem(string itemName, int amount)
+        public static void TrySendMessage(string message)
         {
+            Logger.LogDebug($"Attempting to send message: '{message}'...");
+
             if (!IsConnected)
                 return;
 
-            // Store the new value in the dictionary
-            HandledItems[itemName] = HandledItems.GetValueOrDefault(itemName, 0) + amount;
-
-            // Save the new dict in the session data storage
-            Session.DataStorage[Scope.Slot, "handled_items"] = JObject.FromObject(HandledItems);
+            // Send say packet
+            Session.Say(message);
         }
 
         private static void Cleanup()
@@ -482,6 +536,8 @@ namespace Mod.Helpers
         private static void Items_ItemReceived(ReceivedItemsHelper helper) => OnItemsReceived?.Invoke(helper);
         
         private static void Locations_CheckedLocationsUpdated(ReadOnlyCollection<long> newCheckedLocations) => OnCheckedLocationsUpdated?.Invoke(newCheckedLocations);
+
+        private static void MessageLog_OnMessageReceived(Archipelago.MultiClient.Net.MessageLog.Messages.LogMessage message) => OnMessageReceived?.Invoke(message);
 
         private static void Socket_SocketClosed(string reason)
         {

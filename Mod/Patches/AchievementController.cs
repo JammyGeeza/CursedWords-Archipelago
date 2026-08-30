@@ -25,7 +25,7 @@ namespace Mod.Patches
             [HarmonyPrefix]
             private static bool OnUnlockAchievement_Prefix(Achievement achievement, bool isBypassingViz, ref bool __result)
             {
-                Logger.LogInfo($"{nameof(Achievements)}.{nameof(Achievements.UnlockAchievement)} prefix!");
+                Logger.LogDebug($"{nameof(Achievements)}.{nameof(Achievements.UnlockAchievement)} prefix!");
 
                 __result = false;
 

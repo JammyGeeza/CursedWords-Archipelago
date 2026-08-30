@@ -20,7 +20,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void GetRarityWeightedItem_Postfix(List<Item> items, ref Item __result)
         {
-            Logger.LogInfo($"{nameof(ScatteredItemPools)}.GetRarityWeightedItem postfix!");
+            Logger.LogDebug($"{nameof(ScatteredItemPools)}.GetRarityWeightedItem postfix!");
 
             // If graduation cap, override it
             if (__result is GraduationCap)

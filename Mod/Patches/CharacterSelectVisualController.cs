@@ -21,7 +21,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static void SelectCrown_Prefix(CharacterSelectVisualController __instance, ref Crown crown, Character character)
         {
-            Logger.LogInfo($"{nameof(CharacterSelectVisualController)}.{nameof(CharacterSelectVisualController.SelectCrown)} prefix!");
+            Logger.LogDebug($"{nameof(CharacterSelectVisualController)}.{nameof(CharacterSelectVisualController.SelectCrown)} prefix!");
 
             // Check if the crown level being navigated to is higher than has been received for the character
             // and if so, flick back to no crowns.
@@ -50,7 +50,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         public static void PopulateElements_Postfix(CharacterSelectVisualController __instance, Character character, bool isUnlocked, ref IEnumerator __result)
         {
-            Logger.LogInfo($"{nameof(CharacterSelectVisualController)}.PopulateElements postfix!");
+            Logger.LogDebug($"{nameof(CharacterSelectVisualController)}.PopulateElements postfix!");
 
             if (ArchipelagoHelper.SlotData.Michael || ArchipelagoHelper.SlotData.CrownRequirement > 0)
             {
@@ -63,11 +63,11 @@ namespace Mod.Patches
         /// </summary>
         private static IEnumerator Wrapped(IEnumerator original, CharacterSelectVisualController controller, Character character, bool isUnlocked)
         {
-            Logger.LogInfo($"Wrapped() started...");
+            Logger.LogDebug($"Wrapped() started...");
 
             if (original == null)
             {
-                Debug.LogError("Original instance is null");
+                Logger.LogError("Original instance is null");
                 yield break;
             }
 
@@ -81,7 +81,7 @@ namespace Mod.Patches
                 .Field("_crownCompletionTMP")
                 .GetValue<TextMeshProUGUI>();
 
-            Logger.LogInfo("Completing original task...");
+            Logger.LogDebug("Completing original task...");
             while (original.MoveNext())
             {
                 // Enable crowns panel if character is unlocked

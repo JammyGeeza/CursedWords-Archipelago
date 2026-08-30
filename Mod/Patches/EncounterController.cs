@@ -21,7 +21,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void OnGetGridDimensions_Postfix(ref Vector2Int __result)
         {
-            Logger.LogInfo("EncounterController.GetGridDimensions postfix!");
+            Logger.LogDebug("EncounterController.GetGridDimensions postfix!");
 
             // Ignore if progressive grid size disabled
             if (!ArchipelagoHelper.SlotData.ShuffleGridSize)
@@ -50,7 +50,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static IEnumerator OnGameSetup_Postfix(IEnumerator __result, EncounterController __instance)
         {
-            Logger.LogInfo("EncounterController.GameSetup postfix!");
+            Logger.LogDebug("EncounterController.GameSetup postfix!");
 
             // Perform existing actions in coroutine
             while (__result.MoveNext())
@@ -70,8 +70,8 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void SellItem_Postfix(Item item)
         {
-            Logger.LogInfo("EncounterController.SellItem Postfix!");
-            Logger.LogInfo($"Sold item: {item.Name}");
+            Logger.LogDebug($"{nameof(EncounterController)}.SellItem postfix!");
+            Logger.LogDebug($"Sold item: {item.Name}");
 
             // Attempt to check shop locations
             CursedWordsArchipelago.Instance.TryCheckItemActionLocations($"sell", item);
@@ -84,26 +84,29 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void SetEncounterThreadStage_Postfix(EncounterThreadStage newThreadStage)
         {
-            Logger.LogInfo($"{nameof(EncounterController)}.{nameof(EncounterController.SetEncounterThreadStage)} Postfix!");
-            Logger.LogInfo($"Stage changed to: {newThreadStage}");
+            Logger.LogDebug($"{nameof(EncounterController)}.{nameof(EncounterController.SetEncounterThreadStage)} Postfix!");
+            Logger.LogDebug($"Stage changed to: {newThreadStage}");
 
             // If now waiting for word submission...
             if (newThreadStage is EncounterThreadStage.WaitingForWordSubmission)
             {
-                // Get item mappings where the cue is the start of an encounter
-                foreach (KeyValuePair<string, CuedAction> encounterItem in ItemMappings.Map.Where(kvp => kvp.Value.Cue == ActionCue.Encounter))
-                {
-                    // Add to queue if outstanding unhandles amount is not already in pending queue
-                    int received = ArchipelagoHelper.AmountOfItemReceived(encounterItem.Key);
-                    int handled = ArchipelagoHelper.AmountOfItemHandled(encounterItem.Key);
-                    int pending = CursedWordsArchipelago.Instance.GetPendingCount(encounterItem.Key);
-                    int diff = received - handled - pending;
+                // Re-queue any un-processed encounter-cue items
+                CursedWordsArchipelago.Instance.QueueUnprocessedEncounterItems();
 
-                    for (int i = 0; i < diff; i++)
-                    {
-                        CursedWordsArchipelago.Instance.QueueAction(encounterItem.Value.Action, encounterItem.Key);
-                    }
-                }
+                //// Get item mappings where the cue is the start of an encounter
+                //foreach (KeyValuePair<string, CuedAction> encounterItem in Items.AllItems.Where(kvp => kvp.Value.Cue == ActionCue.Encounter))
+                //{
+                //    // Add to queue if outstanding unhandles amount is not already in pending queue
+                //    int received = ArchipelagoHelper.AmountOfItemReceived(encounterItem.Key);
+                //    int handled = ArchipelagoHelper.AmountOfItemHandled(encounterItem.Key);
+                //    int pending = CursedWordsArchipelago.Instance.GetPendingCount(encounterItem.Key);
+                //    int diff = received - handled - pending;
+
+                //    for (int i = 0; i < diff; i++)
+                //    {
+                //        CursedWordsArchipelago.Instance.QueueAction(encounterItem.Value.Action, encounterItem.Key);
+                //    }
+                //}
             }
         }
 
@@ -114,8 +117,8 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static void ShowScoreCalculation_Prefix(ScorePacket finalScore)
         {
-            Logger.LogInfo($"{nameof(EncounterController)}.ShowScoreCalculation Prefix!");
-            Logger.LogInfo($"Word score: {finalScore.Score}");
+            Logger.LogDebug($"{nameof(EncounterController)}.ShowScoreCalculation Prefix!");
+            Logger.LogDebug($"Word score: {finalScore.Score}");
 
             // Attempt to check word length locations
             CursedWordsArchipelago.Instance.TryCheckNumericLocations("word_score", finalScore.Score);
@@ -128,7 +131,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void OnSkipWordSubmission_Postfix(EncounterController __instance)
         {
-            Logger.LogInfo($"{nameof(EncounterController)}.{nameof(EncounterController.SkipWordSubmission)} postfix!");
+            Logger.LogDebug($"{nameof(EncounterController)}.{nameof(EncounterController.SkipWordSubmission)} postfix!");
 
             // Check the 'Skip a Grid' location
             CursedWordsArchipelago.Instance.TryCheckGenericLocations("skip_grid");
@@ -141,8 +144,8 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void SubmitWord_Postfix(EncounterController __instance, List<TileSelection> tiles)
         {
-            Logger.LogInfo($"{nameof(EncounterController)}.{nameof(EncounterController.SubmitWord)} Postfix!");
-            Logger.LogInfo($"Word length: {tiles.Count}");
+            Logger.LogDebug($"{nameof(EncounterController)}.{nameof(EncounterController.SubmitWord)} postfix!");
+            Logger.LogDebug($"Word length: {tiles.Count}");
 
             // Attempt to check Word Length locations
             CursedWordsArchipelago.Instance.TryCheckNumericLocations("word_length", tiles.Count);
