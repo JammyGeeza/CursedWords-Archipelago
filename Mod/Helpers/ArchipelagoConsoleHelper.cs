@@ -17,6 +17,8 @@ namespace Mod.Helpers
 
         private readonly object _lock = new();
 
+        private readonly int _maxLogSize = 250;
+
         private readonly float _panelHeight = 150f;
 
         /// <summary>
@@ -85,10 +87,17 @@ namespace Mod.Helpers
 
             lock (_lock)
             {
+                // Work through message queue
                 while (MessageQueue.Count > 0)
                 {
                     MessageLog.Add(MessageQueue.Dequeue());
                     ScrollToBottom = true;
+                }
+
+                // Clear messages older than 250 messages ago
+                while (MessageLog.Count > _maxLogSize)
+                {
+                    MessageLog.RemoveAt(0);
                 }
             }
         }

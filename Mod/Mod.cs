@@ -496,26 +496,6 @@ namespace Modd
                 : $"<#{Colours.GetColourHex(Archipelago.MultiClient.Net.Models.Color.Yellow)}>{itemInfo.Player}</color>";
 
             return Notify($"{senderPart} found your {itemPart}");
-
-            //if (itemInfo.Player.Slot <= 0)
-            //{
-            //    string 
-            //}
-
-            //if (itemInfo.Player.Slot is -2 or -1 or 0)
-            //{
-            //    string serverPart = $"<{Colours.GetColourForMessagePart(Colours.MessagePartType.PlayerServer)}>Server</color>";
-            //    return Notify($"{serverPart} sent you {itemPart}");
-            //}
-            //else
-            //{
-            //    string locationpart = $"<{Colours.GetColourForMessagePart(Colours.MessagePartType.Location)}>{itemInfo.LocationName}</color>";
-            //    string playerPart = itemInfo.Player.Slot == ArchipelagoHelper.Slot
-            //        ? $"<{Colours.GetColourForMessagePart(Colours.MessagePartType.PlayerSelf)}>You</color>"
-            //        : $"<{Colours.GetColourForMessagePart(Colours.MessagePartType.PlayerOther)}>{itemInfo.Player}</color>";
-
-            //    return Notify($"{playerPart} found your {itemPart} ({locationpart})");
-            //}
         }
 
         #endregion
@@ -636,6 +616,9 @@ namespace Modd
 
             // Clear unlocked items cache
             UnlockedItemTypeCache.Clear();
+
+            // Cancel notification queue
+            NotificationHelper.Instance.Cancel();
         }
 
         /// <summary>

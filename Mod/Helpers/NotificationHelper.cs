@@ -25,6 +25,8 @@ namespace Mod.Helpers
 
         private CanvasGroup _canvasGroup;
 
+        private Coroutine _currentProcess;
+
         private float _fadeInSpeed = 0.2f;
 
         private float _fadeOutSpeed = 0.2f;
@@ -32,8 +34,6 @@ namespace Mod.Helpers
         private RectTransform _panelRectTransform;
 
         private TextMeshProUGUI _textTMP;
-
-        private Coroutine _processRoutine;
 
         /// <summary>
         /// Queue of notifications to be displayed.
@@ -100,6 +100,25 @@ namespace Mod.Helpers
         }
 
         /// <summary>
+        /// Cancel all notifications in the queue.
+        /// </summary>
+        public void Cancel()
+        {
+            // Cleae queue
+            NotificationQueue.Clear();
+
+            // Cancel coroutine
+            if (_currentProcess != null)
+            {
+                StopCoroutine(_currentProcess);
+                _currentProcess = null;
+            }
+
+            // Hide
+            _canvasGroup.alpha = 0f;
+        }
+
+        /// <summary>
         /// Queue a notification.
         /// </summary>
         /// <param name="text">The text of the notification</param>
@@ -108,9 +127,9 @@ namespace Mod.Helpers
         {
             NotificationQueue.Enqueue((text, displaySeconds));
 
-            if (_processRoutine == null)
+            if (_currentProcess == null)
             {
-                _processRoutine = StartCoroutine(ProcessQueue());
+                _currentProcess = StartCoroutine(ProcessQueue());
             }
         }
 
@@ -126,7 +145,7 @@ namespace Mod.Helpers
 
                 yield return Show(displaySeconds);
             }
-            _processRoutine = null;
+            _currentProcess = null;
         }
 
         /// <summary>
