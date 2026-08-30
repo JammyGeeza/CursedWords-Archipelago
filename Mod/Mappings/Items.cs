@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Mod.Mappings
 {
@@ -62,26 +63,6 @@ namespace Mod.Mappings
             { "Progressive Stamp Slot", new CuedAction(() => FreeStampSlot()) },
             { "Progressive Sticker Slot", new CuedAction(() => FreeStickerSlot()) },
 
-            //// Stamps
-            //{ "Blue Stamps", new CuedAction(() => UnlockBulkUnlock(new BlueBuildStampsUnlock())) },
-            //{ "Card Stamps", new CuedAction(() => UnlockBulkUnlock(new CardsBuildStampsUnlock())) },
-            //{ "Chess Stamps", new CuedAction(() => UnlockBulkUnlock(new ChessBuildStampsUnlock())) },
-            //{ "Rainbow Stamps", new CuedAction(() => UnlockBulkUnlock(new RainbowBuildStampsUnlock())) },
-            //{ "Red Stamps", new CuedAction(() => UnlockBulkUnlock(new RedBuildStampsUnlock())) },
-            //{ "Scatter Stamps", new CuedAction(() => UnlockBulkUnlock(new ScatteredBuildStampsUnlock())) },
-            //{ "Shiny Stamps", new CuedAction(() => UnlockBulkUnlock(new ShinyBuildStampsUnlock())) },
-            //{ "Void Stamps", new CuedAction(() => UnlockBulkUnlock(new VoidBuildStampsUnlock())) },
-
-            //// Stickers
-            //{ "Blue Stickers", new CuedAction(() => UnlockBulkUnlock(new BlueBuildStickersUnlock())) },
-            //{ "Card Stickers", new CuedAction(() => UnlockBulkUnlock(new CardsBuildStickersUnlock())) },
-            //{ "Chess Stickers", new CuedAction(() => UnlockBulkUnlock(new ChessBuildStickersUnlock())) },
-            //{ "Rainbow Stickers", new CuedAction(() => UnlockBulkUnlock(new RainbowBuildStickersUnlock())) },
-            //{ "Red Stickers", new CuedAction(() => UnlockBulkUnlock(new RedBuildStickersUnlock())) },
-            //{ "Scatter Stickers", new CuedAction(() => UnlockBulkUnlock(new ScatteredBuildStickersUnlock())) },
-            //{ "Shiny Stickers", new CuedAction(() => UnlockBulkUnlock(new ShinyBuildStickersUnlock())) },
-            //{ "Void Stickers", new CuedAction(() => UnlockBulkUnlock(new VoidBuildStickersUnlock())) },
-
             // Traps
             { "Force Grid Re-roll", new CuedAction(() => ForceReroll(), ActionCue.Encounter) },
             { "Lose Money", new CuedAction(() => DecrementMoney(3), ActionCue.Encounter) },
@@ -115,9 +96,6 @@ namespace Mod.Mappings
                     // Add tile to inventory
                     Player player = GameStatics.GetPlayer();
                     player.AddTileToInventory(tile);
-
-                    // Increment handled count
-                    //ArchipelagoHelper.IncrementHandledItem("Consumable Tile", 1);
 
                     success = true;
                 }
@@ -153,9 +131,6 @@ namespace Mod.Mappings
                 {
                     Player player = GameStatics.GetPlayer();
                     player.ChangeMoney(-amount);
-
-                    // Increment handled item count
-                    //ArchipelagoHelper.IncrementHandledItem($"Lose Money", 1);
 
                     success = true;
                 }
@@ -195,16 +170,18 @@ namespace Mod.Mappings
                         tsManager.SelectionCancelledCallback();
                         tsManager.SetIsInputBlocked(true);
 
+
                         // Transition the grid
-                        IEnumerator routine = encounterController.GetTransitionGridOutAndIn(true);
-                        while (routine.MoveNext())
+                        bool gridTransitioned = false;
+                        CoroutineHelper.Instance.StartCoroutine(
+                            RunToCompletion(encounterController.GetTransitionGridOutAndIn(true), () => gridTransitioned = true));
+                        while (!gridTransitioned)
                         {
                             yield return false;
                         }
 
                         // Un-block input
                         tsManager.SetIsInputBlocked(false);
-
                         success = true;
                     }
                     else
@@ -355,9 +332,6 @@ namespace Mod.Mappings
                     Player player = GameStatics.GetPlayer();
                     player.ChangeMoney(amount);
 
-                    //// Increment handled item count
-                    //ArchipelagoHelper.IncrementHandledItem($"${amount}", 1);
-
                     success = true;
                 }
                 catch (Exception ex)
@@ -391,13 +365,6 @@ namespace Mod.Mappings
                 try
                 {
                     encounterController.IncrementEncounterRerollAmount(1);
-
-                    //// Increment handled count
-                    //if (isTemporary)
-                    //{
-                    //    ArchipelagoHelper.IncrementHandledItem("Extra Re-roll", 1);
-                    //}
-
                     success = true;
                 }
                 catch (Exception ex)
@@ -452,9 +419,6 @@ namespace Mod.Mappings
                         // Re-populate the tile
                         selectedTile.Populate();
 
-                        // Increment handled count
-                        //ArchipelagoHelper.IncrementHandledItem("Random Tile Boost", 1);
-
                         success = true;
                     }
                     catch (Exception ex)
@@ -475,12 +439,16 @@ namespace Mod.Mappings
             yield return success;
         }
 
-        //static IEnumerator UnlockBulkUnlock(BulkUnlock unlock)
-        //{
-        //    Logger.LogInfo($"Unlocking bulk unlock '{unlock.Name}'...");
-        //    SaveManager.UnlockBulkUnlock(unlock);
-        //    yield break;
-        //}
+        /// <summary>
+        /// Run a coroutine to completion and perform an action on complete.
+        /// </summary>
+        /// <param name="routine">The coroutine to run.</param>
+        /// <param name="onCompletion">The action to perform on completion.</param>
+        private static IEnumerator RunToCompletion(IEnumerator coroutine, Action onCompletion)
+        {
+            yield return CoroutineHelper.Instance.StartCoroutine(coroutine);
+            onCompletion();
+        }
 
         static IEnumerator<bool> UnlockCharacter(Type characterType)
         {
@@ -500,12 +468,5 @@ namespace Mod.Mappings
 
             yield return success;
         }
-
-        //static IEnumerator UnlockItem(Type itemType)
-        //{
-        //    Logger.LogInfo($"Unlocking item '{itemType.Name}");
-        //    ItemPools.AddItemsToPools(new List<Type> { itemType });
-        //    yield break;
-        //}
     }
 }
