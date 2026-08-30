@@ -26,12 +26,15 @@ namespace Mod.Patches
         /// </summary>
         [HarmonyPatch(nameof(Player.ChangeMoney))]
         [HarmonyPostfix]
-        private static void OnChangeMoney_Postfix(Player __instance)
+        private static void OnChangeMoney_Postfix(Player __instance, int change)
         {
             Logger.LogDebug($"{nameof(Player)}.{nameof(Player.ChangeMoney)} postfix!");
 
-            // Attempt to check money location(s)
-            CursedWordsArchipelago.Instance.TryCheckNumericLocations("earn_money", __instance.CurrentRunProgress.CurrentRunStatistics.TotalCashEarned);
+            if (change > 0)
+            {
+                // Attempt to check money location(s)
+                CursedWordsArchipelago.Instance.TryCheckNumericLocations("earn_money", __instance.CurrentRunProgress.CurrentRunStatistics.TotalCashEarned);
+            }
         }
 
         /// <summary>
