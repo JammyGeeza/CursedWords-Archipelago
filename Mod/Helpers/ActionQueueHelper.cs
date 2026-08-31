@@ -36,6 +36,11 @@ public class ActionQueueHelper : MonoBehaviour
     /// </summary>
     public event Action<bool, string> OnActionCompleted;
 
+    void Update()
+    {
+        ProcessNext();
+    }
+
     /// <summary>
     /// Add an action to the queue.
     /// </summary>
@@ -92,5 +97,8 @@ public class ActionQueueHelper : MonoBehaviour
 
         // Clear for next item in queue
         _currentAction = null;
+
+        // Skip a frame
+        yield return null;
     }
 }

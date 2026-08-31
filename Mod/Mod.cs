@@ -174,18 +174,10 @@ namespace Modd
                 return;
             }
 
-            // Process next item in the queue
-            ActionQueueHelper.Instance.ProcessNext();
-
-            //if (_currentAction == null && Instance.ActionQueue.TryDequeue(out (CuedAction Action, ItemInfo Item) queuedAction))
-            //{
-            //    _currentAction = StartCoroutine(RunQueuedAction(queuedAction.Action, queuedAction.Item));
-            //}
-
             // Development short-cuts
             if (UnityInput.Current.GetKeyUp(KeyCode.F2))
             {
-                Logger.LogInfo($"F2 key-up");
+                Logger.LogDebug($"F2 key-up");
 
                 // Get controller
                 //if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
@@ -197,7 +189,7 @@ namespace Modd
             }
             else if (UnityInput.Current.GetKeyUp(KeyCode.F3))
             {
-                Logger.LogInfo($"F3 key-up");
+                Logger.LogDebug($"F3 key-up");
 
                 //// Get controller
                 //if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
@@ -630,7 +622,7 @@ namespace Modd
         {
             while (helper.DequeueItem() is ItemInfo itemInfo)
             {
-                Logger.LogMessage($"Received item '{itemInfo.ItemName}' from '{itemInfo.Player}'");
+                Logger.LogMessage($"Received item '{itemInfo.ItemName}' from '{itemInfo.Player}' (Flags: {itemInfo.Flags} / {(int)itemInfo.Flags})");
 
                 // Increment in received items
                 ReceivedItems[itemInfo.ItemName] = ReceivedItems.GetValueOrDefault(itemInfo.ItemName, 0) + 1;

@@ -170,7 +170,6 @@ namespace Mod.Mappings
                         tsManager.SelectionCancelledCallback();
                         tsManager.SetIsInputBlocked(true);
 
-
                         // Transition the grid
                         bool gridTransitioned = false;
                         CoroutineHelper.Instance.StartCoroutine(

@@ -21,14 +21,14 @@ namespace Mod.Mappings
             { Color.Yellow, "FAFAD2" },
         };
 
-        private static readonly Dictionary<ItemFlags, string> ItemFlagColourCodes = new()
-        {
-            { ItemFlags.None, GetColourHex(Color.Cyan) },
-            { ItemFlags.Trap, GetColourHex(Color.Salmon) },
-            { ItemFlags.NeverExclude, GetColourHex(Color.SlateBlue) },
-            { ItemFlags.Advancement, GetColourHex(Color.Plum) },
-            { ItemFlags.Advancement | ItemFlags.NeverExclude, ColourCodes[Color.Plum] }
-        };
+        //private static readonly Dictionary<ItemFlags, string> ItemFlagColourCodes = new()
+        //{
+        //    { ItemFlags.Trap, GetColourHex(Color.Salmon) },
+        //    { ItemFlags.Advancement | ItemFlags.NeverExclude, ColourCodes[Color.Plum] },
+        //    { ItemFlags.Advancement, GetColourHex(Color.Plum) },
+        //    { ItemFlags.NeverExclude, GetColourHex(Color.SlateBlue) },
+        //    { ItemFlags.None, GetColourHex(Color.Cyan) },
+        //};
 
         /// <summary>
         /// Get the colour hex code for an archipelago color.
@@ -50,9 +50,22 @@ namespace Mod.Mappings
         /// </summary>
         /// <param name="flag">The item flag to get the hex colour for.</param>
         /// <returns>The hex colour string or '#FFFFFF' if not found.</returns>
-        public static string GetColourForItemFlag(ItemFlags flag)
+        public static string GetColourForItemFlag(ItemFlags flags)
         {
-            return ItemFlagColourCodes.GetValueOrDefault(flag, GetColourHex(Color.White));
+            if (flags.HasFlag(ItemFlags.Trap))
+            {
+                return GetColourHex(Color.Salmon);
+            }
+            else if (flags.HasFlag(ItemFlags.NeverExclude))
+            {
+                return GetColourHex(Color.SlateBlue);
+            }
+            else if (flags.HasFlag(ItemFlags.Advancement))
+            {
+                return GetColourHex(Color.Plum);
+            }
+
+            return GetColourHex(Color.Cyan);
         }
     }
 }
