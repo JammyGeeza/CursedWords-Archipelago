@@ -450,7 +450,7 @@ namespace Modd
         /// </summary>
         /// <param name="text">The text to display.</param>
         /// <param name="duration">The duration to display the notification for.</param>
-        private IEnumerator<bool> Notify(string text, float duration = 2.5f)
+        private IEnumerator<bool> Notify(string text, float duration = 3.0f)
         {
             bool success = false;
 
@@ -472,14 +472,14 @@ namespace Modd
         /// </summary>
         /// <param name="itemInfo">The item to display a notification for.</param>
         /// <param name="duration">The duration to display the notification for.</param>
-        private IEnumerator<bool> Notify(ItemInfo itemInfo, float duration = 2.5f)
+        private IEnumerator<bool> Notify(ItemInfo itemInfo, float duration = 3.0f)
         {
             string itemPart = $"<#{Colours.GetColourForItemFlag(itemInfo.Flags)}>{itemInfo.ItemName}</color>";
 
             // If sent by reserved AP slot, display as 'server'
             if (itemInfo.Player.Slot <= 0)
             {
-                return Notify($"Server sent your {itemPart}", 2.0f);
+                return Notify($"Server sent your {itemPart}", duration);
             }
 
             // Otherwise, display as sending player
@@ -487,7 +487,7 @@ namespace Modd
                 ? $"<#{Colours.GetColourHex(Archipelago.MultiClient.Net.Models.Color.Magenta)}>You</color>"
                 : $"<#{Colours.GetColourHex(Archipelago.MultiClient.Net.Models.Color.Yellow)}>{itemInfo.Player}</color>";
 
-            return Notify($"{senderPart} found your {itemPart}");
+            return Notify($"{senderPart} found your {itemPart}", duration);
         }
 
         #endregion
@@ -632,7 +632,7 @@ namespace Modd
                 if (isUnprocessedItem)
                 {
                     // If item is unprocessed and not notifi
-                    QueueAction(() => Notify(itemInfo, 2.0f));
+                    QueueAction(() => Notify(itemInfo));
                 }
 
                 // Attempt to find an action for this item
