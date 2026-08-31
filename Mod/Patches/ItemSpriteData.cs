@@ -15,12 +15,13 @@ namespace Mod.Patches
     {
         [HarmonyPatch(nameof(ItemSpriteData.GetSDFSprite))]
         [HarmonyPrefix]
-        static bool Prefix(ItemSpriteData __instance, ref SDFSpriteMetadataAsset __result)
+        private static bool GetSDFSprite_Prefix(ItemSpriteData __instance, ref SDFSpriteMetadataAsset __result)
         {
             if (__instance.AssetPath == "Archipelago")
             {
                 __instance.ItemSprite = ArchipelagoShopitem.GetSprite();
                 __result = default(SDFSpriteMetadataAsset);
+
                 return false;
             }
             return true;

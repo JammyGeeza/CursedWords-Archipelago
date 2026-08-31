@@ -40,7 +40,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static bool GenerateTileInStock_Prefix(ref ShopController __instance, int index)
         {
-            Logger.LogInfo($"{nameof(ShopController)}.GenerateTileInStock prefix!");
+            Logger.LogDebug($"{nameof(ShopController)}.GenerateTileInStock prefix!");
 
             if (GameStatics.GetPlayer().GetUnpackedItemsOfType(typeof(DeliveryTruck)).Count > 0)
             {
@@ -122,16 +122,12 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static bool GetTotalFrequency_Prefix()
         {
-            Logger.LogInfo($"{nameof(ShopController)}.GetTotalFrequency prefix!");
+            Logger.LogDebug($"{nameof(ShopController)}.GetTotalFrequency prefix!");
 
             Type targetType = typeof(ShopController);
             FieldInfo typeWeightingsField = AccessTools.Field(targetType, "_consumableTileTypeWeightings");
             FieldInfo totalWeightingField = AccessTools.Field(targetType, "_consumableTileTypeTotalWeighting");
             Dictionary<GlyphType, int> weightings = (Dictionary<GlyphType, int>)typeWeightingsField.GetValue(null);
-
-            // TODO: Suited cards don't appear yet
-            //       Currency cards don't appear yet
-            //       Fractions are reliant on RNG based on 'Number' glyph
 
             // Insert vanilla glyph type scaling
             weightings[GlyphType.Letter] = 19;
@@ -153,7 +149,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static bool OnItemBuyButtonClicked_Prefix(ShopController __instance, int boughtSlotIndex, bool isStamp)
         {
-            Logger.LogInfo($"{nameof(ShopController)}.OnItemBuyButtonClicked postfix!");
+            Logger.LogDebug($"{nameof(ShopController)}.OnItemBuyButtonClicked prefix!");
 
             try
             {
@@ -220,7 +216,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static void OnOnLeaveShopButtonClickedCallback_Prefix(ShopController __instance)
         {
-            Logger.LogInfo($"{nameof(ShopController)}.{nameof(ShopController.OnLeaveShopButtonClickedCallback)} prefix!");
+            Logger.LogDebug($"{nameof(ShopController)}.{nameof(ShopController.OnLeaveShopButtonClickedCallback)} prefix!");
 
             // Check if any stamps have been frozen
             if (__instance.GetStampsInStock().FirstOrDefault(s => s != null && s.MyItem.GetType() != typeof(ArchipelagoShopitem) && s.IsFrozen) is ItemInStock stampInStock)
@@ -242,7 +238,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static IEnumerator OnGenerateGoodsInStock(IEnumerator __result, bool isFirstShop, bool isCascadingAnimations, bool isReroll, bool freeItem)
         {
-            Logger.LogInfo($"{nameof(ShopController)}.GenerateGoodsInStock postfix!");
+            Logger.LogDebug($"{nameof(ShopController)}.GenerateGoodsInStock postfix!");
 
             // Clear in-use shop checks
             CurrentlyUsedShopLocations.Clear();
@@ -270,7 +266,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static bool OnGenerateStampInStock_Prefix(ShopController __instance, int index, bool isFirstShop, bool freeItem)
         {
-            Logger.LogInfo($"{nameof(ShopController)}.GenerateStampInStock prefix!");
+            Logger.LogDebug($"{nameof(ShopController)}.GenerateStampInStock prefix!");
 
             // Ignore if Shopsanity is disabled
             if (!ArchipelagoHelper.SlotData.Shopsanity)
@@ -312,7 +308,7 @@ namespace Mod.Patches
             }
             catch (Exception ex)
             {
-                Logger.LogError($"Unable to add archipelago shop item: {ex}");
+                Logger.LogError($"Failed to generate Shopsanity stamp. Exception: {ex}");
             }
 
             return false;
@@ -325,7 +321,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static bool OnGenerateStickerInStock_Prefix(ShopController __instance, int index, bool isFirstShop, bool freeItem)
         {
-            Logger.LogInfo($"{nameof(ShopController)}.GenerateStickerInStock prefix!");
+            Logger.LogDebug($"{nameof(ShopController)}.GenerateStickerInStock prefix!");
 
             // Ignore if Shopsanity is disabled
             if (!ArchipelagoHelper.SlotData.Shopsanity)
@@ -365,7 +361,7 @@ namespace Mod.Patches
             }
             catch (Exception ex)
             {
-                Logger.LogError($"Unable to add archipelago shop item: {ex}");
+                Logger.LogError($"Failed to generate Shopsanity stamp. Exception: {ex}");
             }
 
             return false;

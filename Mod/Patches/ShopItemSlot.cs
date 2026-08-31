@@ -17,19 +17,14 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(ShopItemSlot))]
     internal class ShopItemSlot_Patches : PatchBase
     {
-        [HarmonyPatch(nameof(ShopItemSlot.ChangeShownStatus))]
-        [HarmonyPostfix]
-        private static void OnChangeShownStatus_Postfix(ShopItemSlot __instance, bool isShown, bool isAngelInvestmentAvailable)
-        {
-            Logger.LogInfo($"{nameof(ShopItemSlot)}.{nameof(ShopItemSlot.Populate)} postfix!");
-
-        }
-
+        /// <summary>
+        /// Ensure that the 'Buy' button of a Shopsanity item is always available.
+        /// </summary>
         [HarmonyPatch(nameof(ShopItemSlot.Populate))]
         [HarmonyPostfix]
         private static void OnPopulate_Postfix(ShopItemSlot __instance, ItemInStock itemInStock, bool isAngelInvestmentAvailable)
         {
-            Logger.LogInfo($"{nameof(ShopItemSlot)}.{nameof(ShopItemSlot.Populate)} postfix!");
+            Logger.LogDebug($"{nameof(ShopItemSlot)}.{nameof(ShopItemSlot.Populate)} postfix!");
 
             // Show 'Buy' button even if player's sticker/stamp slots are full
             if (itemInStock.MyItem is ArchipelagoShopitem archipelagoShopitem)
@@ -43,6 +38,10 @@ namespace Mod.Patches
             }
         }
 
+        /// <summary>
+        /// Set the buy button on the next frame.
+        /// </summary>
+        /// <param name="shopItemSlot">The shop item slot to set the buy button for.</param>
         private static IEnumerator SetBuyButtonNextFrame(ShopItemSlot shopItemSlot)
         {
             yield return null;

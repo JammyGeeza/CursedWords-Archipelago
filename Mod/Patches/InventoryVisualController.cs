@@ -16,7 +16,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static void OnItemSellButtonClicked_Prefix(InventoryVisualController __instance)
         {
-            Logger.LogInfo($"{nameof(InventoryVisualController)}.{nameof(InventoryVisualController.OnItemSellButtonClicked)} prefix!");
+            Logger.LogDebug($"{nameof(InventoryVisualController)}.{nameof(InventoryVisualController.OnItemSellButtonClicked)} prefix!");
 
             // Send check for selling item
             Item inspectedItem = __instance.GetInspectedItem();
@@ -30,7 +30,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static void OnTileDestroyButtonClicked_Prefix(InventoryVisualController __instance)
         {
-            Logger.LogInfo($"{nameof(InventoryVisualController)}.{nameof(InventoryVisualController.OnItemSellButtonClicked)} prefix!");
+            Logger.LogDebug($"{nameof(InventoryVisualController)}.{nameof(InventoryVisualController.OnItemSellButtonClicked)} prefix!");
 
             // Send check for destroying tile
             CursedWordsArchipelago.Instance.TryCheckGenericLocations("destroy_tile");

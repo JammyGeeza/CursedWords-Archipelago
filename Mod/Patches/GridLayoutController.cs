@@ -21,7 +21,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         public static void OnApplyConsumableTile_Postfix(GridLayoutController __instance)
         {
-            Logger.LogInfo($"{nameof(GridLayoutController)}.{nameof(GridLayoutController.ApplyConsumableTile)} postfix!");
+            Logger.LogDebug($"{nameof(GridLayoutController)}.{nameof(GridLayoutController.ApplyConsumableTile)} postfix!");
 
             // Check the 'Use a Consumable Tile' location
             CursedWordsArchipelago.Instance.TryCheckGenericLocations("place_tile");
@@ -34,7 +34,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         public static void OnGenerateGrid_Postfix(GridLayoutController __instance)
         {
-            Logger.LogInfo($"{nameof(GridLayoutController)}.{nameof(GridLayoutController.ApplyConsumableTile)} postfix!");
+            Logger.LogDebug($"{nameof(GridLayoutController)}.{nameof(GridLayoutController.ApplyConsumableTile)} postfix!");
 
             // Ignore if 'Shuffle Locked Tile Positions' is disabled
             if (!ArchipelagoHelper.SlotData.ShuffleLockedTilePositions)
@@ -52,7 +52,7 @@ namespace Mod.Patches
                     TileObject tile = __instance.GetTileObjects()
                         .First(t => t.GridCoordinate == new Vector2Int { x = coordinate.x, y = coordinate.y });
 
-                    Logger.LogInfo($"Locking tile at co-ordinate ({coordinate.x},{coordinate.y})");
+                    Logger.LogDebug($"Locking tile at co-ordinate ({coordinate.x},{coordinate.y})");
 
                     // Set as 'gone' (as in 'eaten')
                     tile.MyTile.HasBeenDestroyed = true;

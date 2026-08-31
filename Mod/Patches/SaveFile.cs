@@ -13,7 +13,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         public static bool SetNewSaveFileData_Prefix()
         {
-            Logger.LogInfo("SaveFile.SetNewSaveFileData Prefix!");
+            Logger.LogDebug("SaveFile.SetNewSaveFileData Prefix!");
             return false;
         }
     }

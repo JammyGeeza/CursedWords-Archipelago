@@ -19,7 +19,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static bool OnGetItemsRequiringUnlock_Prefix(ref List<Type> __result)
         {
-            Logger.LogInfo($"{nameof(GameStatics)}.{nameof(GameStatics.GetItemsRequiringUnlock)} prefix!");
+            Logger.LogDebug($"{nameof(GameStatics)}.{nameof(GameStatics.GetItemsRequiringUnlock)} prefix!");
 
             // Return items not present in the unlocked cache
             __result = CursedWordsArchipelago.Instance.ItemTypeCache

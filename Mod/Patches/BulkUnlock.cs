@@ -20,7 +20,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         public static bool OnUnlock_Prefix(BulkUnlock __instance)
         {
-            Logger.LogInfo($"{nameof(BulkUnlock)}.{nameof(BulkUnlock.Unlock)} prefix!");
+            Logger.LogDebug($"{nameof(BulkUnlock)}.{nameof(BulkUnlock.Unlock)} prefix!");
 
             //bool result = Lookups.ValidBulkUnlockTypes.Contains(__instance.GetType());
 

@@ -18,7 +18,7 @@ namespace Mod.Patches
             // If save has not been entered before, set save data to a 'blank' state
             if (!__result.HasEnteredSaveFile)
             {
-                Logger.LogInfo("Adjusting new save file");
+                Logger.LogDebug("Adjusting new save file...");
 
                 // Default progress wipe
                 __result.CharacterHighestCompletedAscensions = new Dictionary<Type, int>();

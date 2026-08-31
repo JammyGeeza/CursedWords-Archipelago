@@ -2,6 +2,7 @@
 using BepInEx.Logging;
 using FullSerializer;
 using HarmonyLib;
+using Mod.Classes;
 using Mod.Helpers;
 using Modd;
 using System;
@@ -22,7 +23,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static async void TransitionToNewScene_Postfix(string sceneString)
         {
-            Logger.LogInfo($"{nameof(TransitionController)}.{nameof(TransitionController.TransitionToNewScene)} postfix!");
+            Logger.LogDebug($"{nameof(TransitionController)}.{nameof(TransitionController.TransitionToNewScene)} postfix!");
 
             if (sceneString.Equals(SceneNames.SaveSlotsScene))
             {
@@ -48,7 +49,7 @@ namespace Mod.Patches
                 }
             }
 
-            Logger.LogInfo($"Is in game: {CursedWordsArchipelago.Instance.IsInGame}");
+            Logger.LogDebug($"Player is currently 'in-game': {CursedWordsArchipelago.Instance.IsInGame}");
         }
     }
 }

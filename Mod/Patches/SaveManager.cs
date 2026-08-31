@@ -16,7 +16,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         public static bool AreAscensionsUnlocked_Prefix(ref bool __result)
         {
-            Logger.LogInfo($"{nameof(SaveManager)}.{nameof(SaveManager.AreAscensionsUnlocked)} prefix!");
+            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.AreAscensionsUnlocked)} prefix!");
 
             __result = ArchipelagoHelper.SlotData.CrownRequirement > 0;
 
@@ -47,7 +47,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         public static bool OnGetUnlockedItems_Prefix(ref List<Type> __result)
         {
-            Logger.LogInfo($"{nameof(SaveManager)}.{nameof(SaveManager.GetUnlockedItems)} prefix!");
+            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.GetUnlockedItems)} prefix!");
 
             // Return with cached, unlocked item types
             __result = CursedWordsArchipelago.Instance.UnlockedItemTypeCache.ToList();
@@ -59,7 +59,7 @@ namespace Mod.Patches
         [HarmonyPrefix]
         public static bool IsItemUnlocked_Prefix(Type itemType, ref bool __result)
         {
-            Logger.LogInfo($"{nameof(SaveManager)}.{nameof(SaveManager.IsItemUnlocked)}");
+            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.IsItemUnlocked)}");
 
             if (CursedWordsArchipelago.Instance.ItemTypeCache.ContainsKey(itemType))
             {
@@ -106,13 +106,13 @@ namespace Mod.Patches
         [HarmonyPrefix]
         public static bool OnUnlockBulkUnlock(BulkUnlock bulkUnlock)
         {
-            Logger.LogInfo($"{nameof(SaveManager)}.{nameof(SaveManager.UnlockBulkUnlock)} prefix!");
+            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.UnlockBulkUnlock)} prefix!");
 
             bool result = Lookups.ValidBulkUnlockTypes.Contains(bulkUnlock.GetType());
 
             if (!result)
             {
-                Logger.LogInfo($"Ignoring bulk unlock of type {bulkUnlock.Name}");
+                Logger.LogDebug($"Ignoring bulk unlock of type '{bulkUnlock.Name}'");
             }
 
             return result;
@@ -125,6 +125,8 @@ namespace Mod.Patches
         [HarmonyPrefix]
         public static bool GetSaveFileName_Prefix(int slotIndex, ref string __result)
         {
+            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.GetSaveFileName)} prefix!");
+
             __result = $"{GameStatics.SaveDirectory}/slot_{((slotIndex == 0) ? GameStatics.SaveSlot : slotIndex)}_archipelago.sav";
             return false;
         }
@@ -136,6 +138,8 @@ namespace Mod.Patches
         [HarmonyPostfix]
         public static void ResetSave_Postfix(int slotIndex)
         {
+            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.ResetSave)} postfix!");
+
             ArchipelagoData.ResetDataForSaveSlot(slotIndex);
         }
     }

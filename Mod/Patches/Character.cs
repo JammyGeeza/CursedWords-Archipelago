@@ -17,7 +17,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         private static void GetCharacterItemTypes_Postfix(Character __instance, ref List<Type> __result)
         {
-            Logger.LogInfo($"{nameof(Character)}.{nameof(Character.GetCharacterItemTypes)} postfix!");
+            Logger.LogDebug($"{nameof(Character)}.{nameof(Character.GetCharacterItemTypes)} postfix!");
 
             for (int i = __result.Count; i > 0; i--)
             {
@@ -111,6 +111,8 @@ namespace Mod.Patches
         [HarmonyPrefix]
         private static bool GetUnlockRequirementText_Prefix(Character __instance, ref string __result)
         {
+            Logger.LogDebug($"{nameof(Character)}.{nameof(Character.GetUnlockRequirementText)} prefix!");
+
             __result = $"Receive the '{__instance.GetName()}' archipelago item to unlock this character";
             return false;
         }

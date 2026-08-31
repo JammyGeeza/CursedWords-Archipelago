@@ -12,11 +12,14 @@ namespace Mod.Patches
     [HarmonyPatch(typeof(SaveSlotController))]
     internal class SaveSlotController_Patches : PatchBase
     {
+        /// <summary>
+        /// Populate archipelago progress in save slot visuals.
+        /// </summary>
         [HarmonyPatch(nameof(SaveSlotController.Populate))]
         [HarmonyPostfix]
         public static void Populate_Postfix(SaveSlotController __instance, SaveFile saveFile, bool isNewFile)
         {
-            Logger.LogInfo($"{nameof(SaveSlotController)}.{nameof(SaveSlotController.Populate)} postfix!");
+            Logger.LogDebug($"{nameof(SaveSlotController)}.{nameof(SaveSlotController.Populate)} postfix!");
 
             // Attempt to get the controller
             if (UnityEngine.Object.FindFirstObjectByType<SaveSlotsController>() is SaveSlotsController controller && controller != null)
@@ -63,13 +66,11 @@ namespace Mod.Patches
         /// <summary>
         /// Produce dialog to enter/adjust archipelago credentials before loading save.
         /// </summary>
-        /// <param name="__result"></param>
-        /// <param name="slotIndex"></param>
         [HarmonyPatch("SelectSaveFile")]
         [HarmonyPostfix]
         public static void SelectSaveFile_Postfix(ref IEnumerator __result, int slotIndex)
         {
-            Logger.LogInfo("SaveSlotController.SelectSaveFile Postfix!");
+            Logger.LogDebug($"{nameof(SaveSlotController)}.SelectSaveFile postfix!");
 
             __result = Wrapped(__result, slotIndex);
         }
@@ -82,15 +83,15 @@ namespace Mod.Patches
         /// <returns></returns>
         private static IEnumerator Wrapped(IEnumerator original, int slotIndex)
         {
-            Logger.LogInfo("Wrapped() started");
+            Logger.LogDebug("Wrapped() started");
 
             if (original == null)
             {
-                Debug.LogError("Original IEnumerator is null");
+                Logger.LogError("Original IEnumerator is null");
                 yield break;
             }
 
-            Logger.LogInfo($"Getting archipelago data for save slot {slotIndex}...");
+            Logger.LogDebug($"Getting archipelago data for save slot {slotIndex}...");
 
             // Create login controller
             ArchipelagoData archipelagodata = ArchipelagoData.GetDataForSaveSlot(slotIndex);
@@ -134,9 +135,11 @@ namespace Mod.Patches
             }
 
             // Continue with original method's tasks
-            Logger.LogInfo("Completing original task...");
+            Logger.LogDebug("Completing original task...");
             while (original.MoveNext())
+            {
                 yield return original.Current;
+            }
         }
     }
 }

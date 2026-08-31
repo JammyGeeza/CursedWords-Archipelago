@@ -19,7 +19,7 @@ namespace Mod.Patches
         [HarmonyPostfix]
         public static void Constructor_Postfix(ref RunProgress __instance)
         {
-            Logger.LogInfo($"{nameof(RunProgress)}.Constructor postfix!");
+            Logger.LogDebug($"{nameof(RunProgress)}.Constructor postfix!");
 
             // Add normal colour 
             __instance.AvailableColours.Add(TileType.Normal);
