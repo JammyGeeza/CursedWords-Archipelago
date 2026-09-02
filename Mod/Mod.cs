@@ -24,7 +24,7 @@ using UnityEngine.Windows;
 
 namespace Modd
 {
-    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.2")]
+    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.3")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
         #region Private Properties
@@ -114,7 +114,7 @@ namespace Modd
         /// <summary>
         /// Gets or sets the currently unlocked items.
         /// </summary>
-        public List<Type> UnlockedItemTypeCache = new List<Type>();
+        public List<Type> UnlockedItemTypeCache { get; private set; } = new List<Type>();
 
         #endregion
 
@@ -661,7 +661,7 @@ namespace Modd
                 else
                 {
                     KeyValuePair<Type, (string name, ItemRarity rarity)> itemType = ItemTypeCache.FirstOrDefault(kvp => kvp.Value.name.Equals(itemInfo.ItemName, StringComparison.OrdinalIgnoreCase));
-                    if (itemType.Key != null && !UnlockedItemTypeCache.Contains(itemType.Key))
+                    if (itemType.Key != null && !UnlockedItemTypeCache.Contains(itemType.Key) && IsRarityUnlocked(itemType.Value.rarity))
                     {
                         Logger.LogDebug($"Adding item type: {itemType.Key} to unlocked item cache");
                         UnlockedItemTypeCache.Add(itemType.Key);
