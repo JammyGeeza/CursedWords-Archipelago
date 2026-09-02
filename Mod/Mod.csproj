@@ -84,7 +84,6 @@
 	<Target Name="PostBuild" AfterTargets="Build">
 		<ItemGroup>
 			<FilesToCopy Include="$(OutputPath)*.*" Exclude="$(OutputPath)*.pdb;$(OutputPath)*.xml;$(OutputPath)*.json" />
-			<FilesToCopy Include="Sprites\archipelago.png" />
 		</ItemGroup>
 		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(BepInExPath)\plugins\Archipelago" />
 		<Copy SourceFiles="Sprites\archipelago.png" DestinationFolder="$(BepInExPath)\plugins\Archipelago\Sprites" />
