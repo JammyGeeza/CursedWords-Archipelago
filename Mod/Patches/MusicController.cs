@@ -64,32 +64,18 @@ namespace Mod.Patches
         {
             Logger.LogDebug($"{nameof(MusicController)}.{nameof(MusicController.OnWinMichaelEncounter)} postfix!");
 
-            // Attempt to send run win check (Stage 5-3)
+            // Attempt to send run win check (Stage 6-3)
             Player player = GameStatics.GetPlayer();
 
-            // Attempt to send run win check (Stage 6-3)
-            CursedWordsArchipelago.Instance.TryCheckEncounterLocations("win_encounter", player);
-
-            // Is goal type michael?
-            if (ArchipelagoHelper.SlotData.GoalType is GoalType.Michael)
+            if (UnityEngine.Object.FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
             {
-                // Check if all required characters have beaten Michael
-                bool goalConditionMet = ArchipelagoHelper.SlotData.GoalRequirements
-                    .All(gr =>
-                    {
-                        Type characterType = CursedWordsArchipelago.Instance.CharacterTypeCache
-                            .FirstOrDefault((kvp) => kvp.Value == gr)
-                            .Key;
-
-                        return SaveManager.HasBeatenFinalBoss(characterType);
-                    });
-
-                // If goal condition met, try to send goal
-                if (goalConditionMet)
-                {
-                    Logger.LogMessage("Goal condition has been reached!");
-                    ArchipelagoHelper.TryGoal();
-                }
+                // Try and check encounter location check (needs encounter controller for boss checks)
+                CursedWordsArchipelago.Instance.TryCheckEncounterLocations("win_encounter", player);
+            }
+            else
+            {
+                Logger.LogError("Michael encounter has been won, but no active encounter controller was found.");
+                return;
             }
         }
 
@@ -113,27 +99,6 @@ namespace Mod.Patches
             {
                 Logger.LogError("Run has been won, but no active encounter controller was found.");
                 return;
-            }
-
-            if (ArchipelagoHelper.SlotData.GoalType != GoalType.Michael)
-            {
-                // Check if all required characters have beaten the appropriate crown tier (if any)
-                bool goalConditionMet = ArchipelagoHelper.SlotData.GoalRequirements
-                    .All(gr =>
-                    {
-                        Type characterType = CursedWordsArchipelago.Instance.CharacterTypeCache
-                            .FirstOrDefault((kvp) => kvp.Value == gr)
-                            .Key;
-
-                        return SaveManager.GetHighestCompletedAscension(characterType) >= ArchipelagoHelper.SlotData.CrownRequirement;
-                    });
-
-                // If goal condition met, try to send goal
-                if (goalConditionMet)
-                {
-                    Logger.LogMessage("Goal condition has been reached!");
-                    ArchipelagoHelper.TryGoal();
-                }
             }
         }
     }

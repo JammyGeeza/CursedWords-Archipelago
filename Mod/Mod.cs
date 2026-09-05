@@ -2,7 +2,6 @@
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using HarmonyLib.Tools;
@@ -12,19 +11,15 @@ using Mod.Helpers;
 using Mod.Mappings;
 using Mod.Patches;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Windows;
 
 namespace Modd
 {
-    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.3")]
+    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.4")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
         #region Private Properties
@@ -207,6 +202,28 @@ namespace Modd
         /// <summary>
         /// Check if a character has met the current goal criteria.
         /// </summary>
+        /// <param name="characterName">The character name to check.</param>
+        /// <returns>True if met, false if not met or not found.</returns>
+        public bool HasCharacterMetGoalCriteria(string characterName)
+        {
+            try
+            {
+                Type characterType = CharacterTypeCache
+                    .First(c => c.Value.Equals(characterName, StringComparison.OrdinalIgnoreCase))
+                    .Key;
+                
+                return HasCharacterMetGoalCriteria(characterType);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Failed to find character '{characterName}'. Reason: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Check if a character has met the current goal criteria.
+        /// </summary>
         /// <param name="character">The character to check.</param>
         /// <returns>True if met, false if not met.</returns>
         public bool HasCharacterMetGoalCriteria(Character character)
@@ -228,6 +245,16 @@ namespace Modd
                 GoalType.Runs => SaveManager.GetHighestCompletedAscension(characterType) >= 0,
                 _ => false,
             };
+        }
+
+        /// <summary>
+        /// Check if the goal has been reached.
+        /// </summary>
+        /// <returns>True if reached, false if not.</returns>
+        public bool IsGoalConditionReached()
+        {
+            return ArchipelagoHelper.SlotData.GoalRequirements
+                .All(gr => HasCharacterMetGoalCriteria(gr));
         }
 
         /// <summary>

@@ -41,6 +41,19 @@ namespace Mod.Patches
         //}
 
         /// <summary>
+        /// Re-direct save path to archipelago-specific save file.
+        /// </summary>
+        [HarmonyPatch(nameof(SaveManager.GetSaveFileName))]
+        [HarmonyPrefix]
+        public static bool GetSaveFileName_Prefix(int slotIndex, ref string __result)
+        {
+            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.GetSaveFileName)} prefix!");
+
+            __result = $"{GameStatics.SaveDirectory}/slot_{((slotIndex == 0) ? GameStatics.SaveSlot : slotIndex)}_archipelago.sav";
+            return false;
+        }
+
+        /// <summary>
         /// Override unlocked items list with only those that have been received from the multiworld.
         /// </summary>
         [HarmonyPatch(nameof(SaveManager.GetUnlockedItems))]
@@ -100,6 +113,55 @@ namespace Mod.Patches
         //}
 
         /// <summary>
+        /// Reset archipelago data when a save is reset.
+        /// </summary>
+        [HarmonyPatch(nameof(SaveManager.ResetSave))]
+        [HarmonyPostfix]
+        public static void ResetSave_Postfix(int slotIndex)
+        {
+            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.ResetSave)} postfix!");
+
+            ArchipelagoData.ResetDataForSaveSlot(slotIndex);
+        }
+
+        /// <summary>
+        /// When character set as beating Michael, check goal condition.
+        /// </summary>
+        [HarmonyPatch(nameof(SaveManager.SetCharacterHasBeatenFinalBoss))]
+        [HarmonyPostfix]
+        private static void SetCharacterHasBeatenFinalBoss_Postfix()
+        {
+            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.SetCharacterHasBeatenFinalBoss)}");
+
+            // If runs or crowns goal, check goal condition
+            if (ArchipelagoHelper.SlotData.GoalType is Enums.GoalType.Michael)
+            {
+                // If goal condition reached, complete
+                if (CursedWordsArchipelago.Instance.IsGoalConditionReached())
+                {
+                    ArchipelagoHelper.TryGoal();
+                }
+            }
+        }
+
+        [HarmonyPatch(nameof(SaveManager.UpdateHighestAscensionBeaten))]
+        [HarmonyPostfix]
+        private static void UpdateHighestAscensionBeaten_Postfix(Type characterType, AscensionLevel ascensionLevel)
+        {
+            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.UpdateHighestAscensionBeaten)}");
+
+            // If runs or crowns goal, check goal condition
+            if (ArchipelagoHelper.SlotData.GoalType is Enums.GoalType.Runs or Enums.GoalType.Crowns)
+            {
+                // If goal condition reached, complete
+                if (CursedWordsArchipelago.Instance.IsGoalConditionReached())
+                {
+                    ArchipelagoHelper.TryGoal();
+                }
+            }
+        }
+
+        /// <summary>
         /// Override bulk unlocks with custom ones.
         /// </summary>
         [HarmonyPatch(nameof(SaveManager.UnlockBulkUnlock))]
@@ -116,31 +178,6 @@ namespace Mod.Patches
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Re-direct save path to archipelago-specific save file.
-        /// </summary>
-        [HarmonyPatch(nameof(SaveManager.GetSaveFileName))]
-        [HarmonyPrefix]
-        public static bool GetSaveFileName_Prefix(int slotIndex, ref string __result)
-        {
-            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.GetSaveFileName)} prefix!");
-
-            __result = $"{GameStatics.SaveDirectory}/slot_{((slotIndex == 0) ? GameStatics.SaveSlot : slotIndex)}_archipelago.sav";
-            return false;
-        }
-
-        /// <summary>
-        /// Reset archipelago data when a save is reset.
-        /// </summary>
-        [HarmonyPatch(nameof(SaveManager.ResetSave))]
-        [HarmonyPostfix]
-        public static void ResetSave_Postfix(int slotIndex)
-        {
-            Logger.LogDebug($"{nameof(SaveManager)}.{nameof(SaveManager.ResetSave)} postfix!");
-
-            ArchipelagoData.ResetDataForSaveSlot(slotIndex);
         }
     }
 }
