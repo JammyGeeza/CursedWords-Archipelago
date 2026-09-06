@@ -127,7 +127,7 @@ namespace Mod.Patches
         /// <summary>
         /// When character set as beating Michael, check goal condition.
         /// </summary>
-        [HarmonyPatch(nameof(SaveManager.SetCharacterHasBeatenFinalBoss))]
+        [HarmonyPatch(nameof(SaveManager.SetCharacterHasBeatenFinalBoss), typeof(Type))]
         [HarmonyPostfix]
         private static void SetCharacterHasBeatenFinalBoss_Postfix()
         {
@@ -144,7 +144,7 @@ namespace Mod.Patches
             }
         }
 
-        [HarmonyPatch(nameof(SaveManager.UpdateHighestAscensionBeaten))]
+        [HarmonyPatch(nameof(SaveManager.UpdateHighestAscensionBeaten), typeof(Type), typeof(AscensionLevel))]
         [HarmonyPostfix]
         private static void UpdateHighestAscensionBeaten_Postfix(Type characterType, AscensionLevel ascensionLevel)
         {

@@ -17,7 +17,7 @@ namespace Mod.Patches
         [HarmonyPatch(typeof(Supervillain), nameof(Supervillain.ApplyStartOfGridEffect))]
         static class Supervillain_Patches_ForceAllCurseTypes
         {
-            static readonly MethodInfo TargetMethod = AccessTools.Method(typeof(SaveManager), nameof(SaveManager.IsBulkUnlockUnlocked));
+            static readonly MethodInfo TargetMethod = AccessTools.Method(typeof(SaveManager), nameof(SaveManager.IsBulkUnlockUnlocked), parameters: new[] { typeof(Type) });
             static readonly MethodInfo ReplacementMethod = AccessTools.Method(typeof(Supervillain_Patches_ForceAllCurseTypes), nameof(IsBulkUnlockUnlockedOverride));
 
             /// <summary>

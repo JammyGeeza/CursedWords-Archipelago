@@ -174,12 +174,11 @@ namespace Modd
             {
                 Logger.LogDebug($"F2 key-up");
 
-                // Get controller
+                //// Get controller
                 //if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
                 //{
                 //    // Complete current encounter
                 //    controller.DevCompleteEncounter();
-                //    //controller.DevWinGame();
                 //}
             }
             else if (UnityInput.Current.GetKeyUp(KeyCode.F3))
@@ -189,8 +188,8 @@ namespace Modd
                 //// Get controller
                 //if (FindFirstObjectByType<EncounterController>() is EncounterController controller && controller != null)
                 //{
-                //    // Fail encounter
-                //    controller.DevFailEncounter();
+                //    // Complete current encounter
+                //    controller.DevWinGame();
                 //}
             }
         }
