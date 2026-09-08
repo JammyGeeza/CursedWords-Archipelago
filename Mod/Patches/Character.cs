@@ -4,12 +4,73 @@ using Mod.Mappings;
 using Modd;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Mod.Patches
 {
     [HarmonyPatch(typeof(Character))]
     internal class Character_Patches : PatchBase
     {
+        /// <summary>
+        /// Include goal progress in character description.
+        /// </summary>
+        [HarmonyPatch(nameof(Character.GetDescription))]
+        [HarmonyPostfix]
+        private static void GetDescription_Postfix(Character __instance, ref string __result)
+        {
+            // If not a required goal character, ignore
+            if (!ArchipelagoHelper.SlotData.GoalRequirements.Contains(__instance.GetName()))
+            {
+                return;
+            }
+
+            // Gather stats
+            string characterName = __instance.GetName();
+            bool metGoalCriteria = CursedWordsArchipelago.Instance.HasCharacterMetGoalCriteria(__instance);
+            bool receivedGoalCriteria = CursedWordsArchipelago.Instance.HasCharacterReceivedGoalCriteria(__instance);
+            bool receivedCharacter = CursedWordsArchipelago.Instance.AmountOfItemReceived(characterName) > 0;
+            int crownsRequired = ArchipelagoHelper.SlotData.CrownRequirement;
+
+            // Compile goal name
+            string goal = Goals.GetGoalName(ArchipelagoHelper.SlotData.GoalType);
+            if (ArchipelagoHelper.SlotData.GoalType is Enums.GoalType.Crowns)
+            {
+                goal = $"{Crowns.GetCrowmnName(crownsRequired)} {goal}";
+            }
+
+            // Compile string to append to description
+            string appended = string.Empty;
+            if (metGoalCriteria)
+            {
+                appended = $"<#00FFFF>{goal} cleared";
+            }
+            else if (receivedGoalCriteria)
+            {
+                appended = $"<#00FF00>Can access {goal}";
+            }
+            else if (receivedCharacter)
+            {
+                int crownsReceived = CursedWordsArchipelago.Instance.AmountOfItemReceived($"{characterName}: Progressive Crown");
+                string requirement = ArchipelagoHelper.SlotData.GoalType switch
+                {
+                    Enums.GoalType.Crowns => $"{crownsRequired - crownsReceived} more Progressive Crown(s)",
+                    Enums.GoalType.Michael => $"1 more Progressive Crown",
+                    _ => string.Empty
+                }; ;
+
+                appended = $"<#FFFF00>Requires {requirement} to access {goal}";
+            }
+            else
+            {
+                // Shouldn't ever see this
+                return;
+            }
+
+            // Append to description
+            __result += $"\n\n{appended}</color>";
+        }
+
         /// <summary>
         /// Prevent character default build items if not yet unlocked
         /// </summary>

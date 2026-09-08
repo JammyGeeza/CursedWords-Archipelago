@@ -11,6 +11,7 @@ using System.Collections;
 using TMPro;
 using Modd;
 using Mod.Enums;
+using Mod.Mappings;
 
 namespace Mod.Patches
 {
@@ -98,27 +99,14 @@ namespace Mod.Patches
                 }
             }
 
-            // Get crown colour
-            string crownColour = ArchipelagoHelper.SlotData.CrownRequirement switch
-            {
-                1 => "Purple",
-                2 => "Yellow",
-                3 => "Orange",
-                4 => "Pink",
-                5 => "Green",
-                6 => "Blue",
-                7 => "Red",
-                _ => string.Empty
-            };
-
             // Get general goal text
+            string crownColour = Crowns.GetCrowmnName(ArchipelagoHelper.SlotData.CrownRequirement);
             GoalType goalType = ArchipelagoHelper.SlotData.GoalType;
-            string goalText = goalType switch
+            string goalName = Goals.GetGoalName(goalType);
+            if (goalType is GoalType.Crowns)
             {
-                GoalType.Crowns => $"Clear {crownColour} Crown",
-                GoalType.Michael => $"Clear Michael",
-                GoalType.Runs => $"Clear Runs",
-            };
+                goalName = $"{crownColour} {goalName}";
+            }
 
             Logger.LogDebug("Completing original task...");
             while (original.MoveNext())
@@ -138,7 +126,7 @@ namespace Mod.Patches
                 if (crownCompletionTMP is not null && !crownCompletionTMP.text.Contains("Goal Condition"))
                 {
                     // Set goal text
-                    crownCompletionTMP.SetText($"Goal Condition - <#FFFFFF>{goalText} ({charactersCompleted} of {ArchipelagoHelper.SlotData.GoalRequirements.Length})");
+                    crownCompletionTMP.SetText($"Goal Condition - <#FFFFFF>Clear {goalName} ({charactersCompleted} of {ArchipelagoHelper.SlotData.GoalRequirements.Length})");
                 }
 
                 yield return original.Current;
@@ -163,7 +151,7 @@ namespace Mod.Patches
             if (crownCompletionTMP is not null && !crownCompletionTMP.text.Contains("Goal Condition"))
             {
                 // Set goal text
-                crownCompletionTMP.SetText($"Goal Condition - <#FFFFFF>{goalText} ({charactersCompleted} of {ArchipelagoHelper.SlotData.GoalRequirements.Length})");
+                crownCompletionTMP.SetText($"Goal Condition - <#FFFFFF>{goalName} ({charactersCompleted} of {ArchipelagoHelper.SlotData.GoalRequirements.Length})");
             }
         }
     }

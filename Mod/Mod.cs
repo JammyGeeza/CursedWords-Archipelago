@@ -199,6 +199,16 @@ namespace Modd
         #region Public Methods
 
         /// <summary>
+        /// Get how many of a specific item has been received.
+        /// </summary>
+        /// <param name="itemName">The name of the item to check.</param>
+        /// <returns>The amount of times the item has been received.</returns>
+        public int AmountOfItemReceived(string itemName)
+        {
+            return ReceivedItems.GetValueOrDefault(itemName, 0);
+        }
+
+        /// <summary>
         /// Check if a character has met the current goal criteria.
         /// </summary>
         /// <param name="characterName">The character name to check.</param>
@@ -242,6 +252,37 @@ namespace Modd
                 GoalType.Crowns => SaveManager.GetHighestCompletedAscension(characterType) >= ArchipelagoHelper.SlotData.CrownRequirement,
                 GoalType.Michael => SaveManager.HasBeatenFinalBoss(characterType),
                 GoalType.Runs => SaveManager.GetHighestCompletedAscension(characterType) >= 0,
+                _ => false,
+            };
+        }
+
+        /// <summary>
+        /// Check if a character has received the current goal criteria.
+        /// NOTE: Does not take into account the synergy items.
+        /// </summary>
+        /// <param name="character">The character to check.</param>
+        /// <returns>True if received, false if not met.</returns>
+        public bool HasCharacterReceivedGoalCriteria(Character character)
+        {
+            return HasCharacterReceivedGoalCriteria(character?.GetType());
+        }
+
+        /// <summary>
+        /// Check if a character has received the current goal criteria.
+        /// NOTE: Does not take into account the synergy items.
+        /// </summary>
+        /// <param name="characterType">The type of character to check.</param>
+        /// <returns>True if received, false if not met.</returns>
+        public bool HasCharacterReceivedGoalCriteria(Type characterType)
+        {
+            string characterName = CharacterTypeCache.GetValueOrDefault(characterType, string.Empty);
+            bool hasReceivedCharacter = ReceivedItems.ContainsKey(characterName);
+
+            return hasReceivedCharacter && ArchipelagoHelper.SlotData.GoalType switch
+            {
+                GoalType.Crowns => ReceivedItems.GetValueOrDefault($"{characterName}: Progressive Crown", 0) >= ArchipelagoHelper.SlotData.CrownRequirement,
+                GoalType.Michael => ReceivedItems.GetValueOrDefault($"{characterName}: Progressive Crown", 0) >= 1,
+                GoalType.Runs => true,
                 _ => false,
             };
         }
