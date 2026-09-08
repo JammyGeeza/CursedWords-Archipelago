@@ -52,10 +52,7 @@ namespace Mod.Patches
         {
             Logger.LogDebug($"{nameof(CharacterSelectVisualController)}.PopulateElements postfix!");
 
-            if (ArchipelagoHelper.SlotData.Michael || ArchipelagoHelper.SlotData.CrownRequirement > 0)
-            {
-                __result = Wrapped(__result, __instance, character, isUnlocked);
-            }
+            __result = Wrapped(__result, __instance, character, isUnlocked);
         }
 
         /// <summary>
@@ -76,10 +73,52 @@ namespace Mod.Patches
                 .Field("_crownsPanelGO")
                 .GetValue<GameObject>();
 
-            // Get the crown path display
+            // Get the crown path text
             TextMeshProUGUI crownCompletionTMP = Traverse.Create(controller)
                 .Field("_crownCompletionTMP")
                 .GetValue<TextMeshProUGUI>();
+
+            // Get the crown path display
+            GameObject crownCompletionTextGO = Traverse.Create(controller)
+                .Field("_crownCompletionTextGO")
+                .GetValue<GameObject>();
+
+            // Get count of characters that have met the goal condition
+            int charactersCompleted = 0;
+            foreach (string characterName in ArchipelagoHelper.SlotData.GoalRequirements)
+            {
+                Type characterType = CursedWordsArchipelago.Instance.CharacterTypeCache
+                    .FirstOrDefault(kvp => kvp.Value.Equals(characterName))
+                    .Key;
+
+                // If completed, increment count
+                if (CursedWordsArchipelago.Instance.HasCharacterMetGoalCriteria(characterType))
+                {
+                    charactersCompleted++;
+                }
+            }
+
+            // Get crown colour
+            string crownColour = ArchipelagoHelper.SlotData.CrownRequirement switch
+            {
+                1 => "Purple",
+                2 => "Yellow",
+                3 => "Orange",
+                4 => "Pink",
+                5 => "Green",
+                6 => "Blue",
+                7 => "Red",
+                _ => string.Empty
+            };
+
+            // Get general goal text
+            GoalType goalType = ArchipelagoHelper.SlotData.GoalType;
+            string goalText = goalType switch
+            {
+                GoalType.Crowns => $"Clear {crownColour} Crown",
+                GoalType.Michael => $"Clear Michael",
+                GoalType.Runs => $"Clear Runs",
+            };
 
             Logger.LogDebug("Completing original task...");
             while (original.MoveNext())
@@ -90,51 +129,41 @@ namespace Mod.Patches
                     crownsPanelGO.SetActive(true);
                 }
 
-                // Set goal completion text
-                if (crownCompletionTMP != null && crownCompletionTMP.text.Contains("Crown Path Completion"))
+                // Always show completion text (attempting to re-force
+                if (crownCompletionTextGO is not null && !crownCompletionTextGO.activeSelf)
                 {
-                    // Get count of characters that have met the goal condition
-                    int charactersCompleted = 0;
-                    foreach (string characterName in ArchipelagoHelper.SlotData.GoalRequirements)
-                    {
-                        Type characterType = CursedWordsArchipelago.Instance.CharacterTypeCache
-                            .FirstOrDefault(kvp => kvp.Value.Equals(characterName))
-                            .Key;
+                    crownCompletionTextGO.SetActive(true);
+                }
 
-                        // If completed, increment count
-                        if (CursedWordsArchipelago.Instance.HasCharacterMetGoalCriteria(characterType))
-                        {
-                            charactersCompleted++;
-                        }
-                    }
-
-                    // Get crown colour
-                    string crownColour = ArchipelagoHelper.SlotData.CrownRequirement switch
-                    {
-                        1 => "Purple",
-                        2 => "Yellow",
-                        3 => "Orange",
-                        4 => "Pink",
-                        5 => "Green",
-                        6 => "Blue",
-                        7 => "Red",
-                        _ => string.Empty
-                    };
-
-                    // Get general goal text
-                    GoalType goalType = ArchipelagoHelper.SlotData.GoalType;
-                    string goalText = goalType switch
-                    {
-                        GoalType.Crowns => $"Clear {crownColour} Crown",
-                        GoalType.Michael => $"Clear Michael",
-                        GoalType.Runs => $"Clear Runs",
-                    };
-
-                    // Set text
-                    crownCompletionTMP.SetText($"Goal Condition - <#FFFFFF> {goalText} ({charactersCompleted}/{ArchipelagoHelper.SlotData.GoalRequirements.Length})");
+                if (crownCompletionTMP is not null && !crownCompletionTMP.text.Contains("Goal Condition"))
+                {
+                    // Set goal text
+                    crownCompletionTMP.SetText($"Goal Condition - <#FFFFFF>{goalText} ({charactersCompleted} of {ArchipelagoHelper.SlotData.GoalRequirements.Length})");
                 }
 
                 yield return original.Current;
+            }
+
+            // Need to re-force some of these due to the original method's '!isUnlocked' path not yielding
+            // so it prevents the elements "flashing" by doubly making sure they're set
+
+            // Enable crowns panel if character is unlocked
+            if (isUnlocked && crownsPanelGO != null && !crownsPanelGO.activeSelf)
+            {
+                crownsPanelGO.SetActive(true);
+            }
+
+            // Always show completion text (attempting to re-force
+            if (crownCompletionTextGO is not null && !crownCompletionTextGO.activeSelf)
+            {
+                crownCompletionTextGO.SetActive(true);
+            }
+
+            // Set goal completion text
+            if (crownCompletionTMP is not null && !crownCompletionTMP.text.Contains("Goal Condition"))
+            {
+                // Set goal text
+                crownCompletionTMP.SetText($"Goal Condition - <#FFFFFF>{goalText} ({charactersCompleted} of {ArchipelagoHelper.SlotData.GoalRequirements.Length})");
             }
         }
     }
