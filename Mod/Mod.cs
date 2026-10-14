@@ -19,14 +19,12 @@ using UnityEngine;
 
 namespace Modd
 {
-    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.4")]
+    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.5")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
         #region Private Properties
 
         private static Harmony Harmony { get; set; }
-
-        private ConcurrentQueue<(CuedAction, ItemInfo)> ActionQueue { get; set; } = new ConcurrentQueue<(CuedAction, ItemInfo)>();
 
         private Dictionary<Type, string> _characterTypeCache;
 
