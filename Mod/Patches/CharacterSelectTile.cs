@@ -32,8 +32,12 @@ namespace Mod.Patches
 
                 // Set colour based on if character has met goal criteria
                 borderImage.color = CursedWordsArchipelago.Instance.HasCharacterMetGoalCriteria(__instance.MyCharacter)
-                    ? new Color(0f, 1f, 0f, 0.8f)
-                    : new Color(1f, 0f, 0f, 0.8f);
+                    ? new Color(0f, 1f, 1f, 0.8f)
+                    : CursedWordsArchipelago.Instance.HasCharacterReceivedGoalCriteria(__instance.MyCharacter)
+                        ? new Color(0f, 1f, 0f, 0.8f)
+                        : CursedWordsArchipelago.Instance.AmountOfItemReceived(characterName) > 0
+                                ? new Color(1f, 1f, 0f, 0.8f)
+                                : new Color(1f, 0f, 0f, 0.8f);
 
                 return false;
             }
@@ -57,8 +61,12 @@ namespace Mod.Patches
 
                 // Set colour based on if character has met goal criteria
                 borderImage.color = CursedWordsArchipelago.Instance.HasCharacterMetGoalCriteria(__instance.MyCharacter)
-                    ? new Color(0f, 1f, 0f, 0.2f)
-                    : new Color(1f, 0f, 0f, 0.2f);
+                    ? new Color(0f, 1f, 1f, 0.2f)
+                    : CursedWordsArchipelago.Instance.HasCharacterReceivedGoalCriteria(__instance.MyCharacter)
+                        ? new Color(0f, 1f, 0f, 0.2f)
+                            : CursedWordsArchipelago.Instance.AmountOfItemReceived(characterName) > 0
+                                ? new Color(1f, 1f, 0f, 0.2f)
+                                : new Color(1f, 0f, 0f, 0.2f);
 
                 return false;
             }
