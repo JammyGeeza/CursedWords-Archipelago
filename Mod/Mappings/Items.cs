@@ -52,7 +52,7 @@ namespace Mod.Mappings
             { "Rodman", new CuedAction(() => UnlockCharacter(typeof(WetDennis))) },
             { "Nina Nix", new CuedAction(() => UnlockCharacter(typeof(NinaNix))) },
             { "Hayley Bayles", new CuedAction(() => UnlockCharacter(typeof(HayleyBayles))) },
-            { "Bones the Dog", new CuedAction(() => UnlockCharacter(typeof(BonesTheDog))) },
+            { "Bones The Dog", new CuedAction(() => UnlockCharacter(typeof(BonesTheDog))) },
             { "Sam Gambit", new CuedAction(() => UnlockCharacter(typeof(SamGambit))) },
             { "Octacles", new CuedAction(() => UnlockCharacter(typeof(Octacles))) },
 

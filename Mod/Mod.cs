@@ -19,12 +19,39 @@ using UnityEngine;
 
 namespace Modd
 {
-    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.5")]
+    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.6")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
-        #region Private Properties
+        #region Statics
 
+        /// <summary>
+        /// The minimum expected APWorld version.
+        /// </summary>
+        public static Version ClientVersion { get; private set; }
+
+        /// <summary>
+        /// The current instance of this mod.
+        /// </summary>
+        public static CursedWordsArchipelago Instance { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the Harmony instance.
+        /// </summary>
         private static Harmony Harmony { get; set; }
+
+        /// <summary>
+        /// The minimum expected APWorld version.
+        /// </summary>
+        public static Version MinApworldVersion = new Version(0, 5, 3);
+
+        /// <summary>
+        /// Gets or sets the current save slot.
+        /// </summary>
+        public static int SaveSlot { get; set; }
+
+        #endregion
+
+        #region Private Properties
 
         private Dictionary<Type, string> _characterTypeCache;
 
@@ -80,11 +107,6 @@ namespace Modd
                 .ToDictionary(x => x.GetType(), x => (x.Name, x.Rarity));
 
         /// <summary>
-        /// The current instance of this mod.
-        /// </summary>
-        public static CursedWordsArchipelago Instance { get; private set; }
-
-        /// <summary>
         /// Is the player currently in game? (Not in the save selection screen)
         /// </summary>
         public bool IsInGame { get; set; } = false;
@@ -100,11 +122,6 @@ namespace Modd
         public Dictionary<long, ScoutedItemInfo> RemainingShopChecks { get; set; } = new Dictionary<long, ScoutedItemInfo>();
 
         /// <summary>
-        /// Gets or sets the current save slot.
-        /// </summary>
-        public static int SaveSlot { get; set; }
-
-        /// <summary>
         /// Gets or sets the currently unlocked items.
         /// </summary>
         public List<Type> UnlockedItemTypeCache { get; private set; } = new List<Type>();
@@ -115,6 +132,9 @@ namespace Modd
 
         private void Awake()
         {
+            // Get plugin version
+            ClientVersion = Info.Metadata.Version;
+
             // Initialize Harmony
             Logger.LogDebug("Applying patches...");
 

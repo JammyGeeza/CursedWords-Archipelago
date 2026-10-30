@@ -198,6 +198,15 @@ namespace Mod.Helpers
                 {
                     throw new Exception("SlotData was unexpectedly null.");
                 }
+                else if (SlotData.MinimumClientVersion > CursedWordsArchipelago.ClientVersion)
+                {
+                    // If the APWorld's minimum compatible client version is greater than this client, bail out.
+                    throw new Exception($"This client is not compatible with APWorld version {SlotData.Version} - please update the Mod Client to version {SlotData.MinimumClientVersion} or later.");
+                }
+                else if (SlotData.Version < CursedWordsArchipelago.MinApworldVersion)
+                {
+                    throw new Exception($"This client is not compatible with APWorld version {SlotData.Version} - please update the APWorld to version {CursedWordsArchipelago.MinApworldVersion} or later and re-generate the multiworld.");
+                }
 
                 Logger.LogDebug($"Creating Deathlink service...");
 
