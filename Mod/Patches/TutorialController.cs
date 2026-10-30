@@ -12,7 +12,7 @@ namespace Mod.Patches
         /// <summary>
         /// Prevent secret character unlock dialogues from unlocking the secret character.
         /// </summary>
-        [HarmonyPatch(nameof(TutorialController.SecretCharacterUnlockDialogue))]
+        [HarmonyPatch(nameof(TutorialController.SecretCharacterUnlockDialogue), MethodType.Enumerator)]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> OnSecretCharacterUnlockDialogue_Prefix(IEnumerable<CodeInstruction> instructions)
         {

@@ -187,6 +187,8 @@ namespace Modd
                 return;
             }
 
+            ArchipelagoHelper.RunQueued();
+
             // Development short-cuts
             if (UnityInput.Current.GetKeyUp(KeyCode.F2))
             {
