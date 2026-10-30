@@ -8,19 +8,16 @@ namespace Mod.Patches
     internal class UnlocksBannerController_Patches : PatchBase
     {
         /// <summary>
-        /// Ensure that Supervillain can always spawn all cursed types.
+        /// Replace banner IEnumerator with an empty enumerator so it skips the banner entirely.
         /// </summary>
-        [HarmonyPatch(typeof(UnlocksBannerController), nameof(UnlocksBannerController.Populate))]
-        static class UnlocksBannerController_Patches_SkipAllBanners
+        [HarmonyPatch(nameof(UnlocksBannerController.Populate))]
+        [HarmonyPrefix]
+        private static bool OnPopulate_Prefix(ref IEnumerator __result)
         {
-            /// <summary>
-            /// Replace banner IEnumerator with an empty enumerator so it skips it entirely.
-            /// </summary>
-            static bool Prefix(ref IEnumerator __result)
-            {
-                __result = Array.Empty<object>().GetEnumerator();
-                return false;
-            }
+            Logger.LogDebug("UnlocksBannerController.Populate prefix!");
+
+            __result = Array.Empty<object>().GetEnumerator();
+            return false;
         }
     }
 }
