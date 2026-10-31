@@ -48,6 +48,11 @@ namespace Mod.Helpers
         public bool Michael { get; private set; } = false;
 
         /// <summary>
+        /// Gets or sets the Minimum Client Version.
+        /// </summary>
+        public Version MinimumClientVersion { get; private set; }
+
+        /// <summary>
         /// Gets or sets whether Pinsanity is enabled.
         /// </summary>
         public bool Pinsanity { get; private set; } = false;
@@ -91,6 +96,11 @@ namespace Mod.Helpers
         /// Gets or sets whether Tilesanity is enabled.
         /// </summary>
         public bool Tilesanity { get; private set; } = false;
+
+        /// <summary>
+        /// Gets or sets the APWorld Version.
+        /// </summary>
+        public Version Version { get; private set; }
 
 
         private ArchipelagoSlotData(Dictionary<string, object> slotData)
@@ -360,6 +370,44 @@ namespace Mod.Helpers
             }
 
             Logger.LogInfo($"\tTilesanity: {Tilesanity}");
+
+            #endregion
+
+            #region Other
+
+            if (slotData.TryGetValue("min_client_version", out object minClientVersion))
+            {
+                try
+                {
+                    MinimumClientVersion = new Version(minClientVersion.ToString());
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"Minimum Client Version data was in an unexpected format and cannot recover.");
+                    throw ex;
+                }
+            }
+            else
+            {
+                throw new MissingMemberException("Minimum Client Version data is missing - the apworld is likely incompatible with this client.");
+            }
+
+            if (slotData.TryGetValue("version", out object version))
+            {
+                try
+                {
+                    Version = new Version(version.ToString());
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"APWorld Version data was in an unexpected format and cannot recover.");
+                    throw ex;
+                }
+            }
+            else
+            {
+                throw new MissingMemberException("APWorld Version data is missing - the APWorld is likely incompatible with this client.");
+            }
 
             #endregion
         }

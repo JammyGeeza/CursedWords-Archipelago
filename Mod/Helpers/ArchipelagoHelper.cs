@@ -10,6 +10,7 @@ using Modd;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -28,6 +29,11 @@ namespace Mod.Helpers
         /// Gets or sets the current deathlink service.
         /// </summary>
         private static DeathLinkService DeathlinkService { get; set; }
+
+        /// <summary>
+        /// Main thread queue.
+        /// </summary>
+        private static readonly ConcurrentQueue<Action> MainThreadQueue = new ConcurrentQueue<Action>();
 
         private static ManualLogSource Logger
         {
@@ -107,12 +113,21 @@ namespace Mod.Helpers
         }
 
         /// <summary>
+        /// Perform the next item in the main thread queue.
+        /// </summary>
+        public static void RunQueued()
+        {
+            while (MainThreadQueue.TryDequeue(out var action))
+                action();
+        }
+
+        /// <summary>
         /// Perform the login routine for the archipelago login controller dialog.
         /// </summary>
         /// <param name="controller">The controller dialog instance.</param>
         public static IEnumerator LoginRoutine(ArchipelagoLoginController controller)
         {
-            Task<bool> connectTask = ConnectAsync(controller.Host, controller.Slot, controller.Password);
+            Task<(bool success, string error)> connectTask = ConnectAsync(controller.Host, controller.Slot, controller.Password);
 
             while (!connectTask.IsCompleted)
             {
@@ -124,15 +139,15 @@ namespace Mod.Helpers
                 // If faulted, something went unexpectedly wrong
                 controller.SetState(DialogState.Error, "An unexpected error occurred");
             }
-            else if (connectTask.Result)
+            else if (connectTask.Result.success)
             {
                 // If task succeeded, close
                 controller.Close();
             }
             else
             {
-                // If failed, 
-                controller.SetState(DialogState.Error, "Failed to connect to archipelago session");
+                // If failed, display
+                controller.SetState(DialogState.Error, connectTask.Result.error);
             }
         }
 
@@ -143,7 +158,7 @@ namespace Mod.Helpers
         /// <param name="slotName">The slot name to connect as.</param>
         /// <param name="pwd">The (optional) password to connect with.</param>
         /// <returns><c>true</c> on success, <c>false</c> on failure.</returns>
-        public static async Task<bool> ConnectAsync(string host, string slotName, string pwd = "")
+        public static async Task<(bool, string)> ConnectAsync(string host, string slotName, string pwd = "")
         {
             try
             {
@@ -192,11 +207,19 @@ namespace Mod.Helpers
 
                 Logger.LogDebug($"Log-in attempt successful, retrieving Slot Data...");
 
-                // Get slot data
                 SlotData = ArchipelagoSlotData.Parse(Session.DataStorage.GetSlotData());
                 if (SlotData is null)
                 {
                     throw new Exception("SlotData was unexpectedly null.");
+                }
+                else if (SlotData.MinimumClientVersion > CursedWordsArchipelago.ClientVersion)
+                {
+                    // If the APWorld's minimum compatible client version is greater than this client, bail out.
+                    throw new Exception($"The APWorld (v{SlotData.Version}) is not compatible with the Mod Client v{CursedWordsArchipelago.ClientVersion} - please update the Mod Client to v{SlotData.MinimumClientVersion} or later.");
+                }
+                else if (SlotData.Version < CursedWordsArchipelago.MinApworldVersion)
+                {
+                    throw new Exception($"This Mod Client (v{CursedWordsArchipelago.ClientVersion}) is not compatible with APWorld version {SlotData.Version} - please update the APWorld to v{CursedWordsArchipelago.MinApworldVersion} or later and re-generate the multiworld.");
                 }
 
                 Logger.LogDebug($"Creating Deathlink service...");
@@ -233,10 +256,10 @@ namespace Mod.Helpers
 
                 await DisconnectAsync();
 
-                return false;
+                return (false, ex.Message);
             }
 
-            return true;
+            return (true, string.Empty);
         }
 
         /// <summary>
@@ -542,7 +565,7 @@ namespace Mod.Helpers
         private static void Socket_SocketClosed(string reason)
         {
             Cleanup();
-            OnDisconnected?.Invoke(reason);
+            MainThreadQueue.Enqueue(() => OnDisconnected?.Invoke(reason));
         }
 
         #endregion
