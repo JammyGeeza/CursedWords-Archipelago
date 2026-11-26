@@ -144,9 +144,9 @@ _More items will be added in future development_
 > 2. Under `Game Versions & Betas`, select `Default Public Version` from the list.
 >
 >    <img width="838" height="601" alt="image" src="https://github.com/user-attachments/assets/c1d3168d-f6f1-4c54-a0a8-25c949d4038a" />
-> 3. If you own the **Madness of Michael DLC**, under `DLC` **re-check** Madness of Michael in the list.
+> 3. If you own the **Madness of Michael DLC**, under `DLC` **re-check** the DLC in the list.
 >
->    <img width="839" height="598" alt="image" src="https://github.com/user-attachments/assets/9ee52952-dea0-43df-bbf6-3d5816e6143a" />
+>    <img width="837" height="600" alt="image" src="https://github.com/user-attachments/assets/c9416379-d61c-4617-bb92-622743bcfcfe" />
 > 4. Wait for Steam to apply the changes.
 
 At the moment there is no in-game way to disable the mod client so you will need to remove the `/plugins/Archipelago` folder from the install directory. This should return your game to normal and your existing saves should become playable again.
