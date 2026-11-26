@@ -115,7 +115,7 @@ _More items will be added in future development_
 >
 > 5. Wait for Steam to install the down-patched version and uninstall the DLC, then continue to follow the install instructions below.
 >
-> **NOTE:** When you wish to revert back to the public release, please see [this caution](https://github.com/JammyGeeza/CursedWords-Archipelago/edit/master/README.md#disabling-the-mod-client-windows)
+> **NOTE:** When you wish to revert back to the public release, please see [this caution](https://github.com/JammyGeeza/CursedWords-Archipelago#disabling-the-mod-client-windows)
  
 
 1. Navigate to [Cursed Words Archipelago Mod Client](https://github.com/JammyGeeza/CursedWords-Archipelago/releases/latest) and download the `CursedWords_Archipelago.zip` file from the latest release.
