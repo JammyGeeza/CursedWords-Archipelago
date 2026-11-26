@@ -99,6 +99,23 @@ _More items will be added in future development_
 5. You are now ready to install the mod client.
 
 ## Installing the Mod Client (Windows)
+> [!WARNING]
+> As of <ins>**25th November 2026**</ins>, the latest public version of Cursed Words breaks this mod due to changes introduced to support the **Madness of Michael DLC**.
+>
+> Until I am able to patch this mod, the developers have very kindly provided a down-patch branch to allow players to continue to play Archipelago, so please ensure you first do the following:
+> 1. _(OPTIONAL)_ Back up your existing save files - they _should_ be unaffected because this mod creates its own saves but if you wish to be safe, please do it before continuing.
+> 2. In Steam, find Cursed Words in your library and `Right Click -> Properties`
+> 3. Under `Game Versions & Betas` in the left-hand menu select the `ap_compatible` branch from the list:
+>    
+>    <img width="838" height="597" alt="image" src="https://github.com/user-attachments/assets/9961d634-25f5-4e0e-af30-f621f4d22588" />
+>
+> 4. If you own the **Madness of Michael DLC**, under `DLC` in the left-hand menu, **un-check** the DLC in the list:
+>
+>    <img width="838" height="598" alt="image" src="https://github.com/user-attachments/assets/f2a1e2c8-5622-4c0b-b90e-0dc959dbe844" />
+>
+> 5. Wait for Steam to install the down-patched version and uninstall the DLC, then continue to follow the install instructions below.
+ 
+
 1. Navigate to [Cursed Words Archipelago Mod Client](https://github.com/JammyGeeza/CursedWords-Archipelago/releases/latest) and download the `CursedWords_Archipelago.zip` file from the latest release.
 2. In File Explorer, find your Cursed Words install folder _(in Steam, right-click the game and go to Properties -> Installed Files -> Browse)_, unzip the file and place the contents into the newly created `~/BepInEx/plugins` folder.
    Your file directory should look like this:
