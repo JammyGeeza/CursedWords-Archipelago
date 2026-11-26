@@ -19,13 +19,13 @@ using UnityEngine;
 
 namespace Modd
 {
-    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.5.6")]
+    [BepInPlugin("archipelago", "Cursed Words Archipelago", "0.6.0")]
     public class CursedWordsArchipelago : BaseUnityPlugin
     {
         #region Statics
 
         /// <summary>
-        /// The minimum expected APWorld version.
+        /// The version of this mod client.
         /// </summary>
         public static Version ClientVersion { get; private set; }
 
@@ -164,17 +164,8 @@ namespace Modd
             ArchipelagoHelper.OnMessageReceived += ArchipelagoHelper_OnMessageReceived;
 
             // Clear all bulk unlocks (to prevent accidental item unlocking)
-            BulkUnlock.AllBulkUnlocks.Clear();
-
-            // Insert custom bulk uploads as requiring unlocks
-            //Logger.LogInfo("Inserting custom bulk unlocks");
-            //foreach (Type type in Lookups.ValidBulkUnlockTypes)
-            //{
-            //    BulkUnlock unlock = Activator.CreateInstance(type) as BulkUnlock;
-            //    BulkUnlock.AllBulkUnlocks.Add(unlock);
-            //}
-
-            //Logger.LogInfo($"Stickers:");
+            BulkUnlock.BaseGameBulkUnlocks.Clear();
+            BulkUnlock.DLCBulkUnlocks.Clear();
         }
 
         /// <summary>
