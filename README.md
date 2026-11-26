@@ -99,7 +99,7 @@ _More items will be added in future development_
 5. You are now ready to install the mod client.
 
 ## Installing the Mod Client (Windows)
-> [!WARNING]
+> [!CAUTION]
 > As of <ins>**25th November 2026**</ins>, the latest public version of Cursed Words breaks this mod due to changes introduced to support the **Madness of Michael DLC**.
 >
 > Until I am able to patch this mod, the developers have very kindly provided a down-patch branch to allow players to continue to play Archipelago, so please ensure you first do the following:
@@ -108,15 +108,12 @@ _More items will be added in future development_
 > 3. Under `Game Versions & Betas` in the left-hand menu select the `ap_compatible` branch from the list:
 >    
 >    <img width="838" height="597" alt="image" src="https://github.com/user-attachments/assets/9961d634-25f5-4e0e-af30-f621f4d22588" />
->
 > 4. If you own the **Madness of Michael DLC**, under `DLC` in the left-hand menu, **un-check** the DLC in the list:
 >
 >    <img width="838" height="598" alt="image" src="https://github.com/user-attachments/assets/f2a1e2c8-5622-4c0b-b90e-0dc959dbe844" />
->
-> 5. Wait for Steam to install the down-patched version and uninstall the DLC, then continue to follow the install instructions below.
+> 5. Wait for Steam to apply the changes, then continue to follow the installation instructions below.
 >
 > **NOTE:** When you wish to revert back to the public release, please see [this caution](https://github.com/JammyGeeza/CursedWords-Archipelago#disabling-the-mod-client-windows)
- 
 
 1. Navigate to [Cursed Words Archipelago Mod Client](https://github.com/JammyGeeza/CursedWords-Archipelago/releases/latest) and download the `CursedWords_Archipelago.zip` file from the latest release.
 2. In File Explorer, find your Cursed Words install folder _(in Steam, right-click the game and go to Properties -> Installed Files -> Browse)_, unzip the file and place the contents into the newly created `~/BepInEx/plugins` folder.
@@ -141,7 +138,16 @@ _More items will be added in future development_
 
 ## Disabling the Mod Client (Windows)
 > [!CAUTION]
-> As of <ins>**25th November 2026**</ins> if you wish to disable the mod and continue playing normally, you <ins>**MUST**</ins> ensure that you update back to the latest public version before continuing. Attempting to continue a normal game save after down-patching may remove progress or corrupt your save.
+> As of <ins>**25th November 2026**</ins> if you wish to disable the mod and continue playing normally, you <ins>**MUST ENSURE**</ins> that you up-patch back to the latest public version before continuing. Attempting to continue a normal game save after down-patching may remove progress or corrupt your save.
+> To up-patch, please follow these instructions:
+> 1. Find **Cursed Words** in your Steam Library and `Right Click -> Properties`
+> 2. Under `Game Versions & Betas`, select `Default Public Version` from the list.
+>
+>    <img width="838" height="601" alt="image" src="https://github.com/user-attachments/assets/c1d3168d-f6f1-4c54-a0a8-25c949d4038a" />
+> 3. If you own the **Madness of Michael DLC**, under `DLC` **re-check** Madness of Michael in the list.
+>
+>    <img width="839" height="598" alt="image" src="https://github.com/user-attachments/assets/9ee52952-dea0-43df-bbf6-3d5816e6143a" />
+> 4. Wait for Steam to apply the changes.
 
 At the moment there is no in-game way to disable the mod client so you will need to remove the `/plugins/Archipelago` folder from the install directory. This should return your game to normal and your existing saves should become playable again.
 
