@@ -114,6 +114,8 @@ _More items will be added in future development_
 >    <img width="838" height="598" alt="image" src="https://github.com/user-attachments/assets/f2a1e2c8-5622-4c0b-b90e-0dc959dbe844" />
 >
 > 5. Wait for Steam to install the down-patched version and uninstall the DLC, then continue to follow the install instructions below.
+>
+> **NOTE:** When you wish to revert back to the public release, please see [this caution](https://github.com/JammyGeeza/CursedWords-Archipelago/edit/master/README.md#disabling-the-mod-client-windows)
  
 
 1. Navigate to [Cursed Words Archipelago Mod Client](https://github.com/JammyGeeza/CursedWords-Archipelago/releases/latest) and download the `CursedWords_Archipelago.zip` file from the latest release.
@@ -138,6 +140,9 @@ _More items will be added in future development_
 3. Start the game - you should notice that any previous game saves are not shown. Don't worry, this is intentional and your saves are safe! The mod client creates separate save files for Archipelago. 
 
 ## Disabling the Mod Client (Windows)
+> [!CAUTION]
+> As of <ins>**25th November 2026**</ins> if you wish to disable the mod and continue playing normally, you <ins>**MUST**</ins> ensure that you update back to the latest public version before continuing. Attempting to continue a normal game save after down-patching may remove progress or corrupt your save.
+
 At the moment there is no in-game way to disable the mod client so you will need to remove the `/plugins/Archipelago` folder from the install directory. This should return your game to normal and your existing saves should become playable again.
 
 ## Connecting to Archipelago
